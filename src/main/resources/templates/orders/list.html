@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>List of orders</title>
+    <meta http-equiv="refresh" content="10">
+    <link rel="stylesheet"
+          href="https://stackpath.bootstrapcdn.com/bootstrap/4.1.3/css/bootstrap.min.css"
+          integrity="sha384-MCw98/SFnGE8fJT3GXwEOngsV7Zt27NXFoaoApmYm81iuXoPkFOJwJ8ERdknLPMO"
+          crossorigin="anonymous">
+</head>
+<body>
+<div>
+    <h3>Orders</h3>
+    <a th:href="@{/index}" class="btn btn-primary btn-sm mb-3"> < Back to main menu</a>
+    <table style="width:80%" border="1" class="table table-striped table-responsive-md">
+        <thead>
+        <tr>
+            <th>ID</th>
+            <th>Name</th>
+            <th>Secret</th>
+            <th>Side</th>
+            <th>Symbol</th>
+        </tr>
+        </thead>
+
+        <tbody>
+        <tr th:each="order: ${orders}">
+            <td th:text="${order.id}"></td>
+            <td th:text="${order.name}"></td>
+            <td th:text="${order.secret}"></td>
+            <td th:text="${order.side}"></td>
+            <td th:text="${order.symbol}"></td>
+        </tr>
+        </tbody>
+    </table>
+</div>
+</body>
+</html>

@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html lang="en" xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:th="http://thymeleaf.org">
+<head>
+  <meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
+  <title>Alert Management System</title>
+  <link rel="stylesheet"
+        href="https://stackpath.bootstrapcdn.com/bootstrap/4.1.3/css/bootstrap.min.css"
+        integrity="sha384-MCw98/SFnGE8fJT3GXwEOngsV7Zt27NXFoaoApmYm81iuXoPkFOJwJ8ERdknLPMO"
+        crossorigin="anonymous">
+</head>
+</head>
+<body>
+<div class="container">
+  <h1>Add new alert</h1>
+  <form action="#" th:action="@{/alerts}" th:object="${alert}" method="POST">
+    <input type="hidden"
+           th:field="*{id}"/></p>
+
+    <input type="text"
+           th:field="*{name}"
+           placeholder="Name"
+           class="form-control mb-4 col-4"></p>
+
+    <input type="text"
+           th:field="*{webhook}"
+           placeholder="Webhook"
+           class="form-control mb-4 col-4"></p>
+
+    <input type="text"
+           th:field="*{secret}"
+           placeholder="Secret"
+           class="form-control mb-4 col-4"></p>
+
+    <input type="text"
+           th:field="*{side}"
+           placeholder="Side"
+           class="form-control mb-4 col-4"></p>
+
+    <button type="submit" class="btn btn-info col-2">Add alert</button>
+
+  </form>
+
+  <hr>
+
+  <a th:href="@{/alerts}">Back to Alert List</a>
+</div>
+</body>
+</html>

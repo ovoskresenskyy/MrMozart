@@ -1,0 +1,25 @@
+<!DOCTYPE html>
+<html lang="en" xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://thymeleaf.org">
+<head>
+    <meta charset="ISO-8859-1">
+    <title>Alert updating</title>
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.1.3/css/bootstrap.min.css">
+</head>
+<body>
+<div class="container">
+    <h2>Alert updating</h2>
+    <form action="#" th:action="@{/alerts}" th:object="${alert}" th:method="POST">
+        <input type="hidden" th:field="*{id}" />
+        <input type="text" th:field="*{name}" class="form-control mb-4 col-4">
+        <input type="text" th:field="*{webhook}" class="form-control mb-4 col-4">
+        <input type="text" th:field="*{secret}" class="form-control mb-4 col-4">
+        <input type="text" th:field="*{side}" class="form-control mb-4 col-4">
+        <button type="submit" class="btn btn-info col-2">Update</button>
+    </form>
+
+    <hr>
+
+    <a th:href="@{/alerts}">Back to Alert List</a>
+</div>
+</body>
+</html>

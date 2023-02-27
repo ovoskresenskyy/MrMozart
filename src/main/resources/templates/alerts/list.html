@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>List of alerts</title>
+    <link rel="stylesheet"
+          href="https://stackpath.bootstrapcdn.com/bootstrap/4.1.3/css/bootstrap.min.css"
+          integrity="sha384-MCw98/SFnGE8fJT3GXwEOngsV7Zt27NXFoaoApmYm81iuXoPkFOJwJ8ERdknLPMO"
+          crossorigin="anonymous">
+</head>
+<body>
+<div>
+    <h1>List of alerts</h1>
+    <a th:href="@{/alerts/new}" class="btn btn-primary btn-sm mb-3">Add new Alert</a>
+    <table style="width:80%" border="1" class="table table-striped table-responsive-md">
+        <thead>
+        <tr>
+            <th>ID</th>
+            <th>Name</th>
+            <th>Webhook</th>
+            <th>Secret</th>
+            <th>Side</th>
+            <th>Action</th>
+        </tr>
+        </thead>
+
+        <tbody>
+        <tr th:each="alert: ${alerts}">
+            <td th:text="${alert.id}"></td>
+            <td th:text="${alert.name}"></td>
+            <td th:text="${alert.webhook}"></td>
+            <td th:text="${alert.secret}"></td>
+            <td th:text="${alert.side}"></td>
+            <td>
+                <form th:action="@{/alerts/{id}/updating(id=${alert.id})}" method="GET">
+                    <input type="hidden" name="_method" value="GET">
+                    <button class="btn btn-success" type="submit">Update</button>
+                </form>
+                <form th:action="@{/alerts/{id}(id=${alert.id})}" method="POST">
+                    <input type="hidden" name="_method" value="DELETE">
+                    <button class="btn btn-danger" type="submit">Delete</button>
+                </form>
+            </td>
+        </tr>
+        </tbody>
+    </table>
+    <a th:href="@{/owners}"> Back to Owner List</a>
+</div>
+</body>
+</html>
