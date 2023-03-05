@@ -29,12 +29,10 @@ public class UserService {
 
     public User saveUser(User incomingData, String role) {
 
-        User savedUser = userRepository.save(User.builder()
-                .name(incomingData.getName())
-                .email(incomingData.getEmail())
-                .password(passwordEncoder.encode(incomingData.getPassword()))
-                .build());
+        String encodedPassword = passwordEncoder.encode(incomingData.getPassword());
+        incomingData.setPassword(encodedPassword);
 
+        User savedUser = userRepository.save(incomingData);
         addRole(savedUser.getId(), role);
 
         return savedUser;
