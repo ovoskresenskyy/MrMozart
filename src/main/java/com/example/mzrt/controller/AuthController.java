@@ -34,28 +34,31 @@ public class AuthController {
 
     @GetMapping("/register")
     public String showRegistrationForm(Model model) {
-        model.addAttribute("user", User.builder()
-                .build());
-        return "security/register";
+        //TODO: temporary unavailable to register
+//        model.addAttribute("user", User.builder()
+//                .build());
+//        return "security/register";
+        return "redirect:/login";
     }
 
     @PostMapping("/register/save")
     public String registration(@ModelAttribute("user") User user,
                                BindingResult result,
                                Model model) {
-        Optional<User> existingUser = userService.findByEmail(user.getEmail());
-        if (existingUser.isPresent()) {
-            result.rejectValue("email",
-                    "isExist",
-                    "There is already an account registered with the same email");
-        }
-
-        if (result.hasErrors()) {
-            model.addAttribute("user", User.builder().build());
-            return "redirect:/register?error";
-        }
-
-        userService.saveUser(user, "ADMIN");
+        //TODO: temporary unavailable to register
+//        Optional<User> existingUser = userService.findByEmail(user.getEmail());
+//        if (existingUser.isPresent()) {
+//            result.rejectValue("email",
+//                    "isExist",
+//                    "There is already an account registered with the same email");
+//        }
+//
+//        if (result.hasErrors()) {
+//            model.addAttribute("user", User.builder().build());
+//            return "redirect:/register?error";
+//        }
+//
+//        userService.saveUser(user, "ADMIN");
         return "redirect:/login";
     }
 
