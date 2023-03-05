@@ -41,7 +41,9 @@ public class UserService {
     }
 
     private void addRole(int userId, String role) {
-        roleRepository.save(Role.builder()
+
+        Optional<Role> existedRole = roleRepository.findByUserIdAndRole(userId, role);
+        if (existedRole.isEmpty()) roleRepository.save(Role.builder()
                 .role(role)
                 .userId(userId)
                 .build());
