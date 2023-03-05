@@ -34,14 +34,14 @@ public class SecurityConfiguration {
                 .authorizeHttpRequests((authorize) ->
                         authorize
                                 .requestMatchers("/login", "/register/**", "/alert").permitAll()
-                                .requestMatchers("/orders", "/index").hasAnyAuthority("ADMIN")
+                                .requestMatchers("/orders", "/users", "alerts", "/").hasAnyAuthority("ADMIN", "USER")
                                 .anyRequest().authenticated()
                                 .and()
                 ).formLogin(
                         form -> form
                                 .loginPage("/login")
                                 .loginProcessingUrl("/login")
-                                .defaultSuccessUrl("/index")
+                                .defaultSuccessUrl("/users")
                                 .permitAll()
                 ).logout(
                         logout -> logout
