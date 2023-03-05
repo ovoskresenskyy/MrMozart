@@ -10,5 +10,5 @@ import java.util.List;
 @Repository
 public interface OrderRepository extends CrudRepository<Order, Integer> {
 
-    List<Order> findAll(Sort sort);
+    List<Order> findByUserId(int userId, Sort sort);
 }
