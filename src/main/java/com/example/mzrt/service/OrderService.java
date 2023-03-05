@@ -44,7 +44,7 @@ public class OrderService {
                 Order.class);
     }
 
-    public List<Order> findAll() {
-        return orderRepository.findAll(Sort.by(Sort.Direction.DESC, "id"));
+    public List<Order> findByUserId(int userId) {
+        return orderRepository.findByUserId(userId, Sort.by(Sort.Direction.DESC, "id"));
     }
 }
