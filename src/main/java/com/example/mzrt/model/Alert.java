@@ -11,7 +11,7 @@ import org.springframework.data.relational.core.mapping.Table;
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
-@Table(schema = "mzrt", name = "alert")
+@Table(name = "mzrt_alert")
 public class Alert {
 
     @Id

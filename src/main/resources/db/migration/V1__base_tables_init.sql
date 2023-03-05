@@ -1,4 +1,4 @@
-CREATE TABLE "alert"
+CREATE TABLE mzrt_alert
 (
     id integer NOT NULL GENERATED ALWAYS AS IDENTITY ( INCREMENT 1 START 1 MINVALUE 1 ),
     name text,
@@ -7,7 +7,7 @@ CREATE TABLE "alert"
     side text,
     PRIMARY KEY (id)
 );
-CREATE TABLE "order"
+CREATE TABLE mzrt_order
 (
     id integer NOT NULL GENERATED ALWAYS AS IDENTITY ( INCREMENT 1 START 1 MINVALUE 1 ),
     name text,
@@ -16,7 +16,7 @@ CREATE TABLE "order"
     symbol text,
     PRIMARY KEY (id)
 );
-CREATE TABLE "user"
+CREATE TABLE mzrt_user
 (
     id integer NOT NULL GENERATED ALWAYS AS IDENTITY ( INCREMENT 1 START 1 MINVALUE 1 ),
     name text,

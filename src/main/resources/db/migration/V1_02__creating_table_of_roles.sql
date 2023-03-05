@@ -5,12 +5,12 @@ CREATE TABLE role
     user_id integer,
     PRIMARY KEY (id),
     FOREIGN KEY (user_id)
-        REFERENCES "user" (id) MATCH SIMPLE
+        REFERENCES mzrt_user (id) MATCH SIMPLE
         ON UPDATE NO ACTION
         ON DELETE CASCADE
 );
 
-INSERT INTO "role" (role, user_id)
+INSERT INTO role (role, user_id)
 VALUES ('ADMIN', 1);
-INSERT INTO "role" (role, user_id)
+INSERT INTO role (role, user_id)
 VALUES ('ADMIN', 2);
