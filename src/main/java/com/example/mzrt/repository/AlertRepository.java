@@ -13,5 +13,5 @@ public interface AlertRepository extends CrudRepository<Alert, Integer> {
 
     List<Alert> findAll(Sort sort);
 
-    Optional<Alert> findByName(String name);
+    Optional<Alert> findByUserIdAndName(int userId, String name);
 }
