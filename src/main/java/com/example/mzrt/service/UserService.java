@@ -5,11 +5,15 @@ import com.example.mzrt.model.User;
 import com.example.mzrt.repository.RoleRepository;
 import com.example.mzrt.repository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Sort;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
+import org.springframework.web.server.ResponseStatusException;
 
 import java.util.List;
 import java.util.Optional;
+
+import static org.springframework.http.HttpStatus.NOT_FOUND;
 
 @Service
 public class UserService {
@@ -38,6 +42,10 @@ public class UserService {
         return savedUser;
     }
 
+    public Optional<User> findByToken(String token) {
+        return userRepository.findByToken(token);
+    }
+
     private void addRole(int userId, String role) {
 
         Optional<Role> existedRole = roleRepository.findByUserIdAndRole(userId, role);
@@ -52,6 +60,14 @@ public class UserService {
     }
 
     public List<User> findAll() {
-        return userRepository.findAll();
+        return userRepository.findAll(Sort.by(Sort.Direction.ASC, "id"));
+    }
+
+    public User findById(int id) {
+        return userRepository.findById(id).orElseThrow(() -> new ResponseStatusException(NOT_FOUND));
+    }
+
+    public void deleteById(int id) {
+        userRepository.deleteById(id);
     }
 }
