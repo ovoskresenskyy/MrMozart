@@ -8,7 +8,7 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 
 @Controller
-@RequestMapping
+@RequestMapping("/users")
 public class UserController {
 
     private final UserService userService;
@@ -18,35 +18,34 @@ public class UserController {
         this.userService = userService;
     }
 
-    @GetMapping("/users/new")
-    public String userNewForm(Model model) {
-        model.addAttribute("user", User.builder().build());
-        return "users/new";
-    }
-
-    @GetMapping("/users")
-    public String getAllUsers(Model model) {
+    @GetMapping
+    public String getAll(Model model) {
         model.addAttribute("users", userService.findAll());
         return "users/list";
     }
 
-    @PostMapping("/users")
-    public String saveAlert(@ModelAttribute("user") User user) {
+    @GetMapping("/new")
+    public String addNewForm(Model model) {
+        model.addAttribute("user", User.builder().build());
+        return "users/new";
+    }
+
+    @PostMapping
+    public String save(@ModelAttribute("user") User user) {
         userService.saveUser(user, "USER");
         return "redirect:/users";
     }
 
-    @GetMapping("/users/{id}/updating")
+    @GetMapping("/{id}/updating")
     public String updatingForm(@PathVariable(value = "id") int id, Model model) {
         User user = userService.findById(id);
         model.addAttribute("user", user);
         return "users/update";
     }
 
-    @DeleteMapping("/users/{id}")
+    @DeleteMapping("/{id}")
     public String delete(@PathVariable(value = "id") int id) {
         userService.deleteById(id);
         return "redirect:/users";
     }
-
 }
