@@ -22,8 +22,8 @@ public class AlertService {
         this.alertRepository = alertRepository;
     }
 
-    public List<Alert> findAll(){
-        return alertRepository.findAll(Sort.by(Sort.Direction.ASC, "id"));
+    public List<Alert> findByUserId(int userId){
+        return alertRepository.findByUserId(userId, Sort.by(Sort.Direction.ASC, "id"));
     }
 
     public Alert findById(int id) {
