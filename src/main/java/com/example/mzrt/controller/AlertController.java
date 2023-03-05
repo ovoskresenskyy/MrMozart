@@ -1,13 +1,14 @@
 package com.example.mzrt.controller;
 
 import com.example.mzrt.model.Alert;
-import com.example.mzrt.model.Order;
 import com.example.mzrt.service.AlertService;
 import com.example.mzrt.service.OrderService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 
-@RestController
+@Controller
 @RequestMapping
 public class AlertController {
 
@@ -20,21 +21,41 @@ public class AlertController {
         this.alertService = alertService;
     }
 
-    @PostMapping(value = "/alert/{ticker}",
-            consumes = {"text/plain", "application/*"},
-            headers = "content-type=text/json",
-            produces = "application/json")
-    public Order getAlert(@PathVariable(value = "ticker") String ticker, @RequestBody String alertText) {
-        if (alertText.equalsIgnoreCase("Stop Trend")) {
-            Alert alertShort = alertService.findByName("STS");
-            Alert alertLong = alertService.findByName("STL");
-
-            orderService.sendOrder(alertShort, ticker);
-
-            return orderService.sendOrder(alertLong, ticker);
-        } else {
-            Alert alert = alertService.findByName(alertText);
-            return orderService.sendOrder(alert, ticker);
-        }
+    @GetMapping("/orders")
+    public String getAllOrders(Model model) {
+        model.addAttribute("orders", orderService.findAll());
+        return "orders/list";
     }
+
+    @GetMapping("/alerts/new")
+    public String alertNewForm(Model model) {
+        model.addAttribute("alert", Alert.builder().build());
+        return "alerts/new";
+    }
+
+    @GetMapping("/alerts")
+    public String getAllAlerts(Model model) {
+        model.addAttribute("alerts", alertService.findAll());
+        return "alerts/list";
+    }
+
+    @PostMapping("/alerts")
+    public String saveAlert(@ModelAttribute("alert") Alert alert) {
+        alertService.save(alert);
+        return "redirect:/alerts";
+    }
+
+    @GetMapping("/alerts/{id}/updating")
+    public String alertUpdateForm(@PathVariable(value = "id") int id, Model model) {
+        Alert alert = alertService.findById(id);
+        model.addAttribute("alert", alert);
+        return "alerts/update";
+    }
+
+    @DeleteMapping("/alerts/{id}")
+    public String deleteOwner(@PathVariable(value = "id") int id) {
+        alertService.deleteById(id);
+        return "redirect:/alerts";
+    }
+
 }
