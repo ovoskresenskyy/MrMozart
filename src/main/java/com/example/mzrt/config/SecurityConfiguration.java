@@ -34,7 +34,7 @@ public class SecurityConfiguration {
                 .authorizeHttpRequests((authorize) ->
                         authorize
                                 .requestMatchers("/login", "/register/**", "/alert").permitAll()
-//                                .requestMatchers("/orders", "/index").hasAnyAuthority("ADMIN")
+                                .requestMatchers("/orders", "/index").hasAnyAuthority("ADMIN")
                                 .anyRequest().authenticated()
                                 .and()
                 ).formLogin(
