@@ -11,8 +11,11 @@
 </head>
 <body>
 <div>
-    <h3>Orders</h3>
-    <a th:href="@{/index}" class="btn btn-primary btn-sm mb-3"> < Back to main menu</a>
+    <h1>Orders</h1>
+    <h3>
+        User: <span th:text="${user.name}"></span>
+    </h3>
+    <a th:href="@{/users}" class="btn btn-primary btn-sm mb-3"> < Back to main menu</a>
     <table style="width:80%" border="1" class="table table-striped table-responsive-md">
         <thead>
         <tr>

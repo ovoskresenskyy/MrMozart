@@ -11,13 +11,16 @@
 <body>
 <div>
     <h1>List of alerts</h1>
+    <h3>
+        User: <span th:text="${user.name}"></span>
+    </h3>
     <table>
         <tr>
             <td>
-                <a th:href="@{/alerts/new}" class="btn btn-success btn-sm mb-3">Add new Alert</a>
+                <a th:href="@{/alerts/{user_id}/new(user_id=${user.id})}" class="btn btn-success btn-sm mb-3">Add new Alert</a>
             </td>
             <td>
-                <a th:href="@{/index}" class="btn btn-primary btn-sm mb-3"> < Back to main menu</a>
+                <a th:href="@{/users}" class="btn btn-primary btn-sm mb-3"> < Back to main menu</a>
             </td>
         </tr>
     </table>
@@ -41,7 +44,7 @@
             <td th:text="${alert.secret}"></td>
             <td th:text="${alert.side}"></td>
             <td>
-                <form th:action="@{/alerts/{id}/updating(id=${alert.id})}" method="GET">
+                <form th:action="@{/alerts/updating/{id}(id=${alert.id})}" method="GET">
                     <input type="hidden" name="_method" value="GET">
                     <button class="btn btn-success" type="submit">Update</button>
                 </form>

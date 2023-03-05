@@ -7,19 +7,39 @@
 </head>
 <body>
 <div class="container">
-    <h2>Alert updating</h2>
+    <h1>Alert updating</h1>
+    <h3>
+        User: <span th:text="${user.name}"></span>
+    </h3>
     <form action="#" th:action="@{/alerts}" th:object="${alert}" th:method="POST">
         <input type="hidden" th:field="*{id}" />
-        <input type="text" th:field="*{name}" class="form-control mb-4 col-4">
-        <input type="text" th:field="*{webhook}" class="form-control mb-4 col-4">
-        <input type="text" th:field="*{secret}" class="form-control mb-4 col-4">
-        <input type="text" th:field="*{side}" class="form-control mb-4 col-4">
+        <input type="hidden" th:field="*{userId}" />
+        <input type="text"
+               th:field="*{name}"
+               placeholder="Name"
+               class="form-control mb-4 col-4"
+        >
+        <input type="text"
+               th:field="*{webhook}"
+               placeholder="Webhook"
+               class="form-control mb-4 col-4"
+        >
+        <input type="text"
+               th:field="*{secret}"
+               placeholder="Secret"
+               class="form-control mb-4 col-4"
+        >
+        <input type="text"
+               th:field="*{side}"
+               placeholder="Side"
+               class="form-control mb-4 col-4"
+        >
         <button type="submit" class="btn btn-info col-2">Update</button>
     </form>
 
     <hr>
 
-    <a th:href="@{/alerts}">Back to Alert List</a>
+    <a th:href="@{/alerts/{user_id}(user_id=${user.id})}">Back to Alert List</a>
 </div>
 </body>
 </html>
