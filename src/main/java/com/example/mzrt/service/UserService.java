@@ -19,15 +19,14 @@ import static org.springframework.http.HttpStatus.NOT_FOUND;
 public class UserService {
 
     private final UserRepository userRepository;
-    private final RoleRepository roleRepository;
+    private final RoleService roleService;
     private final PasswordEncoder passwordEncoder;
 
     @Autowired
     public UserService(UserRepository userRepository,
-                       RoleRepository roleRepository,
-                       PasswordEncoder passwordEncoder) {
+                       RoleService roleService, PasswordEncoder passwordEncoder) {
         this.userRepository = userRepository;
-        this.roleRepository = roleRepository;
+        this.roleService = roleService;
         this.passwordEncoder = passwordEncoder;
     }
 
@@ -48,8 +47,8 @@ public class UserService {
 
     private void addRole(int userId, String role) {
 
-        Optional<Role> existedRole = roleRepository.findByUserIdAndRole(userId, role);
-        if (existedRole.isEmpty()) roleRepository.save(Role.builder()
+        Optional<Role> existedRole = roleService.findByUserIdAndRole(userId, role);
+        if (existedRole.isEmpty()) roleService.save(Role.builder()
                 .role(role)
                 .userId(userId)
                 .build());
