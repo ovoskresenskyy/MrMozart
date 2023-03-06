@@ -25,13 +25,14 @@ public class OrderService {
         this.orderRepository = orderRepository;
     }
 
-    public Order sendOrder(Alert alert, String ticker) {
+    public Order sendOrder(Alert alert, String ticker, int userId) {
 
         Order order = orderRepository.save(Order.builder()
                 .name(alert.getName() + " " + ticker)
                 .secret(alert.getSecret())
                 .side(alert.getSide())
                 .symbol(ticker.toUpperCase() + "USDT")
+                .userId(userId)
                 .build());
 
         HttpHeaders headers = new HttpHeaders();

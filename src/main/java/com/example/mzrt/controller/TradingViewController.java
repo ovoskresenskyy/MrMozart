@@ -37,17 +37,19 @@ public class TradingViewController {
         Optional<User> user = userService.findByToken(token);
         if (user.isEmpty()) return Order.builder().build();
 
+        int userId = user.get().getId();
+
         if (alertText.equalsIgnoreCase("Stop Trend")) {
-            Optional<Alert> alertShort = alertService.findByUserIdAndName(user.get().getId(), "STS");
-            Optional<Alert> alertLong = alertService.findByUserIdAndName(user.get().getId(), "STL");
+            Optional<Alert> alertShort = alertService.findByUserIdAndName(userId, "STS");
+            Optional<Alert> alertLong = alertService.findByUserIdAndName(userId, "STL");
 
-            alertShort.ifPresent(alert -> orderService.sendOrder(alert, ticker));
+            alertShort.ifPresent(alert -> orderService.sendOrder(alert, ticker, userId));
 
-            return alertLong.isPresent() ? orderService.sendOrder(alertLong.get(), ticker) : Order.builder().build();
+            return alertLong.isPresent() ? orderService.sendOrder(alertLong.get(), ticker, userId) : Order.builder().build();
         } else {
             Optional<Alert> alert = alertService.findByUserIdAndName(user.get().getId(), alertText);
 
-            return alert.isPresent() ? orderService.sendOrder(alert.get(), ticker) : Order.builder().build();
+            return alert.isPresent() ? orderService.sendOrder(alert.get(), ticker, userId) : Order.builder().build();
         }
     }
 }
