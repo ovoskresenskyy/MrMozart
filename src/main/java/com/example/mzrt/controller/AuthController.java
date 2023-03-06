@@ -13,6 +13,6 @@ public class AuthController {
 
     @GetMapping
     public String index() {
-        return "redirect:/list";
+        return "redirect:/users";
     }
 }
