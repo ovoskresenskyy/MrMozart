@@ -12,7 +12,7 @@ import org.springframework.web.bind.annotation.*;
 import java.util.Optional;
 
 @RestController
-@RequestMapping
+@RequestMapping("/alert")
 public class TradingViewController {
 
     private final OrderService orderService;
@@ -26,7 +26,7 @@ public class TradingViewController {
         this.userService = userService;
     }
 
-    @PostMapping(value = "/alert/{token}/{ticker}",
+    @PostMapping(value = "/{token}/{ticker}",
             consumes = {"text/plain", "application/*"},
             headers = "content-type=text/json",
             produces = "application/json")
