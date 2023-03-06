@@ -33,8 +33,8 @@ public class SecurityConfiguration {
         http.csrf().disable()
                 .authorizeHttpRequests((authorize) ->
                         authorize
-                                .requestMatchers("/login", "/register/**", "/alert").permitAll()
-                                .requestMatchers("/orders", "/users", "alerts", "/").hasAnyAuthority("ADMIN", "USER")
+                                .requestMatchers("/login", "/alert", "/alert/**").permitAll()
+                                .requestMatchers("/orders/**", "/users/**", "/alerts/**", "/").hasAnyAuthority("ADMIN", "USER")
                                 .anyRequest().authenticated()
                                 .and()
                 ).formLogin(
