@@ -11,7 +11,7 @@ public class AuthController {
         return "security/login";
     }
 
-    @GetMapping
+    @GetMapping("/")
     public String index() {
         return "redirect:/users";
     }
