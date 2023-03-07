@@ -20,6 +20,11 @@ public class OrderController {
         this.userService = userService;
     }
 
+    @GetMapping
+    public String redirectToUsers() {
+        return "redirect:/users";
+    }
+
     @GetMapping("/{userId}")
     public String getOrders(@PathVariable int userId,
                             Model model) {
