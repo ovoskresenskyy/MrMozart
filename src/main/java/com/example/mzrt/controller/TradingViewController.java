@@ -52,4 +52,11 @@ public class TradingViewController {
             return alert.isPresent() ? orderService.sendOrder(alert.get(), ticker, userId) : Order.builder().build();
         }
     }
+
+    @PostMapping("/test")
+    public Order getTestAlert(){
+        return Order.builder()
+                .name("test")
+                .build();
+    }
 }
