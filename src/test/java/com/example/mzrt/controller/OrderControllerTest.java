@@ -42,6 +42,14 @@ public class OrderControllerTest {
 
     @Test
     @WithMockUser(authorities = {"USER"})
+    public void gettingOrders_withAuthentication_withoutUerId_shouldRedirectUserList() throws Exception {
+        mockMvc.perform(get("/orders"))
+                .andExpect(status().is3xxRedirection())
+                .andExpect(redirectedUrl("/users"));
+    }
+
+    @Test
+    @WithMockUser(authorities = {"USER"})
     public void gettingOrders_withAuthentication_shouldReturnPageOfUserOrders() throws Exception {
         List<Order> orders = new ArrayList<>();
         orders.add(Order.builder().build());
