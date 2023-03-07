@@ -32,13 +32,19 @@ public class UserService {
 
     public User saveUser(User incomingData, String role) {
 
-        String encodedPassword = passwordEncoder.encode(incomingData.getPassword());
-        incomingData.setPassword(encodedPassword);
+        incomingData.setPassword(getPassword(incomingData));
 
         User savedUser = userRepository.save(incomingData);
         addRole(savedUser.getId(), role);
 
         return savedUser;
+    }
+
+    private String getPassword(User userDTO) {
+        if (!userDTO.getPassword().isEmpty()) {
+            return passwordEncoder.encode(userDTO.getPassword());
+        }
+        return findById(userDTO.getId()).getPassword();
     }
 
     public Optional<User> findByToken(String token) {
