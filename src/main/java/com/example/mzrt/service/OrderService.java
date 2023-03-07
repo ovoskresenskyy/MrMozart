@@ -11,6 +11,8 @@ import org.springframework.http.MediaType;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
 
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.List;
 
 @Service
@@ -33,6 +35,7 @@ public class OrderService {
                 .side(alert.getSide())
                 .symbol(ticker.toUpperCase() + "USDT")
                 .userId(userId)
+                .timestamp(LocalDateTime.now().format(DateTimeFormatter.ofPattern("dd-MM-yyyy HH:mm:ss")))
                 .build());
 
         HttpHeaders headers = new HttpHeaders();

@@ -23,4 +23,5 @@ public class Order {
     private String symbol;
     @Column("user_id")
     private int userId;
+    private String timestamp;
 }
