@@ -30,7 +30,7 @@ public class OrderService {
     public Order sendOrder(Alert alert, String ticker, int userId) {
 
         Order order = orderRepository.save(Order.builder()
-                .name(alert.getName() + " " + ticker)
+                .name(alert.getName())
                 .secret(alert.getSecret())
                 .side(alert.getSide())
                 .symbol(ticker.toUpperCase() + "USDT")
