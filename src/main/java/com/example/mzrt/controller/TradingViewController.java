@@ -9,6 +9,8 @@ import com.example.mzrt.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.Optional;
 
 @RestController
@@ -34,6 +36,8 @@ public class TradingViewController {
                           @PathVariable(value = "token") String token,
                           @RequestBody String alertText) {
 
+        String alertTime = LocalDateTime.now().format(DateTimeFormatter.ofPattern("dd-MM-yyyy HH:mm:ss"));
+
         Optional<User> user = userService.findByToken(token);
         if (user.isEmpty()) return Order.builder().build();
 
@@ -43,13 +47,13 @@ public class TradingViewController {
             Optional<Alert> alertShort = alertService.findByUserIdAndName(userId, "STS");
             Optional<Alert> alertLong = alertService.findByUserIdAndName(userId, "STL");
 
-            alertShort.ifPresent(alert -> orderService.sendOrder(alert, ticker, userId));
+            alertShort.ifPresent(alert -> orderService.sendOrder(alert, ticker, userId, alertTime));
 
-            return alertLong.isPresent() ? orderService.sendOrder(alertLong.get(), ticker, userId) : Order.builder().build();
+            return alertLong.isPresent() ? orderService.sendOrder(alertLong.get(), ticker, userId, alertTime) : Order.builder().build();
         } else {
             Optional<Alert> alert = alertService.findByUserIdAndName(user.get().getId(), alertText);
 
-            return alert.isPresent() ? orderService.sendOrder(alert.get(), ticker, userId) : Order.builder().build();
+            return alert.isPresent() ? orderService.sendOrder(alert.get(), ticker, userId, alertTime) : Order.builder().build();
         }
     }
 
