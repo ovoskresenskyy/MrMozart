@@ -32,6 +32,7 @@
             <th>Webhook</th>
             <th>Secret</th>
             <th>Side</th>
+            <th>Pause to start (seconds)</th>
             <th>Action</th>
         </tr>
         </thead>
@@ -43,6 +44,7 @@
             <td th:text="${alert.webhook}"></td>
             <td th:text="${alert.secret}"></td>
             <td th:text="${alert.side}"></td>
+            <td th:text="${alert.pause}"></td>
             <td>
                 <form th:action="@{/alerts/updating/{id}(id=${alert.id})}" method="GET">
                     <input type="hidden" name="_method" value="GET">
