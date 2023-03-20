@@ -5,14 +5,9 @@ import com.example.mzrt.model.Order;
 import com.example.mzrt.repository.OrderRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Sort;
-import org.springframework.http.HttpEntity;
-import org.springframework.http.HttpHeaders;
-import org.springframework.http.MediaType;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
 
-import java.time.LocalDateTime;
-import java.time.format.DateTimeFormatter;
 import java.util.List;
 
 @Service
@@ -29,30 +24,17 @@ public class OrderService {
 
     public Order sendOrder(Alert alert, String ticker, int userId, String alertTime) {
 
-        try {
-            Thread.sleep(alert.getPause() * 1000);
-        } catch (InterruptedException e) {
-            throw new RuntimeException(e);
-        }
+        OrderThreadService orderThreadService = new OrderThreadService(alert,
+                ticker,
+                userId,
+                alertTime,
+                orderRepository,
+                restTemplate);
 
-        Order order = orderRepository.save(Order.builder()
-                .name(alert.getName())
-                .secret(alert.getSecret())
-                .side(alert.getSide())
-                .symbol(ticker.toUpperCase() + "USDT")
-                .userId(userId)
-                .timestamp(alertTime)
-                .timestampSent(LocalDateTime.now().format(DateTimeFormatter.ofPattern("dd-MM-yyyy HH:mm:ss")))
-                .build());
+        Thread t = new Thread(orderThreadService);
+        t.start();
 
-        HttpHeaders headers = new HttpHeaders();
-        headers.setContentType(MediaType.APPLICATION_JSON);
-        HttpEntity<Order> entity = new HttpEntity<>(order, headers);
-
-        System.out.println(order);
-        return restTemplate.postForObject(alert.getWebhook(),
-                entity,
-                Order.class);
+        return orderThreadService.getOrder();
     }
 
     public List<Order> findByUserId(int userId) {
