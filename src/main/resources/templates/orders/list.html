@@ -15,7 +15,25 @@
     <h3>
         User: <span th:text="${user.name}"></span>
     </h3>
-    <a th:href="@{/users}" class="btn btn-primary btn-sm mb-3"> < Back to main menu</a>
+
+
+    <table>
+        <tr>
+            <td>
+                <form th:action="@{/users}" method="GET">
+                    <input type="hidden" name="_method" value="GET">
+                    <button class="btn btn-primary" type="submit"> < Back to main menu</button>
+                </form>
+            </td>
+            <td>
+                <form th:action="@{/orders/{user_id}(user_id=${user.id})}" method="POST">
+                    <input type="hidden" name="_method" value="DELETE">
+                    <button class="btn btn-danger" type="submit">Delete all orders</button>
+                </form>
+            </td>
+        </tr>
+    </table>
+
     <table style="width:80%" border="1" class="table table-striped table-responsive-md">
         <thead>
         <tr>
