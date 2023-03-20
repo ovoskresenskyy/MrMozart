@@ -23,4 +23,5 @@ public class Alert {
     private String side;
     @Column("user_id")
     private int userId;
+    private int pause;
 }
