@@ -24,4 +24,6 @@ public class Order {
     @Column("user_id")
     private int userId;
     private String timestamp;
+    @Column("timestamp_sent")
+    private String timestampSent;
 }

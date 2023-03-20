@@ -27,7 +27,13 @@ public class OrderService {
         this.orderRepository = orderRepository;
     }
 
-    public Order sendOrder(Alert alert, String ticker, int userId) {
+    public Order sendOrder(Alert alert, String ticker, int userId, String alertTime) {
+
+        try {
+            Thread.sleep(alert.getPause() * 1000);
+        } catch (InterruptedException e) {
+            throw new RuntimeException(e);
+        }
 
         Order order = orderRepository.save(Order.builder()
                 .name(alert.getName())
@@ -35,7 +41,8 @@ public class OrderService {
                 .side(alert.getSide())
                 .symbol(ticker.toUpperCase() + "USDT")
                 .userId(userId)
-                .timestamp(LocalDateTime.now().format(DateTimeFormatter.ofPattern("dd-MM-yyyy HH:mm:ss")))
+                .timestamp(alertTime)
+                .timestampSent(LocalDateTime.now().format(DateTimeFormatter.ofPattern("dd-MM-yyyy HH:mm:ss")))
                 .build());
 
         HttpHeaders headers = new HttpHeaders();

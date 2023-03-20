@@ -20,7 +20,8 @@
         <thead>
         <tr>
             <th>ID</th>
-            <th>Timestamp</th>
+            <th>Alert time</th>
+            <th>Sent</th>
             <th>Name</th>
             <th>Secret</th>
             <th>Side</th>
@@ -32,6 +33,7 @@
         <tr th:each="order: ${orders}">
             <td th:text="${order.id}"></td>
             <td th:text="${order.timestamp}"></td>
+            <td th:text="${order.timestampSent}"></td>
             <td th:text="${order.name}"></td>
             <td th:text="${order.secret}"></td>
             <td th:text="${order.side}"></td>
