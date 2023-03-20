@@ -2,7 +2,10 @@ package com.example.mzrt.repository;
 
 import com.example.mzrt.model.Order;
 import org.springframework.data.domain.Sort;
+import org.springframework.data.jdbc.repository.query.Modifying;
+import org.springframework.data.jdbc.repository.query.Query;
 import org.springframework.data.repository.CrudRepository;
+import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;
@@ -11,4 +14,8 @@ import java.util.List;
 public interface OrderRepository extends CrudRepository<Order, Integer> {
 
     List<Order> findByUserId(int userId, Sort sort);
+
+    @Modifying
+    @Query("DELETE FROM mzrt_order WHERE user_id = :usrId")
+    int deleteOrdersByUserId(@Param("usrId") int userId);
 }

@@ -4,6 +4,7 @@ import com.example.mzrt.service.OrderService;
 import com.example.mzrt.service.UserService;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -31,5 +32,11 @@ public class OrderController {
         model.addAttribute("user", userService.findById(userId));
         model.addAttribute("orders", orderService.findByUserId(userId));
         return "orders/list";
+    }
+
+    @DeleteMapping("/{userId}")
+    public String deleteAllOrders(@PathVariable int userId) {
+        orderService.deleteOrdersByUserId(userId);
+        return "redirect:/orders/" + userId;
     }
 }

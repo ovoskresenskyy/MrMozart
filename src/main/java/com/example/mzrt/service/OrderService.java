@@ -40,4 +40,8 @@ public class OrderService {
     public List<Order> findByUserId(int userId) {
         return orderRepository.findByUserId(userId, Sort.by(Sort.Direction.DESC, "id"));
     }
+
+    public void deleteOrdersByUserId(int userId) {
+        orderRepository.deleteOrdersByUserId(userId);
+    }
 }
