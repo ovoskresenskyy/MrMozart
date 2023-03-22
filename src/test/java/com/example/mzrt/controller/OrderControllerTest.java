@@ -16,7 +16,9 @@ import java.util.ArrayList;
 import java.util.List;
 
 import static org.mockito.ArgumentMatchers.anyInt;
+import static org.mockito.Mockito.doNothing;
 import static org.mockito.Mockito.when;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.delete;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
@@ -63,4 +65,16 @@ public class OrderControllerTest {
                 .andExpect(model().attributeExists("user"))
                 .andExpect(model().attributeExists("orders"));
     }
+
+    @Test
+    @WithMockUser(authorities = {"USER"})
+    public void deletingOrders_withAuthentication_shouldReturnEmptyListOfOrders() throws Exception {
+
+        doNothing().when(orderService).deleteOrdersByUserId(anyInt());
+
+        mockMvc.perform(delete("/orders/{id}", anyInt()))
+                .andExpect(status().is3xxRedirection())
+                .andExpect(redirectedUrlPattern("/orders/**"));
+    }
+
 }
