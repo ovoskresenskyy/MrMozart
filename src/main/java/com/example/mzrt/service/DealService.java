@@ -6,6 +6,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.web.server.ResponseStatusException;
 
+import java.util.List;
 import java.util.Optional;
 import java.util.OptionalDouble;
 import java.util.stream.DoubleStream;
@@ -34,6 +35,10 @@ public class DealService {
                 .ticker(ticker)
                 .side(side)
                 .build()));
+    }
+
+    public List<Deal> getByUserIdAndStrategy(int userId, String strategy) {
+        return dealRepository.getByUserIdAndStrategy(userId, strategy);
     }
 
     public void setPrice(Deal deal, int alertNumber, int price) {
