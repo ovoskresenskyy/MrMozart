@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>List of orders</title>
+    <meta http-equiv="refresh" content="10">
+    <link rel="stylesheet"
+          href="https://stackpath.bootstrapcdn.com/bootstrap/4.1.3/css/bootstrap.min.css"
+          integrity="sha384-MCw98/SFnGE8fJT3GXwEOngsV7Zt27NXFoaoApmYm81iuXoPkFOJwJ8ERdknLPMO"
+          crossorigin="anonymous">
+</head>
+<body>
+<div>
+    <h1>Deals</h1>
+    <h3>
+        User: <span th:text="${user.name}"></span>
+    </h3>
+    <h3>
+        Strategy: <span th:text="${strategy}"></span>
+    </h3>
+
+
+    <table>
+        <tr>
+            <td>
+                <form th:action="@{/strategies/{user_id}(user_id=${user.id}}" method="GET">
+                    <input type="hidden" name="_method" value="GET">
+                    <button class="btn btn-primary" type="submit"> < Back to strategies</button>
+                </form>
+            </td>
+            <td>
+                <form th:action="@{/deals/{user_id}/{strategy}(user_id=${user.id},strategy=${strategy})}" method="POST">
+                    <input type="hidden" name="_method" value="DELETE">
+                    <button class="btn btn-danger" type="submit">Delete all deals</button>
+                </form>
+            </td>
+        </tr>
+    </table>
+
+    <table style="width:80%" border="1" class="table table-striped table-responsive-md">
+        <thead>
+        <tr>
+            <th>ID</th>
+            <th>Ticker</th>
+            <th>Side</th>
+            <th>1 price</th>
+            <th>2 price</th>
+            <th>3 price</th>
+            <th>4 price</th>
+            <th>5 price</th>
+            <th>Average price</th>
+            <th>Opened</th>
+        </tr>
+        </thead>
+
+        <tbody>
+        <tr th:each="deal: ${deals}">
+            <td th:text="${deal.id}"></td>
+            <td th:text="${deal.ticker}"></td>
+            <td th:text="${deal.side}"></td>
+            <td th:text="${deal.firstPrice}"></td>
+            <td th:text="${deal.secondPrice}"></td>
+            <td th:text="${deal.thirdPrice}"></td>
+            <td th:text="${deal.fourthPrice}"></td>
+            <td th:text="${deal.fifthPrice}"></td>
+            <td th:text="${deal.averagePrice}"></td>
+            <td th:text="${deal.open}"></td>
+        </tr>
+        </tbody>
+    </table>
+</div>
+</body>
+</html>
