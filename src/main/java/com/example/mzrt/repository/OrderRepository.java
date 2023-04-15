@@ -15,6 +15,8 @@ public interface OrderRepository extends CrudRepository<Order, Integer> {
 
     List<Order> findByUserId(int userId, Sort sort);
 
+    List<Order> findByUserIdAndStrategy(int userId, String strategy, Sort sort);
+
     @Modifying
     @Query("DELETE FROM mzrt_order WHERE user_id = :usrId")
     int deleteOrdersByUserId(@Param("usrId") int userId);
