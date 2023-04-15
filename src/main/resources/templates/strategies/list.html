@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>List of orders</title>
+    <meta http-equiv="refresh" content="10">
+    <link rel="stylesheet"
+          href="https://stackpath.bootstrapcdn.com/bootstrap/4.1.3/css/bootstrap.min.css"
+          integrity="sha384-MCw98/SFnGE8fJT3GXwEOngsV7Zt27NXFoaoApmYm81iuXoPkFOJwJ8ERdknLPMO"
+          crossorigin="anonymous">
+</head>
+<body>
+<div>
+    <h1>Strategies</h1>
+    <h3>
+        User: <span th:text="${user.name}"></span>
+    </h3>
+
+    <table>
+        <tr>
+            <td>
+                <form th:action="@{/users}" method="GET">
+                    <input type="hidden" name="_method" value="GET">
+                    <button class="btn btn-primary" type="submit"> < Back to main menu</button>
+                </form>
+            </td>
+        </tr>
+    </table>
+
+    <table style="width:80%" border="1" class="table table-striped table-responsive-md">
+        <thead>
+        <tr>
+            <th>Name</th>
+            <th>Deals</th>
+            <th>Orders</th>
+        </tr>
+        </thead>
+
+        <tbody>
+        <tr th:each="strategy: ${strategies}">
+            <td th:text="${strategy}"></td>
+            <td>
+                <form th:action="@{/deals/{user_id}/{strategy}(user_id=${user.id},strategy=${strategy})}" method="GET">
+                    <input type="hidden" name="_method" value="GET">
+                    <button class="btn btn-primary" type="submit">Show deals</button>
+                </form>
+            </td>
+            <td>
+                <form th:action="@{/orders/{user_id}/{strategy}(user_id=${user.id},strategy=${strategy})}" method="GET">
+                    <input type="hidden" name="_method" value="GET">
+                    <button class="btn btn-primary" type="submit">Show orders</button>
+                </form>
+            </td>
+        </tr>
+        </tbody>
+    </table>
+</div>
+</body>
+</html>
