@@ -93,7 +93,7 @@ public class OrderService {
                                    int userId,
                                    String alertTime) {
 
-        Deal deal = dealService.getOpenedDealByTicker(userId, ticker, alert.getSide());
+        Deal deal = dealService.getOpenedDealByTicker(userId, strategy.name.toLowerCase(), ticker, alert.getSide());
         if (dealService.orderIsPresent(deal, alert.getNumber())) return Order.builder().build();
 
         Order order = getOrderWithoutDeal(
