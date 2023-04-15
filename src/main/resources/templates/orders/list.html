@@ -20,7 +20,7 @@
     <table>
         <tr>
             <td>
-                <form th:action="@{/users}" method="GET">
+                <form th:action="@{/strategies/{user_id}(user_id=${user.id})}" method="GET">
                     <input type="hidden" name="_method" value="GET">
                     <button class="btn btn-primary" type="submit"> < Back to main menu</button>
                 </form>
