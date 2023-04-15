@@ -34,6 +34,15 @@ public class OrderController {
         return "orders/list";
     }
 
+    @GetMapping("/{userId}/{strategy}")
+    public String getOrdersByStrategy(@PathVariable int userId,
+                                      @PathVariable String strategy,
+                            Model model) {
+        model.addAttribute("user", userService.findById(userId));
+        model.addAttribute("orders", orderService.findByUserIdAndStrategy(userId, strategy.toLowerCase()));
+        return "orders/list";
+    }
+
     @DeleteMapping("/{userId}")
     public String deleteAllOrders(@PathVariable int userId) {
         orderService.deleteOrdersByUserId(userId);
