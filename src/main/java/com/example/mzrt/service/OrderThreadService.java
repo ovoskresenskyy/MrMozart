@@ -1,5 +1,6 @@
 package com.example.mzrt.service;
 
+import com.example.mzrt.enums.Strategy;
 import com.example.mzrt.model.Alert;
 import com.example.mzrt.model.Order;
 import com.example.mzrt.repository.OrderRepository;
@@ -9,9 +10,6 @@ import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
 import org.springframework.web.client.RestTemplate;
 
-import java.time.LocalDateTime;
-import java.time.format.DateTimeFormatter;
-
 @Data
 public class OrderThreadService implements Runnable {
 
@@ -19,23 +17,25 @@ public class OrderThreadService implements Runnable {
     private String ticker;
     private int userId;
     private String alertTime;
-    private OrderRepository orderRepository;
+    private OrderService orderService;
     private RestTemplate restTemplate;
+    private Strategy strategy;
     private Order order;
 
     public OrderThreadService(Alert alert,
                               String ticker,
                               int userId,
                               String alertTime,
-                              OrderRepository orderRepository,
-                              RestTemplate restTemplate) {
+                              OrderService orderService,
+                              RestTemplate restTemplate,
+                              Strategy strategy) {
         this.alert = alert;
-        this.ticker = ticker;
+        this.ticker = ticker.toUpperCase() + "USDT";
         this.userId = userId;
         this.alertTime = alertTime;
-        this.orderRepository = orderRepository;
+        this.orderService = orderService;
         this.restTemplate = restTemplate;
-
+        this.strategy = strategy;
     }
 
     @Override
@@ -46,24 +46,21 @@ public class OrderThreadService implements Runnable {
             throw new RuntimeException(e);
         }
 
-        Order order = orderRepository.save(Order.builder()
-                .name(alert.getName())
-                .secret(alert.getSecret())
-                .side(alert.getSide())
-                .symbol(ticker.toUpperCase() + "USDT")
-                .userId(userId)
-                .timestamp(alertTime)
-                .timestampSent(LocalDateTime.now().format(DateTimeFormatter.ofPattern("dd-MM-yyyy HH:mm:ss")))
-                .build());
+        Order order = orderService.getOrderByStrategy(strategy,
+                alert,
+                ticker,
+                userId,
+                alertTime);
 
+        if (!orderService.orderIsEmpty(order)) postOrder(order);
+    }
+
+    private void postOrder(Order order) {
         HttpHeaders headers = new HttpHeaders();
         headers.setContentType(MediaType.APPLICATION_JSON);
-        HttpEntity<Order> entity = new HttpEntity<>(order, headers);
 
-        System.out.println(order);
         this.order = restTemplate.postForObject(alert.getWebhook(),
-                entity,
+                new HttpEntity<>(order, headers),
                 Order.class);
-
     }
 }
