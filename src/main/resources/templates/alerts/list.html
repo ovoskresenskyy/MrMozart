@@ -29,6 +29,7 @@
         <tr>
             <th>ID</th>
             <th>Name</th>
+            <th>Number (optional)</th>
             <th>Webhook</th>
             <th>Secret</th>
             <th>Side</th>
@@ -41,6 +42,7 @@
         <tr th:each="alert: ${alerts}">
             <td th:text="${alert.id}"></td>
             <td th:text="${alert.name}"></td>
+            <td th:text="${alert.number}"></td>
             <td th:text="${alert.webhook}"></td>
             <td th:text="${alert.secret}"></td>
             <td th:text="${alert.side}"></td>
