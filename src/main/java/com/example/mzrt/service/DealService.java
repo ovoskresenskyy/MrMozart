@@ -28,10 +28,18 @@ public class DealService {
         return dealRepository.findById(id).orElseThrow(() -> new ResponseStatusException(NOT_FOUND));
     }
 
-    public Deal getOpenedDealByTicker(int userId, String ticker, String side) {
-        Optional<Deal> existedDeal = dealRepository.getByUserIdAndTickerAndSideAndOpenTrue(userId, ticker, side);
+    public Deal getOpenedDealByTicker(int userId,
+                                      String strategy,
+                                      String ticker,
+                                      String side) {
+
+        Optional<Deal> existedDeal = dealRepository.getByUserIdAndStrategyAndTickerAndSideAndOpenTrue(userId,
+                strategy,
+                ticker,
+                side);
         return existedDeal.orElseGet(() -> dealRepository.save(Deal.builder()
                 .userId(userId)
+                .strategy(strategy)
                 .ticker(ticker)
                 .side(side)
                 .build()));
@@ -52,7 +60,7 @@ public class DealService {
         calculateAveragePrice(deal);
     }
 
-    private void calculateAveragePrice(Deal deal){
+    private void calculateAveragePrice(Deal deal) {
         OptionalDouble average = DoubleStream.of(deal.getFifthPrice(),
                         deal.getSecondPrice(),
                         deal.getThirdPrice(),

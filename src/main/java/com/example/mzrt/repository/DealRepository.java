@@ -10,7 +10,10 @@ import java.util.Optional;
 @Repository
 public interface DealRepository extends CrudRepository<Deal, Integer> {
 
-    Optional<Deal> getByUserIdAndTickerAndSideAndOpenTrue(int userId, String ticker, String side);
+    Optional<Deal> getByUserIdAndStrategyAndTickerAndSideAndOpenTrue(int userId,
+                                                                     String strategy,
+                                                                     String ticker,
+                                                                     String side);
 
     List<Deal> getByUserIdAndStrategy(int userId, String strategy);
 }
