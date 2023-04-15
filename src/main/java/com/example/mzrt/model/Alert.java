@@ -18,6 +18,7 @@ public class Alert {
     @Id
     private int id;
     private String name;
+    private int number;
     private String webhook;
     private String secret;
     private String side;
