@@ -47,8 +47,8 @@ public class UserService {
         return findById(userDTO.getId()).getPassword();
     }
 
-    public Optional<User> findByToken(String token) {
-        return userRepository.findByToken(token);
+    public User findByToken(String token) {
+        return userRepository.findByToken(token).orElseThrow(() -> new ResponseStatusException(NOT_FOUND));
     }
 
     private void addRole(int userId, String role) {
