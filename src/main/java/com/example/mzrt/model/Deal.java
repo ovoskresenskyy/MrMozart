@@ -18,6 +18,7 @@ public class Deal {
     @Id
     private int id;
     private int userId;
+    private String strategy;
     private String ticker;
     private String side;
     @Column("first_price")
