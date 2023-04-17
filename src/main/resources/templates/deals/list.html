@@ -23,7 +23,7 @@
     <table>
         <tr>
             <td>
-                <form th:action="@{/strategies/{user_id}(user_id=${user.id}}" method="GET">
+                <form th:action="@{/strategies/{user_id}(user_id=${user.id})}" method="GET">
                     <input type="hidden" name="_method" value="GET">
                     <button class="btn btn-primary" type="submit"> < Back to strategies</button>
                 </form>
@@ -50,6 +50,7 @@
             <th>5 price</th>
             <th>Average price</th>
             <th>Opened</th>
+            <th>Orders</th>
         </tr>
         </thead>
 
@@ -65,6 +66,12 @@
             <td th:text="${deal.fifthPrice}"></td>
             <td th:text="${deal.averagePrice}"></td>
             <td th:text="${deal.open}"></td>
+            <td>
+                <form th:action="@{/orders/{user_id}/deal/{deal_id}(user_id=${user.id},deal_id=${deal.id})}" method="GET">
+                    <input type="hidden" name="_method" value="GET">
+                    <button class="btn btn-primary" type="submit">Show orders</button>
+                </form>
+            </td>
         </tr>
         </tbody>
     </table>
