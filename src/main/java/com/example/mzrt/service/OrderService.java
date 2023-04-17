@@ -87,7 +87,7 @@ public class OrderService {
                     userId,
                     alertTime,
                     2,
-                    999);
+                    0);
         };
     }
 
@@ -97,8 +97,15 @@ public class OrderService {
                                    int userId,
                                    String alertTime) {
 
-        Deal deal = dealService.getOpenedDealByTicker(userId, strategy.name.toLowerCase(), ticker, alert.getSide());
-        if (dealService.orderIsPresent(deal, alert.getNumber())) return Order.builder().build();
+        Deal deal = dealService.getOpenedDealByTicker(userId, strategy.name.toLowerCase(), ticker);
+
+        double price = 0;
+        if (alert.getNumber() != 0) { //TODO: Need to remake this shit
+            if (dealService.orderIsPresent(deal, alert.getNumber())) return Order.builder().build();
+
+            BinanceDataHolder binanceDataHolder = BinanceDataHolder.getInstance();
+            price = binanceDataHolder.getByTicker(ticker).getPrice();
+        }
 
         Order order = getOrderWithoutDeal(
                 strategy,
@@ -107,8 +114,9 @@ public class OrderService {
                 userId,
                 alertTime,
                 deal.getId(),
-                999);
-        dealService.setPrice(deal, alert.getNumber(), order.getPrice());
+                price);
+
+        if (alert.getNumber() != 0) dealService.setPrice(deal, alert.getNumber(), price); //TODO: Need to remake this shit
 
         return order;
     }
@@ -119,7 +127,7 @@ public class OrderService {
                                       int userId,
                                       String alertTime,
                                       int dealId,
-                                      int price) {
+                                      double price) {
 
         return orderRepository.save(
                 Order.builder()
