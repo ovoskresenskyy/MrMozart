@@ -1,10 +1,10 @@
 package com.example.mzrt.controller.TradingView;
 
 import com.example.mzrt.enums.Strategy;
+import com.example.mzrt.model.Alert;
+import com.example.mzrt.model.Deal;
 import com.example.mzrt.model.Order;
-import com.example.mzrt.service.AlertService;
-import com.example.mzrt.service.OrderService;
-import com.example.mzrt.service.UserService;
+import com.example.mzrt.service.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
@@ -18,12 +18,17 @@ public class BlackFlagController {
     private final OrderService orderService;
     private final AlertService alertService;
     private final UserService userService;
+    private final DealService dealService;
 
     @Autowired
-    public BlackFlagController(OrderService orderService, AlertService alertService, UserService userService) {
+    public BlackFlagController(OrderService orderService,
+                               AlertService alertService,
+                               UserService userService,
+                               DealService dealService) {
         this.orderService = orderService;
         this.alertService = alertService;
         this.userService = userService;
+        this.dealService = dealService;
     }
 
     @PostMapping(value = "/{token}/{ticker}",
@@ -38,7 +43,9 @@ public class BlackFlagController {
 
         int userId = userService.findByToken(token).getId();
 
-        if (message.equalsIgnoreCase("Stop Line Change")) return sendStopTrend(userId, ticker, alertTime);
+        if (message.equalsIgnoreCase("Stop Line Change")) return sendStopTrend(userId,
+                ticker,
+                alertTime);
 
         String side = getSide(message);
         if (side.equals("")) return Order.builder().build();
@@ -46,7 +53,7 @@ public class BlackFlagController {
         String alertNumber = getAlertNumber(message);
         if (alertNumber.equals("")) return Order.builder().build();
 
-        return orderService.sendOrder(alertService.findByUserIdAndName(userId,side + alertNumber),
+        return orderService.sendOrder(alertService.findByUserIdAndName(userId, alertNumber + side),
                 ticker,
                 userId,
                 alertTime,
@@ -59,11 +66,16 @@ public class BlackFlagController {
                 userId,
                 alertTime,
                 Strategy.BLACK_FLAG);
-        return orderService.sendOrder(alertService.findByUserIdAndName(userId, "STL"),
+        orderService.sendOrder(alertService.findByUserIdAndName(userId, "STL"),
                 ticker,
                 userId,
                 alertTime,
                 Strategy.BLACK_FLAG);
+
+        DealThreadService dealThreadService = new DealThreadService(dealService, userId, ticker);
+        dealThreadService.closeDeal();
+
+        return Order.builder().build();
     }
 
     private String getSide(String message) {
@@ -77,5 +89,12 @@ public class BlackFlagController {
         if (index == 0) return "";
 
         return String.valueOf(message.charAt(index + 3));
+    }
+
+    @PostMapping("/test")
+    public Order getTestAlert() {
+        return Order.builder()
+                .name("test")
+                .build();
     }
 }
