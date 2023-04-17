@@ -34,8 +34,18 @@ public class SecurityConfiguration {
 //        http
                 .authorizeHttpRequests((authorize) ->
                         authorize
-                                .requestMatchers("/login", "/alert", "/alert/**").permitAll()
-                                .requestMatchers("/orders/**", "/users/**", "/alerts/**", "/").hasAnyAuthority("ADMIN", "USER")
+                                .requestMatchers("/login",
+                                        "/alert",
+                                        "/alert/**",
+                                        "/bf",
+                                        "/bf/**"
+                                ).permitAll()
+                                .requestMatchers("/orders/**",
+                                        "/users/**",
+                                        "/alerts/**",
+                                        "/strategies/**",
+                                        "/deals/**",
+                                        "/").hasAnyAuthority("ADMIN", "USER")
                                 .anyRequest().authenticated()
                                 .and()
                 ).formLogin(
