@@ -32,7 +32,7 @@ public class DealController {
                            @PathVariable String strategy,
                            Model model) {
         model.addAttribute("user", userService.findById(userId));
-        model.addAttribute("deals", dealService.getByUserIdAndStrategy(userId, strategy));
+        model.addAttribute("deals", dealService.getByUserIdAndStrategy(userId, strategy.toLowerCase()));
         return "deals/list";
     }
 

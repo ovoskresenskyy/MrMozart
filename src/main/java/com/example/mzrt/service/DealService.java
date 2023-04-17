@@ -7,6 +7,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.server.ResponseStatusException;
 
 import java.util.List;
+import java.util.Objects;
 import java.util.Optional;
 import java.util.OptionalDouble;
 import java.util.stream.DoubleStream;
@@ -28,20 +29,22 @@ public class DealService {
         return dealRepository.findById(id).orElseThrow(() -> new ResponseStatusException(NOT_FOUND));
     }
 
+    public Deal save(Deal deal) {
+        return dealRepository.save(deal);
+    }
+
     public Deal getOpenedDealByTicker(int userId,
                                       String strategy,
-                                      String ticker,
-                                      String side) {
+                                      String ticker) {
 
-        Optional<Deal> existedDeal = dealRepository.getByUserIdAndStrategyAndTickerAndSideAndOpenTrue(userId,
+        Optional<Deal> existedDeal = dealRepository.getByUserIdAndStrategyAndTickerAndOpenTrue(userId,
                 strategy,
-                ticker,
-                side);
+                ticker);
         return existedDeal.orElseGet(() -> dealRepository.save(Deal.builder()
                 .userId(userId)
                 .strategy(strategy)
                 .ticker(ticker)
-                .side(side)
+                .open(true)
                 .build()));
     }
 
@@ -49,7 +52,7 @@ public class DealService {
         return dealRepository.getByUserIdAndStrategy(userId, strategy);
     }
 
-    public void setPrice(Deal deal, int alertNumber, int price) {
+    public void setPrice(Deal deal, int alertNumber, double price) {
         switch (alertNumber) {
             case 1 -> deal.setFirstPrice(price);
             case 2 -> deal.setSecondPrice(price);
@@ -67,6 +70,7 @@ public class DealService {
                         deal.getFourthPrice(),
                         deal.getFifthPrice())
                 .filter(price -> price != 0)
+                .filter(Objects::nonNull)
                 .average();
 
         deal.setAveragePrice(average.isPresent() ? average.getAsDouble() : 0);
