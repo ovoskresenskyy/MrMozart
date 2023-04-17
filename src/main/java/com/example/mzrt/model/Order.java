@@ -30,5 +30,5 @@ public class Order {
     private String timestamp;
     @Column("timestamp_sent")
     private String timestampSent;
-    private int price;
+    private double price;
 }
