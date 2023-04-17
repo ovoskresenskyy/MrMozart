@@ -48,6 +48,10 @@ public class OrderService {
         return orderRepository.findByUserId(userId, Sort.by(Sort.Direction.DESC, "id"));
     }
 
+    public List<Order> findByDealId(int dealId) {
+        return orderRepository.findByDealId(dealId, Sort.by(Sort.Direction.DESC, "id"));
+    }
+
     public List<Order> findByUserIdAndStrategy(int userId, String strategy) {
         return orderRepository.findByUserIdAndStrategy(
                 userId,

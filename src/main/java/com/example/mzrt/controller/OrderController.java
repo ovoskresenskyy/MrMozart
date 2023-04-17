@@ -26,11 +26,12 @@ public class OrderController {
         return "redirect:/users";
     }
 
-    @GetMapping("/{userId}")
-    public String getOrders(@PathVariable int userId,
+    @GetMapping("/{userId}/deal/{dealId}")
+    public String getOrdersByDeal(@PathVariable int userId,
+                                  @PathVariable int dealId,
                             Model model) {
         model.addAttribute("user", userService.findById(userId));
-        model.addAttribute("orders", orderService.findByUserId(userId));
+        model.addAttribute("orders", orderService.findByDealId(dealId));
         return "orders/list";
     }
 
