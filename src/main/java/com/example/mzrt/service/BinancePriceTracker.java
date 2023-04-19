@@ -2,13 +2,13 @@ package com.example.mzrt.service;
 
 import com.binance.connector.futures.client.impl.UMWebsocketClientImpl;
 
-public class BinancePriceProvider {
+public class BinancePriceTracker {
 
     private double price;
     private int streamId;
     private final UMWebsocketClientImpl client;
 
-    public BinancePriceProvider() {
+    public BinancePriceTracker() {
         this.client = new UMWebsocketClientImpl();
     }
 

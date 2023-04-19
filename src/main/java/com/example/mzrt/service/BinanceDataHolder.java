@@ -7,7 +7,7 @@ public class BinanceDataHolder {
 
     private static BinanceDataHolder instance;
 
-    public final Map<String, BinancePriceProvider> holder = new HashMap<>();
+    public final Map<String, BinancePriceTracker> holder = new HashMap<>();
 
     public static synchronized BinanceDataHolder getInstance() {
         if (instance == null) {
@@ -16,10 +16,10 @@ public class BinanceDataHolder {
         return instance;
     }
 
-    public BinancePriceProvider getByTicker(String ticker) {
+    public BinancePriceTracker getByTicker(String ticker) {
         if (holder.containsKey(ticker)) return holder.get(ticker);
 
-        BinancePriceProvider binancePriceProvider = new BinancePriceProvider();
+        BinancePriceTracker binancePriceProvider = new BinancePriceTracker();
         binancePriceProvider.startTracking(ticker);
         holder.put(ticker, binancePriceProvider);
         return binancePriceProvider;
