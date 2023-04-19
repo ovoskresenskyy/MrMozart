@@ -112,7 +112,7 @@ public class OrderService {
                     ticker,
                     userId,
                     alertTime);
-            case MOZART -> getOrderWithoutDeal(
+            case MOZART -> getOrder(
                     strategy,
                     alert,
                     ticker,
@@ -147,7 +147,7 @@ public class OrderService {
             price = binanceDataHolder.getByTicker(ticker).getPrice();
         }
 
-        Order order = getOrderWithoutDeal(
+        Order order = getOrder(
                 strategy,
                 alert,
                 ticker,
@@ -161,13 +161,13 @@ public class OrderService {
         return order;
     }
 
-    private Order getOrderWithoutDeal(Strategy strategy,
-                                      Alert alert,
-                                      String ticker,
-                                      int userId,
-                                      String alertTime,
-                                      int dealId,
-                                      double price) {
+    private Order getOrder(Strategy strategy,
+                           Alert alert,
+                           String ticker,
+                           int userId,
+                           String alertTime,
+                           int dealId,
+                           double price) {
 
         return orderRepository.save(
                 Order.builder()
