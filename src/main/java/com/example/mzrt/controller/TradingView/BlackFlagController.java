@@ -1,7 +1,6 @@
 package com.example.mzrt.controller.TradingView;
 
 import com.example.mzrt.enums.Strategy;
-import com.example.mzrt.model.Alert;
 import com.example.mzrt.model.Deal;
 import com.example.mzrt.model.Order;
 import com.example.mzrt.service.*;
@@ -10,6 +9,7 @@ import org.springframework.web.bind.annotation.*;
 
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
+import java.util.Optional;
 
 @RestController
 @RequestMapping("/bf")
@@ -57,7 +57,9 @@ public class BlackFlagController {
         String alertNumber = getAlertNumber(message);
         if (alertNumber.equals("")) return Order.builder().build();
 
-        return orderService.sendOrder(alertService.findByUserIdAndName(userId, alertNumber + side),
+        return orderService.sendOpeningOrder(alertService.findByUserIdAndName(
+                        userId,
+                        alertNumber + side),
                 ticker,
                 userId,
                 alertTime,
@@ -67,18 +69,25 @@ public class BlackFlagController {
     private Order sendStopLoss(int userId, String ticker, String alertTime) {
         Optional<Deal> openedDealByTicker = dealService.getOpenedDealByTicker(
                 userId,
-                alertTime,
-                Strategy.BLACK_FLAG);
-        orderService.sendOrder(alertService.findByUserIdAndName(userId, "STL"),
+                Strategy.BLACK_FLAG.name.toLowerCase(),
+                ticker);
+
+        if (openedDealByTicker.isEmpty()) return Order.builder().build();
+
+        Deal deal = openedDealByTicker.get();
+        Order order = orderService.sendClosingOrder(alertService.findByUserIdAndName(
+                        userId,
+                        deal.getSide().equals("sell") ? "STS" : "STL"),
                 ticker,
                 userId,
                 alertTime,
-                Strategy.BLACK_FLAG);
+                Strategy.BLACK_FLAG,
+                deal.getId());
 
-        DealThreadService dealThreadService = new DealThreadService(dealService, userId, ticker);
-        dealThreadService.closeDeal();
+        deal.setOpen(false);
+        dealService.save(deal);
 
-        return Order.builder().build();
+        return order;
     }
 
     private String getSide(String message) {
