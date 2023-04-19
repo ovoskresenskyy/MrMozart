@@ -119,3 +119,4 @@ fabric.properties
 /.mvn/wrapper/maven-wrapper.properties
 
 target/
+/logs/binance-java-connector/
