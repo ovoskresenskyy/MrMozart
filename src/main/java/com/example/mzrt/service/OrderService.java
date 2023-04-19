@@ -156,8 +156,10 @@ public class OrderService {
                 deal.getId(),
                 price);
 
-        if (alert.getNumber() != 0) dealService.setPrice(deal, alert.getNumber(), price); //TODO: Need to remake this shit
-
+        if (alert.getNumber() != 0) { //TODO: Need to remake this shit
+            dealService.setPrice(deal, alert.getNumber(), price);
+            binanceDataHolder.startProfitTracker(deal, this, alertService, dealService);
+        }
         return order;
     }
 
