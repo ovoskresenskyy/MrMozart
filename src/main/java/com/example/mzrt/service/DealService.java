@@ -33,19 +33,25 @@ public class DealService {
         return dealRepository.save(deal);
     }
 
-    public Deal getOpenedDealByTicker(int userId,
-                                      String strategy,
-                                      String ticker) {
-
-        Optional<Deal> existedDeal = dealRepository.getByUserIdAndStrategyAndTickerAndOpenTrue(userId,
+    public Optional<Deal> getOpenedDealByTicker(int userId,
+                                                String strategy,
+                                                String ticker) {
+        return dealRepository.getByUserIdAndStrategyAndTickerAndOpenTrue(userId,
                 strategy,
                 ticker);
-        return existedDeal.orElseGet(() -> dealRepository.save(Deal.builder()
+    }
+
+    public Deal getNewDeal(int userId,
+                           String strategy,
+                           String ticker,
+                           String side) {
+        return dealRepository.save(Deal.builder()
                 .userId(userId)
                 .strategy(strategy)
                 .ticker(ticker)
+                .side(side)
                 .open(true)
-                .build()));
+                .build());
     }
 
     public List<Deal> getByUserIdAndStrategy(int userId, String strategy) {
