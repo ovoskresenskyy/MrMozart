@@ -47,7 +47,7 @@ public class BlackFlagController {
 
         int userId = userService.findByToken(token).getId();
 
-        if (message.equalsIgnoreCase("Stop Line Change")) return sendStopTrend(userId,
+        if (message.equalsIgnoreCase("Stop Line Change")) return sendStopLoss(userId,
                 ticker,
                 alertTime);
 
@@ -64,9 +64,8 @@ public class BlackFlagController {
                 Strategy.BLACK_FLAG);
     }
 
-    private Order sendStopTrend(int userId, String ticker, String alertTime) {
-        orderService.sendOrder(alertService.findByUserIdAndName(userId, "STS"),
-                ticker,
+    private Order sendStopLoss(int userId, String ticker, String alertTime) {
+        Optional<Deal> openedDealByTicker = dealService.getOpenedDealByTicker(
                 userId,
                 alertTime,
                 Strategy.BLACK_FLAG);
