@@ -87,6 +87,9 @@ public class BlackFlagController {
         deal.setOpen(false);
         dealService.save(deal);
 
+        BinanceDataHolder dataHolder = BinanceDataHolder.getInstance();
+        dataHolder.stopProfitTracker(deal.getId());
+
         return order;
     }
 
