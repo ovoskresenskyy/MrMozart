@@ -13,6 +13,7 @@ import org.springframework.web.client.RestTemplate;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.List;
+import java.util.Optional;
 
 @Service
 public class OrderService {
@@ -128,13 +129,21 @@ public class OrderService {
                                    int userId,
                                    String alertTime) {
 
-        Deal deal = dealService.getOpenedDealByTicker(userId, strategy.name.toLowerCase(), ticker);
+        Optional<Deal> openedDealByTicker = dealService.getOpenedDealByTicker(userId,
+                strategy.name.toLowerCase(),
+                ticker);
+
+        Deal deal = openedDealByTicker.orElseGet(() -> dealService.getNewDeal(userId,
+                strategy.name.toLowerCase(),
+                ticker,
+                alert.getSide()));
+
+        BinanceDataHolder binanceDataHolder = BinanceDataHolder.getInstance();
 
         double price = 0;
         if (alert.getNumber() != 0) { //TODO: Need to remake this shit
-            if (dealService.orderIsPresent(deal, alert.getNumber())) return Order.builder().build();
-
-            BinanceDataHolder binanceDataHolder = BinanceDataHolder.getInstance();
+            if (dealService.orderIsPresent(deal, alert.getNumber())
+                    || dealService.bestOrderIsPresent(deal, alert.getNumber())) return Order.builder().build();
             price = binanceDataHolder.getByTicker(ticker).getPrice();
         }
 
