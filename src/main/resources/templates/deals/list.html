@@ -46,9 +46,8 @@
             <th>1 price</th>
             <th>2 price</th>
             <th>3 price</th>
-            <th>4 price</th>
-            <th>5 price</th>
             <th>Average price</th>
+            <th>Profit price</th>
             <th>Opened</th>
             <th>Orders</th>
         </tr>
@@ -62,9 +61,8 @@
             <td th:text="${deal.firstPrice}"></td>
             <td th:text="${deal.secondPrice}"></td>
             <td th:text="${deal.thirdPrice}"></td>
-            <td th:text="${deal.fourthPrice}"></td>
-            <td th:text="${deal.fifthPrice}"></td>
             <td th:text="${deal.averagePrice}"></td>
+            <td th:text="${deal.profitPrice}"></td>
             <td th:text="${deal.open}"></td>
             <td>
                 <form th:action="@{/orders/{user_id}/deal/{deal_id}(user_id=${user.id},deal_id=${deal.id})}" method="GET">
