@@ -3,6 +3,7 @@ package com.example.mzrt.service;
 import com.example.mzrt.model.Deal;
 import com.example.mzrt.repository.DealRepository;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.springframework.web.server.ResponseStatusException;
 
@@ -70,7 +71,8 @@ public class DealService {
     }
 
     private void calculateAveragePrice(Deal deal) {
-        OptionalDouble average = DoubleStream.of(deal.getFifthPrice(),
+        OptionalDouble average = DoubleStream.of(
+                        deal.getFirstPrice(),
                         deal.getSecondPrice(),
                         deal.getThirdPrice(),
                         deal.getFourthPrice(),
@@ -103,4 +105,16 @@ public class DealService {
             default -> true;
         };
     }
+
+    public boolean bestOrderIsPresent(Deal deal, int alertNumber) {
+        return switch (alertNumber) {
+            case 1 -> (deal.getSecondPrice() + deal.getThirdPrice() + deal.getFourthPrice() + deal.getFifthPrice()) > 0;
+            case 2 -> (deal.getThirdPrice() + deal.getFourthPrice() + deal.getFifthPrice()) > 0;
+            case 3 -> (deal.getFourthPrice() + deal.getFifthPrice()) > 0;
+            case 4 -> deal.getFifthPrice() > 0;
+            default -> false;
+        };
+    }
+
+
 }
