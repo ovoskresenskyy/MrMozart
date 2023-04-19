@@ -10,27 +10,18 @@ import java.util.Optional;
 public class ProfitTrackerThreadService implements Runnable {
 
     private final BinancePriceTracker binancePriceTracker;
-    private final int userId;
-    private final double profitPrice;
-    private final String ticker;
-    private final String side;
+    private final Deal deal;
     private final DealService dealService;
     private final OrderService orderService;
     private final AlertService alertService;
 
     public ProfitTrackerThreadService(BinancePriceTracker binancePriceTracker,
-                                      int userId,
-                                      double profitPrice,
-                                      String ticker,
-                                      String side,
+                                      Deal deal,
                                       OrderService orderService,
                                       AlertService alertService,
                                       DealService dealService) {
         this.binancePriceTracker = binancePriceTracker;
-        this.userId = userId;
-        this.profitPrice = profitPrice;
-        this.ticker = ticker;
-        this.side = side;
+        this.deal = deal;
         this.orderService = orderService;
         this.alertService = alertService;
         this.dealService = dealService;
@@ -38,38 +29,39 @@ public class ProfitTrackerThreadService implements Runnable {
 
     @Override
     public void run() {
+        String side = deal.getSide();
         if (side.equals("sell")) shortTakeProfit();
         else if (side.equals("buy")) longTakeProfit();
     }
 
     private void shortTakeProfit() {
         boolean takeProfit = false;
-        while (!takeProfit) takeProfit = binancePriceTracker.getPrice() <= profitPrice;
+        while (!takeProfit) takeProfit = binancePriceTracker.getPrice() <= deal.getProfitPrice();
         sendTakeProfit("STP5",
                 LocalDateTime.now().format(DateTimeFormatter.ofPattern("dd-MM-yyyy HH:mm:ss")));
     }
 
     private void longTakeProfit() {
         boolean takeProfit = false;
-        while (!takeProfit) takeProfit = binancePriceTracker.getPrice() >= profitPrice;
+        while (!takeProfit) takeProfit = binancePriceTracker.getPrice() >= deal.getProfitPrice();
         sendTakeProfit("LTP5",
                 LocalDateTime.now().format(DateTimeFormatter.ofPattern("dd-MM-yyyy HH:mm:ss")));
     }
 
     private void sendTakeProfit(String alert, String alertTime) {
         Optional<Deal> openedDealByTicker = dealService.getOpenedDealByTicker(
-                userId,
+                deal.getUserId(),
                 Strategy.BLACK_FLAG.name.toLowerCase(),
-                ticker);
+                deal.getTicker());
 
         if (openedDealByTicker.isEmpty()) return;
 
         Deal deal = openedDealByTicker.get();
         orderService.sendClosingOrder(alertService.findByUserIdAndName(
-                        userId,
+                        deal.getUserId(),
                         alert),
-                ticker,
-                userId,
+                deal.getTicker(),
+                deal.getUserId(),
                 alertTime,
                 Strategy.BLACK_FLAG,
                 deal.getId());
