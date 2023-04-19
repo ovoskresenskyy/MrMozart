@@ -35,9 +35,11 @@ public class MozartController {
                           @RequestBody String alertText) {
 
         String alertTime = LocalDateTime.now().format(DateTimeFormatter.ofPattern("dd-MM-yyyy HH:mm:ss"));
+        ticker = ticker.toUpperCase() + "USDT";
+
         int userId = userService.findByToken(token).getId();
         if (alertText.equalsIgnoreCase("Stop Trend")) return sendStopTrend(userId, ticker, alertTime);
-        return orderService.sendOrder(alertService.findByUserIdAndName(userId, alertText),
+        return orderService.sendOpeningOrder(alertService.findByUserIdAndName(userId, alertText),
                 ticker,
                 userId,
                 alertTime,
@@ -45,12 +47,12 @@ public class MozartController {
     }
 
     private Order sendStopTrend(int userId, String ticker, String alertTime) {
-        orderService.sendOrder(alertService.findByUserIdAndName(userId, "STS"),
+        orderService.sendOpeningOrder(alertService.findByUserIdAndName(userId, "STS"),
                 ticker,
                 userId,
                 alertTime,
                 Strategy.BLACK_FLAG);
-        return orderService.sendOrder(alertService.findByUserIdAndName(userId, "STL"),
+        return orderService.sendOpeningOrder(alertService.findByUserIdAndName(userId, "STL"),
                 ticker,
                 userId,
                 alertTime,
