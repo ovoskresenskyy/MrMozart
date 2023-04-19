@@ -1,6 +1,7 @@
 package com.example.mzrt.repository;
 
 import com.example.mzrt.model.Deal;
+import org.springframework.data.domain.Sort;
 import org.springframework.data.repository.CrudRepository;
 import org.springframework.stereotype.Repository;
 
@@ -14,5 +15,5 @@ public interface DealRepository extends CrudRepository<Deal, Integer> {
                                                                      String strategy,
                                                                      String ticker);
 
-    List<Deal> getByUserIdAndStrategy(int userId, String strategy);
+    List<Deal> getByUserIdAndStrategy(int userId, String strategy, Sort sort);
 }

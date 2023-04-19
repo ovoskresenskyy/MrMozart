@@ -49,7 +49,7 @@ public class DealService {
     }
 
     public List<Deal> getByUserIdAndStrategy(int userId, String strategy) {
-        return dealRepository.getByUserIdAndStrategy(userId, strategy);
+        return dealRepository.getByUserIdAndStrategy(userId, strategy, Sort.by(Sort.Direction.DESC, "id"));
     }
 
     public void setPrice(Deal deal, int alertNumber, double price) {
