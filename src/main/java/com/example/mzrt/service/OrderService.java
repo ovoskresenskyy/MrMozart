@@ -17,31 +17,62 @@ import java.util.List;
 @Service
 public class OrderService {
 
-    private final RestTemplate restTemplate;
     private final OrderRepository orderRepository;
     private final DealService dealService;
+    private final AlertService alertService;
+    private final RestTemplate restTemplate;
 
     @Autowired
-    public OrderService(RestTemplate restTemplate, OrderRepository orderRepository, DealService dealService) {
-        this.restTemplate = restTemplate;
+    public OrderService(OrderRepository orderRepository,
+                        DealService dealService,
+                        AlertService alertService,
+                        RestTemplate restTemplate) {
         this.orderRepository = orderRepository;
         this.dealService = dealService;
+        this.alertService = alertService;
+        this.restTemplate = restTemplate;
     }
 
-    public Order sendOrder(Alert alert, String ticker, int userId, String alertTime, Strategy strategy) {
+    public Order sendOpeningOrder(Alert alert, String ticker, int userId, String alertTime, Strategy strategy) {
 
-        OrderThreadService orderThreadService = new OrderThreadService(alert,
+        Order order = getOrderByStrategy(strategy,
+                alert,
+                ticker,
+                userId,
+                alertTime);
+
+        if (!orderIsEmpty(order)) {
+            OrderThreadService orderThreadService = new OrderThreadService(restTemplate,
+                    alert,
+                    order);
+            Thread t = new Thread(orderThreadService);
+            t.start();
+        }
+
+        return order;
+    }
+
+    public Order sendClosingOrder(Alert alert,
+                                  String ticker,
+                                  int userId,
+                                  String alertTime,
+                                  Strategy strategy,
+                                  int dealId) {
+
+        Order order = getOrder(strategy,
+                alert,
                 ticker,
                 userId,
                 alertTime,
-                this,
-                restTemplate,
-                strategy);
+                dealId,
+                0);
 
-        Thread t = new Thread(orderThreadService);
+        Thread t = new Thread(new OrderThreadService(restTemplate,
+                alert,
+                order));
         t.start();
 
-        return orderThreadService.getOrder();
+        return order;
     }
 
     public List<Order> findByUserId(int userId) {
