@@ -1,5 +1,6 @@
 package com.example.mzrt.controller;
 
+import com.example.mzrt.enums.Strategy;
 import com.example.mzrt.model.Order;
 import com.example.mzrt.model.User;
 import com.example.mzrt.service.OrderService;
@@ -59,7 +60,7 @@ public class OrderControllerTest {
         when(userService.findById(anyInt())).thenReturn(User.builder().build());
         when(orderService.findByUserId(anyInt())).thenReturn(orders);
 
-        mockMvc.perform(get("/orders/{userId}", anyInt()))
+        mockMvc.perform(get("/orders/{userId}/{strategy}", anyInt(), Strategy.MOZART.name().toLowerCase()))
                 .andExpect(status().isOk())
                 .andExpect(view().name("orders/list"))
                 .andExpect(model().attributeExists("user"))
