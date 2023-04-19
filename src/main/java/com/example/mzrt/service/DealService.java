@@ -74,6 +74,16 @@ public class DealService {
                 .average();
 
         deal.setAveragePrice(average.isPresent() ? average.getAsDouble() : 0);
+
+        calculateProfitPrice(deal);
+    }
+
+    private void calculateProfitPrice(Deal deal) {
+
+        double avgPrice = deal.getAveragePrice();
+        double profit = avgPrice * 3 / 100;
+
+        deal.setProfitPrice(deal.getSide().equals("buy") ? avgPrice + profit : avgPrice - profit);
         dealRepository.save(deal);
     }
 
