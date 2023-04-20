@@ -43,11 +43,12 @@ public class OrderService {
                 alertTime);
 
         if (!orderIsEmpty(order)) {
-            OrderThreadService orderThreadService = new OrderThreadService(restTemplate,
+            Thread t = new Thread(new OrderThreadService(restTemplate,
                     alert,
-                    order);
-            Thread t = new Thread(orderThreadService);
+                    order));
             t.start();
+
+            order.setTimestampSent(LocalDateTime.now().format(DateTimeFormatter.ofPattern("dd-MM-yyyy HH:mm:ss")));
         }
 
         return order;
@@ -73,7 +74,8 @@ public class OrderService {
                 order));
         t.start();
 
-        return order;
+        order.setTimestampSent(LocalDateTime.now().format(DateTimeFormatter.ofPattern("dd-MM-yyyy HH:mm:ss")));
+        return save(order);
     }
 
     public List<Order> findByUserId(int userId) {
@@ -171,19 +173,17 @@ public class OrderService {
                            int dealId,
                            double price) {
 
-        return orderRepository.save(
-                Order.builder()
-                        .name(alert.getName())
-                        .strategy(strategy.name.toLowerCase())
-                        .secret(alert.getSecret())
-                        .side(alert.getSide())
-                        .symbol(ticker)
-                        .userId(userId)
-                        .timestamp(alertTime)
-                        .dealId(dealId)
-                        .price(price)
-                        .timestampSent(LocalDateTime.now().format(DateTimeFormatter.ofPattern("dd-MM-yyyy HH:mm:ss")))
-                        .build());
+        return Order.builder()
+                .name(alert.getName())
+                .strategy(strategy.name.toLowerCase())
+                .secret(alert.getSecret())
+                .side(alert.getSide())
+                .symbol(ticker)
+                .userId(userId)
+                .timestamp(alertTime)
+                .dealId(dealId)
+                .price(price)
+                .build();
     }
 
 
