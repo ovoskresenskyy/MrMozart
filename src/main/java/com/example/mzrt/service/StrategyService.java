@@ -1,11 +1,8 @@
 package com.example.mzrt.service;
 
 import com.example.mzrt.model.Strategy;
-import com.example.mzrt.model.Ticker;
 import com.example.mzrt.repository.StrategyRepository;
-import com.example.mzrt.repository.TickerRepository;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.springframework.web.server.ResponseStatusException;
 
@@ -23,8 +20,12 @@ public class StrategyService {
         this.strategyRepository = strategyRepository;
     }
 
-    public List<Strategy> findAll(){
+    public List<Strategy> findAll() {
         return strategyRepository.findAll();
+    }
+
+    public Strategy findById(int id) {
+        return strategyRepository.findById(id).orElseThrow(() -> new ResponseStatusException(NOT_FOUND));
     }
 
 }

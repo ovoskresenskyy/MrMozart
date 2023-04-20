@@ -1,14 +1,13 @@
 package com.example.mzrt.controller;
 
-import com.example.mzrt.enums.Strategy;
 import com.example.mzrt.service.StrategyService;
 import com.example.mzrt.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.*;
-
-import java.util.EnumSet;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.RequestMapping;
 
 @Controller
 @RequestMapping("/strategies")

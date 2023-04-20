@@ -31,7 +31,8 @@
         <thead>
         <tr>
             <th>Name</th>
-            <th>Action</th>
+            <th>Alerts</th>
+            <th>Deals</th>
         </tr>
         </thead>
 
@@ -39,20 +40,18 @@
         <tr th:each="strategy: ${strategies}">
             <td th:text="${strategy.name}"></td>
             <td>
-                <table>
-                    <tr>
-                        <form th:action="@{/alerts/{user_id}/{strategy_id}(user_id=${user.id},strategy_id=${strategy.id})}"
-                              method="GET">
-                            <input type="hidden" name="_method" value="GET">
-                            <button class="btn btn-primary" type="submit">Show alerts</button>
-                        </form>
-                        <form th:action="@{/deals/{user_id}/{strategy_id}(user_id=${user.id},strategy_id=${strategy.id})}"
-                              method="GET">
-                            <input type="hidden" name="_method" value="GET">
-                            <button class="btn btn-primary" type="submit">Show deals</button>
-                        </form>
-                    </tr>
-                </table>
+                <form th:action="@{/alerts/{user_id}/{strategy_id}(user_id=${user.id},strategy_id=${strategy.id})}"
+                      method="GET">
+                    <input type="hidden" name="_method" value="GET">
+                    <button class="btn btn-primary" type="submit">Show alerts</button>
+                </form>
+            </td>
+            <td>
+                <form th:action="@{/deals/{user_id}/{strategy_id}(user_id=${user.id},strategy_id=${strategy.id})}"
+                      method="GET">
+                    <input type="hidden" name="_method" value="GET">
+                    <button class="btn btn-primary" type="submit">Show deals</button>
+                </form>
             </td>
         </tr>
         </tbody>
