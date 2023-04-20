@@ -16,49 +16,89 @@
     <h3>
         User: <span th:text="${user.name}"></span>
     </h3>
+    <h3>
+        Strategy: <span th:text="${strategy.name}"></span>
+    </h3>
     <form action="#" th:action="@{/alerts}" th:object="${alert}" method="POST">
-        <input type="hidden"
-               th:field="*{id}"/></p>
-        <input type="hidden"
-               th:field="*{userId}"/></p>
+        <input type="hidden" th:field="*{id}"/>
+        <input type="hidden" th:field="*{userId}"/>
+        <input type="hidden" th:field="*{strategyId}"/>
 
-        <input type="text"
-               th:field="*{name}"
-               placeholder="Name"
-               class="form-control mb-4 col-4"></p>
+        <div class="form-group mb-3">
+            <label class="form-label">Name</label>
+            <input
+                    class="form-control mb-4 col-4"
+                    type="text"
+                    th:field="*{name}"
+                    required="true"
+            >
+            <p th:errors="*{name}" class="text-danger"
+               th:if="${#fields.hasErrors('name')}"></p>
+        </div>
 
-        <input type="number"
-               th:field="*{number}"
-               placeholder="Number"
-               class="form-control mb-4 col-4"></p>
+        <div class="form-group mb-3">
+            <label class="form-label">Webhook</label>
+            <input
+                    class="form-control mb-4 col-4"
+                    type="text"
+                    th:field="*{webhook}"
+                    required="true"
+            >
+            <p th:errors="*{webhook}" class="text-danger"
+               th:if="${#fields.hasErrors('webhook')}"></p>
+        </div>
 
-        <input type="text"
-               th:field="*{webhook}"
-               placeholder="Webhook"
-               class="form-control mb-4 col-4"></p>
+        <div class="form-group mb-3">
+            <label class="form-label">Secret</label>
+            <input
+                    class="form-control mb-4 col-4"
+                    type="text"
+                    th:field="*{secret}"
+                    required="true"
+            >
+            <p th:errors="*{secret}" class="text-danger"
+               th:if="${#fields.hasErrors('secret')}"></p>
+        </div>
 
-        <input type="text"
-               th:field="*{secret}"
-               placeholder="Secret"
-               class="form-control mb-4 col-4"></p>
+        <div class="form-group mb-3">
+            <label class="form-label">Side</label>
+            <input
+                    class="form-control mb-4 col-4"
+                    type="text"
+                    th:field="*{side}"
+                    required="true"
+            >
+            <p th:errors="*{side}" class="text-danger"
+               th:if="${#fields.hasErrors('side')}"></p>
+        </div>
 
-        <input type="text"
-               th:field="*{side}"
-               placeholder="Side"
-               class="form-control mb-4 col-4"></p>
+        <div class="form-group mb-3">
+            <label class="form-label">Used to open new deal</label>
+            <input
+                    class="form-control mb-4 col-4"
+                    type="checkbox"
+                    th:field="*{opening}"
+            >
+        </div>
 
-        <input type="number"
-               th:field="*{pause}"
-               placeholder="Pause to start (seconds)"
-               class="form-control mb-4 col-4"></p>
+        <div class="form-group mb-3">
+            <label class="form-label">Pause to start (seconds)</label>
+            <input
+                    class="form-control mb-4 col-4"
+                    type="number"
+                    th:field="*{pause}"
+            >
+        </div>
 
-        <button type="submit" class="btn btn-info col-2">Add alert</button>
+        <button type="submit" class="btn btn-info col-2">Save</button>
 
     </form>
 
     <hr>
 
-    <a th:href="@{/alerts/{user_id}(user_id=${user.id})}">Back to Alert List</a>
+    <a th:href="@{/alerts/{user_id}/{strategy_id}(user_id=${user.id},strategy_id=${strategy.id})}">
+        Back to Alert List</a>
+
 </div>
 </body>
 </html>
