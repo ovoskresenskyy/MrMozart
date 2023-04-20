@@ -24,5 +24,8 @@ public class Alert {
     private String side;
     @Column("user_id")
     private int userId;
+    @Column("strategy_id")
+    private int strategyId;
+    private boolean opening;
     private int pause;
 }
