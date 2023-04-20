@@ -14,43 +14,46 @@
     <h3>
         User: <span th:text="${user.name}"></span>
     </h3>
+    <h3>
+        Strategy: <span th:text="${strategy.name}"></span>
+    </h3>
     <table>
         <tr>
             <td>
-                <a th:href="@{/alerts/{user_id}/new(user_id=${user.id})}" class="btn btn-success btn-sm mb-3">Add new Alert</a>
+                <a th:href="@{/alerts/{user_id}/{strategy_id}/new(user_id=${user.id},strategy_id=${strategy.id})}"
+                   class="btn btn-success btn-sm mb-3">Add new Alert</a>
             </td>
             <td>
-                <a th:href="@{/users}" class="btn btn-primary btn-sm mb-3"> < Back to main menu</a>
+                <a th:href="@{/strategies/{user_id}(user_id=${user.id})}"
+                   class="btn btn-primary btn-sm mb-3"> < Back to Strategies</a>
             </td>
         </tr>
     </table>
     <table style="width:80%" border="1" class="table table-striped table-responsive-md">
         <thead>
         <tr>
-            <th>ID</th>
             <th>Name</th>
-            <th>Number (optional)</th>
             <th>Webhook</th>
             <th>Secret</th>
             <th>Side</th>
             <th>Pause to start (seconds)</th>
+            <th>Used to open deals</th>
             <th>Action</th>
         </tr>
         </thead>
 
         <tbody>
         <tr th:each="alert: ${alerts}">
-            <td th:text="${alert.id}"></td>
             <td th:text="${alert.name}"></td>
-            <td th:text="${alert.number}"></td>
             <td th:text="${alert.webhook}"></td>
             <td th:text="${alert.secret}"></td>
             <td th:text="${alert.side}"></td>
             <td th:text="${alert.pause}"></td>
+            <td th:text="${alert.opening}"></td>
             <td>
                 <form th:action="@{/alerts/updating/{id}(id=${alert.id})}" method="GET">
                     <input type="hidden" name="_method" value="GET">
-                    <button class="btn btn-success" type="submit">Update</button>
+                    <button class="btn btn-primary" type="submit">Update</button>
                 </form>
                 <form th:action="@{/alerts/{id}(id=${alert.id})}" method="POST">
                     <input type="hidden" name="_method" value="DELETE">
