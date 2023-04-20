@@ -61,7 +61,7 @@ public class OrderService {
                                   Strategy strategy,
                                   int dealId) {
 
-        Order order = getOrder(strategy,
+        Order order = createNewOrder(strategy,
                 alert,
                 ticker,
                 userId,
@@ -69,9 +69,7 @@ public class OrderService {
                 dealId,
                 0);
 
-        Thread t = new Thread(new OrderThreadService(restTemplate,
-                alert,
-                order));
+        Thread t = new Thread(new OrderThreadService(restTemplate, alert, order));
         t.start();
 
         order.setTimestampSent(LocalDateTime.now().format(DateTimeFormatter.ofPattern("dd-MM-yyyy HH:mm:ss")));
@@ -118,7 +116,7 @@ public class OrderService {
                     ticker,
                     userId,
                     alertTime);
-            case MOZART -> getOrder(
+            case MOZART -> createNewOrder(
                     strategy,
                     alert,
                     ticker,
@@ -135,11 +133,13 @@ public class OrderService {
                                    int userId,
                                    String alertTime) {
 
-        Optional<Deal> openedDealByTicker = dealService.getOpenedDealByTicker(userId,
+        Optional<Deal> openedDealByTicker = dealService.getOpenedDealByTicker(
+                userId,
                 strategy.name.toLowerCase(),
                 ticker);
 
-        Deal deal = openedDealByTicker.orElseGet(() -> dealService.getNewDeal(userId,
+        Deal deal = openedDealByTicker.orElseGet(() -> dealService.getNewDeal(
+                userId,
                 strategy.name.toLowerCase(),
                 ticker,
                 alert.getSide()));
@@ -153,7 +153,7 @@ public class OrderService {
             price = binanceDataHolder.getByTicker(ticker).getPrice();
         }
 
-        Order order = getOrder(
+        Order order = createNewOrder(
                 strategy,
                 alert,
                 ticker,
@@ -169,13 +169,13 @@ public class OrderService {
         return order;
     }
 
-    private Order getOrder(Strategy strategy,
-                           Alert alert,
-                           String ticker,
-                           int userId,
-                           String alertTime,
-                           int dealId,
-                           double price) {
+    private Order createNewOrder(Strategy strategy,
+                                 Alert alert,
+                                 String ticker,
+                                 int userId,
+                                 String alertTime,
+                                 int dealId,
+                                 double price) {
 
         return Order.builder()
                 .name(alert.getName())
@@ -189,6 +189,4 @@ public class OrderService {
                 .price(price)
                 .build();
     }
-
-
 }
