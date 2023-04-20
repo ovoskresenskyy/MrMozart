@@ -15,20 +15,17 @@
     <h3>
         User: <span th:text="${user.name}"></span>
     </h3>
-
+    <h3>
+        Strategy: <span th:text="${strategy.name}"></span>
+    </h3>
 
     <table>
         <tr>
             <td>
-                <form th:action="@{/strategies/{user_id}(user_id=${user.id})}" method="GET">
+                <form th:action="@{/deals/{user_id}/{strategy_id}(user_id=${user.id},strategy_id=${strategy.id})}"
+                      method="GET">
                     <input type="hidden" name="_method" value="GET">
-                    <button class="btn btn-primary" type="submit"> < Back to main menu</button>
-                </form>
-            </td>
-            <td>
-                <form th:action="@{/orders/{user_id}(user_id=${user.id})}" method="POST">
-                    <input type="hidden" name="_method" value="DELETE">
-                    <button class="btn btn-danger" type="submit">Delete all orders</button>
+                    <button class="btn btn-primary" type="submit"> < Back to Deals</button>
                 </form>
             </td>
         </tr>
