@@ -37,7 +37,7 @@ public class DealController {
                            @PathVariable int strategyId,
                            Model model) {
         model.addAttribute("user", userService.findById(userId));
-        model.addAttribute("strategy", strategyService.findById(userId));
+        model.addAttribute("strategy", strategyService.findById(strategyId));
         model.addAttribute("deals", dealService.getByUserIdAndStrategyId(userId, strategyId));
         return "deals/list";
     }
