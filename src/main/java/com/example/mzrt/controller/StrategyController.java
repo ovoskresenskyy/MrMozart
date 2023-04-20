@@ -1,4 +1,4 @@
-package com.example.mzrt.repository.controller;
+package com.example.mzrt.controller;
 
 import com.example.mzrt.enums.Strategy;
 import com.example.mzrt.service.StrategyService;
