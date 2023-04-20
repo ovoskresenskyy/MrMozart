@@ -8,7 +8,6 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.server.ResponseStatusException;
 
 import java.util.List;
-import java.util.Optional;
 
 import static org.springframework.http.HttpStatus.NOT_FOUND;
 
@@ -22,8 +21,10 @@ public class AlertService {
         this.alertRepository = alertRepository;
     }
 
-    public List<Alert> findByUserId(int userId){
-        return alertRepository.findByUserId(userId, Sort.by(Sort.Direction.ASC, "id"));
+    public List<Alert> findByUserAndStrategy(int userId, int strategyId) {
+        return alertRepository.findByUserIdAndStrategyId(userId,
+                strategyId,
+                Sort.by(Sort.Direction.ASC, "id"));
     }
 
     public Alert findById(int id) {

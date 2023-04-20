@@ -2,6 +2,7 @@ package com.example.mzrt.controller;
 
 import com.example.mzrt.model.Alert;
 import com.example.mzrt.service.AlertService;
+import com.example.mzrt.service.StrategyService;
 import com.example.mzrt.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -13,11 +14,15 @@ import org.springframework.web.bind.annotation.*;
 public class AlertController {
 
     private final AlertService alertService;
+    private final StrategyService strategyService;
     private final UserService userService;
 
     @Autowired
-    public AlertController(AlertService alertService, UserService userService) {
+    public AlertController(AlertService alertService,
+                           StrategyService strategyService,
+                           UserService userService) {
         this.alertService = alertService;
+        this.strategyService = strategyService;
         this.userService = userService;
     }
 
@@ -26,20 +31,25 @@ public class AlertController {
         return "redirect:/users";
     }
 
-    @GetMapping("/{userId}")
+    @GetMapping("/{userId}/{strategyId}")
     public String getAlerts(@PathVariable int userId,
+                            @PathVariable int strategyId,
                             Model model) {
         model.addAttribute("user", userService.findById(userId));
-        model.addAttribute("alerts", alertService.findByUserId(userId));
+        model.addAttribute("strategy", strategyService.findById(strategyId));
+        model.addAttribute("alerts", alertService.findByUserAndStrategy(userId, strategyId));
         return "alerts/list";
     }
 
-    @GetMapping("/{userId}/new")
+    @GetMapping("/{userId}/{strategyId}/new")
     public String alertNewForm(@PathVariable int userId,
-            Model model) {
+                               @PathVariable int strategyId,
+                               Model model) {
         model.addAttribute("user", userService.findById(userId));
+        model.addAttribute("strategy", strategyService.findById(strategyId));
         model.addAttribute("alert", Alert.builder()
                 .userId(userId)
+                .strategyId(strategyId)
                 .build());
         return "alerts/new";
     }
@@ -47,21 +57,24 @@ public class AlertController {
     @PostMapping
     public String saveAlert(@ModelAttribute("alert") Alert alert) {
         alertService.save(alert);
-        return "redirect:/alerts/" + alert.getUserId();
+        return "redirect:/alerts/" + alert.getUserId() + "/" + alert.getStrategyId();
     }
 
     @GetMapping("/updating/{id}")
     public String alertUpdateForm(@PathVariable int id, Model model) {
         Alert alert = alertService.findById(id);
         model.addAttribute("user", userService.findById(alert.getUserId()));
+        model.addAttribute("strategy", strategyService.findById(alert.getStrategyId()));
         model.addAttribute("alert", alert);
         return "alerts/update";
     }
 
     @DeleteMapping("/{id}")
     public String deleteOwner(@PathVariable int id) {
-        int ownerId = alertService.findById(id).getUserId();
+        Alert alert = alertService.findById(id);
+        int ownerId = alert.getUserId();
+        int strategyId = alert.getStrategyId();
         alertService.deleteById(id);
-        return "redirect:/alerts/" + ownerId;
+        return "redirect:/alerts/" + ownerId + "/" + strategyId;
     }
 }

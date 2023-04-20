@@ -11,7 +11,7 @@ import java.util.Optional;
 @Repository
 public interface AlertRepository extends CrudRepository<Alert, Integer> {
 
-    List<Alert> findByUserId(int userId, Sort sort);
+    List<Alert> findByUserIdAndStrategyId(int userId, int strategyId, Sort sort);
 
     Optional<Alert> findByUserIdAndName(int userId, String name);
 }
