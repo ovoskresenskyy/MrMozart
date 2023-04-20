@@ -1,6 +1,7 @@
-package com.example.mzrt.controller;
+package com.example.mzrt.repository.controller;
 
 import com.example.mzrt.enums.Strategy;
+import com.example.mzrt.service.StrategyService;
 import com.example.mzrt.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -14,10 +15,13 @@ import java.util.EnumSet;
 public class StrategyController {
 
     private final UserService userService;
+    private final StrategyService strategyService;
 
     @Autowired
-    public StrategyController(UserService userService) {
+    public StrategyController(UserService userService,
+                              StrategyService strategyService) {
         this.userService = userService;
+        this.strategyService = strategyService;
     }
 
     @GetMapping
@@ -29,10 +33,7 @@ public class StrategyController {
     public String getStrategies(@PathVariable int userId,
                                 Model model) {
         model.addAttribute("user", userService.findById(userId));
-        model.addAttribute("strategies", EnumSet.allOf(Strategy.class)
-                .stream()
-                .map(s -> s.name)
-                .toArray());
+        model.addAttribute("strategies", strategyService.findAll());
         return "strategies/list";
     }
 
