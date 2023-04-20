@@ -21,4 +21,5 @@ public class PercentProfit {
     private int tickerId;
     @Column("strategy_id")
     private int strategyId;
+    private double value;
 }
