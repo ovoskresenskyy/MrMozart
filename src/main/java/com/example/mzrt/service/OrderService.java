@@ -51,7 +51,7 @@ public class OrderService {
             order.setTimestampSent(LocalDateTime.now().format(DateTimeFormatter.ofPattern("dd-MM-yyyy HH:mm:ss")));
         }
 
-        return order;
+        return save(order);
     }
 
     public Order sendClosingOrder(Alert alert,
@@ -76,6 +76,10 @@ public class OrderService {
 
         order.setTimestampSent(LocalDateTime.now().format(DateTimeFormatter.ofPattern("dd-MM-yyyy HH:mm:ss")));
         return save(order);
+    }
+
+    public Order save(Order order) {
+        return orderRepository.save(order);
     }
 
     public List<Order> findByUserId(int userId) {
