@@ -17,32 +17,61 @@
         <input type="hidden"
                th:field="*{id}"/></p>
 
-        <input type="text"
-               th:field="*{name}"
-               placeholder="Name"
-               class="form-control mb-4 col-4"
-               required="true"
-        ></p>
-        <input type="email"
-               th:field="*{email}"
-               placeholder="Email"
-               class="form-control mb-4 col-4"
-               required="true"
-        ></p>
-        <input type="password"
-               th:field="*{password}"
-               placeholder="Password"
-               class="form-control mb-4 col-4"
-               required="true"
-        ></p>
+        <div class="form-group mb-3">
+            <label class="form-label">Name</label>
+            <input
+                    class="form-control mb-4 col-4"
+                    th:field="*{name}"
+                    placeholder="Name"
+                    name="name"
+                    type="text"
+                    required="true"
+            />
+            <p th:errors = "*{name}" class="text-danger"
+               th:if="${#fields.hasErrors('name')}">
+            </p>
+        </div>
 
-        <input type="text"
-               th:field="*{token}"
-               placeholder="Token"
-               class="form-control mb-4 col-4"
-        ></p>
+        <div class="form-group mb-3">
+            <label class="form-label">Email</label>
+            <input
+                    class="form-control mb-4 col-4"
+                    th:field="*{email}"
+                    placeholder="Email"
+                    name="email"
+                    type="email"
+                    required="true"
+            />
+            <p th:errors = "*{email}" class="text-danger"
+               th:if="${#fields.hasErrors('email')}">
+            </p>
+        </div>
 
-        <button type="submit" class="btn btn-info col-2">Add user</button>
+        <div class="form-group mb-3">
+            <label class="form-label">Password</label>
+            <input
+                    class="form-control mb-4 col-4"
+                    id="password"
+                    name="password"
+                    placeholder="Password"
+                    th:field="*{password}"
+                    type="password"
+                    required="true"
+            />
+        </div>
+
+        <div class="form-group mb-3">
+            <label class="form-label">Token</label>
+            <input
+                    class="form-control mb-4 col-4"
+                    th:field="*{token}"
+                    placeholder="Token"
+                    name="token"
+                    type="text"
+            />
+        </div>
+
+        <button type="submit" class="btn btn-info col-2">Save</button>
 
     </form>
 
