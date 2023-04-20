@@ -1,6 +1,7 @@
 package com.example.mzrt.controller;
 
 import com.example.mzrt.service.OrderService;
+import com.example.mzrt.service.StrategyService;
 import com.example.mzrt.service.UserService;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -15,10 +16,14 @@ public class OrderController {
 
     private final OrderService orderService;
     private final UserService userService;
+    private final StrategyService strategyService;
 
-    public OrderController(OrderService orderService, UserService userService) {
+    public OrderController(OrderService orderService,
+                           StrategyService strategyService,
+                           UserService userService) {
         this.orderService = orderService;
         this.userService = userService;
+        this.strategyService = strategyService;
     }
 
     @GetMapping
@@ -26,27 +31,14 @@ public class OrderController {
         return "redirect:/users";
     }
 
-    @GetMapping("/{userId}/deal/{dealId}")
+    @GetMapping("/{userId}/deal/{dealId}/strategy/{strategyId}")
     public String getOrdersByDeal(@PathVariable int userId,
                                   @PathVariable int dealId,
+                                  @PathVariable int strategyId,
                             Model model) {
         model.addAttribute("user", userService.findById(userId));
+        model.addAttribute("strategy", strategyService.findById(strategyId));
         model.addAttribute("orders", orderService.findByDealId(dealId));
         return "orders/list";
-    }
-
-    @GetMapping("/{userId}/{strategy}")
-    public String getOrdersByStrategy(@PathVariable int userId,
-                                      @PathVariable String strategy,
-                            Model model) {
-        model.addAttribute("user", userService.findById(userId));
-        model.addAttribute("orders", orderService.findByUserIdAndStrategy(userId, strategy.toLowerCase()));
-        return "orders/list";
-    }
-
-    @DeleteMapping("/{userId}")
-    public String deleteAllOrders(@PathVariable int userId) {
-        orderService.deleteOrdersByUserId(userId);
-        return "redirect:/orders/" + userId;
     }
 }
