@@ -1,6 +1,7 @@
 package com.example.mzrt.controller;
 
 import com.example.mzrt.service.DealService;
+import com.example.mzrt.service.StrategyService;
 import com.example.mzrt.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -14,11 +15,15 @@ import org.springframework.web.bind.annotation.RequestMapping;
 public class DealController {
 
     private final UserService userService;
+    private final StrategyService strategyService;
     private final DealService dealService;
 
     @Autowired
-    public DealController(UserService userService, DealService dealService) {
+    public DealController(UserService userService,
+                          StrategyService strategyService,
+                          DealService dealService) {
         this.userService = userService;
+        this.strategyService = strategyService;
         this.dealService = dealService;
     }
 
@@ -27,12 +32,13 @@ public class DealController {
         return "redirect:/users";
     }
 
-    @GetMapping("/{userId}/{strategy}")
+    @GetMapping("/{userId}/{strategyId}")
     public String getDeals(@PathVariable int userId,
-                           @PathVariable String strategy,
+                           @PathVariable int strategyId,
                            Model model) {
         model.addAttribute("user", userService.findById(userId));
-        model.addAttribute("deals", dealService.getByUserIdAndStrategy(userId, strategy.toLowerCase()));
+        model.addAttribute("strategy", strategyService.findById(userId));
+        model.addAttribute("deals", dealService.getByUserIdAndStrategyId(userId, strategyId));
         return "deals/list";
     }
 

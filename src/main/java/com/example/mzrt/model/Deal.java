@@ -17,7 +17,10 @@ public class Deal {
 
     @Id
     private int id;
+    @Column("user_id")
     private int userId;
+    @Column("strategy_id")
+    private int strategyId;
     private String strategy;
     private String ticker;
     private String side;
