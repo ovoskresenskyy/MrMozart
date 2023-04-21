@@ -70,7 +70,7 @@ public class AlertController {
     }
 
     @DeleteMapping("/{id}")
-    public String deleteOwner(@PathVariable int id) {
+    public String deleteAlert(@PathVariable int id) {
         Alert alert = alertService.findById(id);
         int ownerId = alert.getUserId();
         int strategyId = alert.getStrategyId();
