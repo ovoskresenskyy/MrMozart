@@ -29,10 +29,6 @@ public class TickerService {
         return tickerRepository.findById(id).orElseThrow(() -> new ResponseStatusException(NOT_FOUND));
     }
 
-    public Ticker findByUserIdAndName(int userId, String name) {
-        return tickerRepository.findByUserIdAndName(userId, name).orElseThrow(() -> new ResponseStatusException(NOT_FOUND));
-    }
-
     public Ticker save(Ticker ticker) {
         return tickerRepository.save(ticker);
     }
