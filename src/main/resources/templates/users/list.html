@@ -38,12 +38,6 @@
             <td th:text="${user.name}"></td>
             <td th:text="${user.email}"></td>
             <td th:text="${user.token}"></td>
-            <!--            <td>-->
-            <!--                <form th:action="@{/alerts/{user_id}(user_id=${user.id})}" method="GET">-->
-            <!--                    <input type="hidden" name="_method" value="GET">-->
-            <!--                    <button class="btn btn-primary" type="submit">Show alerts</button>-->
-            <!--                </form>-->
-            <!--            </td>-->
             <td>
                 <form th:action="@{/strategies/{user_id}(user_id=${user.id})}" method="GET">
                     <input type="hidden" name="_method" value="GET">

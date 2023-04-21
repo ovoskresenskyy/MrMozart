@@ -16,16 +16,24 @@
     <h3>
         User: <span th:text="${user.name}"></span>
     </h3>
-    <form action="#" th:action="@{/tickers}" th:object="${alert}" method="POST">
-        <input type="hidden"
-               th:field="*{id}"/></p>
-        <input type="hidden"
-               th:field="*{userId}"/></p>
+    <form action="#" th:action="@{/tickers}" th:object="${ticker}" method="POST">
+        <input type="hidden" th:field="*{id}"/></p>
+        <input type="hidden" th:field="*{userId}"/></p>
 
-        <input type="text"
-               th:field="*{name}"
-               placeholder="Name"
-               class="form-control mb-4 col-4"></p>
+        <div class="form-group mb-3">
+            <label class="form-label">Name (without USDT)</label>
+            <input
+                    class="form-control mb-4 col-4"
+                    th:field="*{name}"
+                    placeholder="Name"
+                    name="name"
+                    type="text"
+                    required="true"
+            />
+            <p th:errors = "*{name}" class="text-danger"
+               th:if="${#fields.hasErrors('name')}">
+            </p>
+        </div>
 
         <button type="submit" class="btn btn-info col-2">Save</button>
 
