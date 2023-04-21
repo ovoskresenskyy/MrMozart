@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html lang="en" xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://thymeleaf.org">
+<head>
+    <meta charset="ISO-8859-1">
+    <title>Ticker updating</title>
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.1.3/css/bootstrap.min.css">
+</head>
+<body>
+<div class="container">
+    <h2>Ticker updating</h2>
+    <form
+            method="POST"
+            role="form"
+            th:action="@{/tickers}"
+            th:object="${ticker}">
+        <input type="hidden" th:field="*{id}"/>
+        <input type="hidden" th:field="*{userId}"/>
+
+        <div class="form-group mb-3">
+            <label class="form-label">Name (without USDT)</label>
+            <input
+                    class="form-control mb-4 col-4"
+                    th:field="*{name}"
+                    placeholder="Name"
+                    name="name"
+                    type="text"
+                    required="true"
+            />
+            <p th:errors = "*{name}" class="text-danger"
+               th:if="${#fields.hasErrors('name')}"></p>
+        </div>
+
+        <button type="submit" class="btn btn-info col-2">Update</button>
+    </form>
+
+    <hr>
+
+    <a th:href="@{/tickers}">Back to list of Tickers</a>
+</div>
+</body>
+</html>
