@@ -34,8 +34,7 @@
     </form>
 
     <hr>
-
-    <a th:href="@{/tickers}">Back to list of Tickers</a>
+    <a th:href="@{/tickers/{user_id}(user_id=${user.id})}">Back to list of Tickers</a>
 </div>
 </body>
 </html>
