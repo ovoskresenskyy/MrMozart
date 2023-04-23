@@ -5,14 +5,12 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-import java.util.List;
-
 @Data
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-public class TickerWithProfits {
+public class TickerWithProfit {
 
     private Ticker ticker;
-    private List<PercentProfit> percents;
+    private PercentProfit percent;
 }
