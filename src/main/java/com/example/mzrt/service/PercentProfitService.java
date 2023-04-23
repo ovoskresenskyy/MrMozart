@@ -13,11 +13,11 @@ public class PercentProfitService {
         this.percentProfitsRepository = percentProfitsRepository;
     }
 
-    public PercentProfit findByStrategyAndTickerIds(int strategyId, int tickerId) {
-        return percentProfitsRepository.findByStrategyIdAndTickerId(strategyId, tickerId)
+    public PercentProfit findByStrategyIdAndTicker(int strategyId, String ticker) {
+        return percentProfitsRepository.findByStrategyIdAndTicker(strategyId, ticker)
                 .orElse(PercentProfit.builder()
                         .strategyId(strategyId)
-                        .tickerId(tickerId)
+                        .ticker(ticker)
                         .build());
     }
 

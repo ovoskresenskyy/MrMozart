@@ -29,15 +29,15 @@ public class TickerService {
         return tickerRepository.findByUserId(userId, Sort.by(Sort.Direction.ASC, "name"));
     }
 
-    public Ticker findById(int id) {
-        return tickerRepository.findById(id).orElseThrow(() -> new ResponseStatusException(NOT_FOUND));
+    public Ticker findById(String name) {
+        return tickerRepository.findById(name).orElseThrow(() -> new ResponseStatusException(NOT_FOUND));
     }
 
     public Ticker save(Ticker ticker) {
         return tickerRepository.save(ticker);
     }
 
-    public void deleteById(int id) {
-        tickerRepository.deleteById(id);
+    public void deleteById(String name) {
+        tickerRepository.deleteById(name);
     }
 }

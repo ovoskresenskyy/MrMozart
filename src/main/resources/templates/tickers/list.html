@@ -43,11 +43,11 @@
             <td>
                 <table>
                     <tr>
-                        <form th:action="@{/tickers/{id}/updating(id=${ticker.id})}" method="GET">
+                        <form th:action="@{/tickers/{name}/updating(name=${ticker.name})}" method="GET">
                             <input type="hidden" name="_method" value="GET">
                             <button class="btn btn-primary" type="submit">Update</button>
                         </form>
-                        <form th:action="@{/tickers/{id}(id=${ticker.id})}" method="POST">
+                        <form th:action="@{/tickers/{name}(name=${ticker.name})}" method="POST">
                             <input type="hidden" name="_method" value="DELETE">
                             <button class="btn btn-danger" type="submit">Delete</button>
                         </form>

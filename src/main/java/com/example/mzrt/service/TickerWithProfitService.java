@@ -26,13 +26,13 @@ public class TickerWithProfitService {
             tickersAndProfits.add(
                     TickerWithProfit.builder()
                             .ticker(ticker)
-                            .percent(getPercentProfit(strategyId, ticker.getId()))
+                            .percent(getPercentProfit(strategyId, ticker.getName()))
                             .build());
         }
         return tickersAndProfits;
     }
 
-    private PercentProfit getPercentProfit(int strategyId, int tickerId){
-        return percentProfitService.findByStrategyAndTickerIds(strategyId, tickerId);
+    private PercentProfit getPercentProfit(int strategyId, String ticker){
+        return percentProfitService.findByStrategyIdAndTicker(strategyId, ticker);
     }
 }

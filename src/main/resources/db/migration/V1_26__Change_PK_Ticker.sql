@@ -1,0 +1,2 @@
+ALTER TABLE ticker DROP CONSTRAINT ticker_pkey;
+ALTER TABLE ticker ADD PRIMARY KEY (name);
