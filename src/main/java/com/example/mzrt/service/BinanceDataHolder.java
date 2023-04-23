@@ -19,13 +19,16 @@ public class BinanceDataHolder {
         return instance;
     }
 
-    public BinancePriceTracker getByTicker(String ticker) {
-        if (holder.containsKey(ticker)) return holder.get(ticker);
+    public void startPriceTracking(String ticker) {
+        if (holder.containsKey(ticker)) return;
 
         BinancePriceTracker binancePriceProvider = new BinancePriceTracker();
         binancePriceProvider.startTracking(ticker);
         holder.put(ticker, binancePriceProvider);
-        return binancePriceProvider;
+    }
+
+    public BinancePriceTracker getByTicker(String ticker) {
+        return holder.get(ticker);
     }
 
     public void startProfitTracker(Deal deal,
