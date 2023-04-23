@@ -27,6 +27,11 @@ public class BinanceDataHolder {
         holder.put(ticker, binancePriceProvider);
     }
 
+    public void stopPriceTracking(String ticker) {
+        getByTicker(ticker).closeConnection();
+        holder.remove(ticker); //TODO: what if few users use one ticker, and one of them decide to delete it? HAHA
+    }
+
     public BinancePriceTracker getByTicker(String ticker) {
         return holder.get(ticker);
     }

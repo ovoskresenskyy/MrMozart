@@ -69,6 +69,7 @@ public class TickerController {
     @PostMapping
     public String saveTicker(@ModelAttribute("ticker") Ticker ticker) {
         tickerService.save(ticker);
+        BinanceDataHolder.getInstance().startPriceTracking(ticker.getName() + "USDT");
         return "redirect:/tickers/" + ticker.getUserId();
     }
 
@@ -109,6 +110,8 @@ public class TickerController {
     public String deleteTicker(@PathVariable int id) {
         Ticker ticker = tickerService.findById(id);
         tickerService.deleteById(id);
+
+        BinanceDataHolder.getInstance().stopPriceTracking(ticker.getName() + "USDT");
         return "redirect:/tickers/" + ticker.getUserId();
     }
 
