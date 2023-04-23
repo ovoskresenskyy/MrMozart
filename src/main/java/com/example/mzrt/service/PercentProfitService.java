@@ -4,8 +4,6 @@ import com.example.mzrt.model.PercentProfit;
 import com.example.mzrt.repository.PercentProfitsRepository;
 import org.springframework.stereotype.Service;
 
-import java.util.List;
-
 @Service
 public class PercentProfitService {
 
@@ -15,7 +13,15 @@ public class PercentProfitService {
         this.percentProfitsRepository = percentProfitsRepository;
     }
 
-    public List<PercentProfit> findByTickerId(int tickerId) {
-        return percentProfitsRepository.findByTickerId(tickerId);
+    public PercentProfit findByStrategyAndTickerIds(int strategyId, int tickerId) {
+        return percentProfitsRepository.findByStrategyIdAndTickerId(strategyId, tickerId)
+                .orElse(PercentProfit.builder()
+                        .strategyId(strategyId)
+                        .tickerId(tickerId)
+                        .build());
+    }
+
+    public void save(PercentProfit profit) {
+        percentProfitsRepository.save(profit);
     }
 }
