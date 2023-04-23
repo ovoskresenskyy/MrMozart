@@ -21,6 +21,10 @@ public class TickerService {
         this.tickerRepository = tickerRepository;
     }
 
+    public List<Ticker> findAll() {
+        return tickerRepository.findAll();
+    }
+
     public List<Ticker> findByUserId(int userId) {
         return tickerRepository.findByUserId(userId, Sort.by(Sort.Direction.ASC, "name"));
     }

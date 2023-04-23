@@ -11,7 +11,7 @@ import java.util.Optional;
 @Repository
 public interface TickerRepository extends CrudRepository<Ticker, Integer> {
 
+    List<Ticker> findAll();
     List<Ticker> findByUserId(int userId, Sort sort);
-
     Optional<Ticker> findByUserIdAndName(int userId, String name);
 }
