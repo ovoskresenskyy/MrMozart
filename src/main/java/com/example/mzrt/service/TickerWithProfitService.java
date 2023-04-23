@@ -1,7 +1,8 @@
 package com.example.mzrt.service;
 
+import com.example.mzrt.model.PercentProfit;
 import com.example.mzrt.model.Ticker;
-import com.example.mzrt.model.TickerWithProfits;
+import com.example.mzrt.model.TickerWithProfit;
 import org.springframework.stereotype.Service;
 
 import java.util.LinkedList;
@@ -18,16 +19,20 @@ public class TickerWithProfitService {
         this.percentProfitService = percentProfitService;
     }
 
-    public List<TickerWithProfits> findAllByUserId(int userId) {
-        LinkedList<TickerWithProfits> tickerWithProfitServices = new LinkedList<>();
-        List<Ticker> tickers = tickerService.findByUserId(userId);
+    public List<TickerWithProfit> findAllByUserAndStrategy(int userId, int strategyId) {
+        LinkedList<TickerWithProfit> tickersAndProfits = new LinkedList<>();
 
-        for (Ticker ticker : tickers) {
-            tickerWithProfitServices.add(TickerWithProfits.builder()
-                    .ticker(ticker)
-                    .percents(percentProfitService.findByTickerId(ticker.getId()))
-                    .build());
+        for (Ticker ticker : tickerService.findByUserId(userId)) {
+            tickersAndProfits.add(
+                    TickerWithProfit.builder()
+                            .ticker(ticker)
+                            .percent(getPercentProfit(strategyId, ticker.getId()))
+                            .build());
         }
-        return tickerWithProfitServices;
+        return tickersAndProfits;
+    }
+
+    private PercentProfit getPercentProfit(int strategyId, int tickerId){
+        return percentProfitService.findByStrategyAndTickerIds(strategyId, tickerId);
     }
 }
