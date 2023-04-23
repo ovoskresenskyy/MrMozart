@@ -31,10 +31,6 @@ public class BinancePriceTracker {
     }
 
     public double getPrice() {
-        double priceToReturn = 0;
-        while (priceToReturn == 0) { //TODO: need to rebuild this shit
-            priceToReturn = price;
-        }
-        return priceToReturn;
+        return price;
     }
 }
