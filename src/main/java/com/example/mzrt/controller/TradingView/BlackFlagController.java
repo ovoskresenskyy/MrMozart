@@ -40,8 +40,6 @@ public class BlackFlagController {
                           @RequestBody String message) {
 
         ticker = ticker.toUpperCase() + "USDT";
-        BinanceDataHolder binanceDataHolder = BinanceDataHolder.getInstance();
-        binanceDataHolder.getByTicker(ticker);
 
         String alertTime = LocalDateTime.now().format(DateTimeFormatter.ofPattern("dd-MM-yyyy HH:mm:ss"));
 
