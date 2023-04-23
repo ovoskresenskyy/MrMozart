@@ -32,6 +32,7 @@
         <tr>
             <th>Name</th>
             <th>Alerts</th>
+            <th>Percents of profit</th>
             <th>Deals</th>
         </tr>
         </thead>
@@ -44,6 +45,13 @@
                       method="GET">
                     <input type="hidden" name="_method" value="GET">
                     <button class="btn btn-primary" type="submit">Show alerts</button>
+                </form>
+            </td>
+            <td>
+                <form th:action="@{/tickers/profits/{user_id}/{strategy_id}(user_id=${user.id},strategy_id=${strategy.id})}"
+                      method="GET">
+                    <input type="hidden" name="_method" value="GET">
+                    <button class="btn btn-primary" type="submit">Show tickers</button>
                 </form>
             </td>
             <td>
