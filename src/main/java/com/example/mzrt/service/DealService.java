@@ -19,10 +19,12 @@ import static org.springframework.http.HttpStatus.NOT_FOUND;
 public class DealService {
 
     private final DealRepository dealRepository;
+    private final PercentProfitService percentProfitService;
 
     @Autowired
-    public DealService(DealRepository dealRepository) {
+    public DealService(DealRepository dealRepository, PercentProfitService percentProfitService) {
         this.dealRepository = dealRepository;
+        this.percentProfitService = percentProfitService;
     }
 
 
@@ -89,7 +91,11 @@ public class DealService {
     private void calculateProfitPrice(Deal deal) {
 
         double avgPrice = deal.getAveragePrice();
-        double profit = avgPrice * 3 / 100;
+        double takeProfitPercent = percentProfitService.findByStrategyIdAndTicker(
+                        deal.getStrategyId(),
+                        deal.getTicker())
+                .getValue();
+        double profit = avgPrice * takeProfitPercent / 100;
 
         deal.setProfitPrice(deal.getSide().equals("buy") ? avgPrice + profit : avgPrice - profit);
         dealRepository.save(deal);
