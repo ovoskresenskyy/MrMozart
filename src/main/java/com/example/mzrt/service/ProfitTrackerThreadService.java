@@ -14,17 +14,20 @@ public class ProfitTrackerThreadService implements Runnable {
     private final DealService dealService;
     private final OrderService orderService;
     private final AlertService alertService;
+    private final StrategyService strategyService;
 
     public ProfitTrackerThreadService(BinancePriceTracker binancePriceTracker,
                                       Deal deal,
                                       OrderService orderService,
                                       AlertService alertService,
-                                      DealService dealService) {
+                                      DealService dealService,
+                                      StrategyService strategyService) {
         this.binancePriceTracker = binancePriceTracker;
         this.deal = deal;
         this.orderService = orderService;
         this.alertService = alertService;
         this.dealService = dealService;
+        this.strategyService = strategyService;
     }
 
     @Override
@@ -57,13 +60,15 @@ public class ProfitTrackerThreadService implements Runnable {
         if (openedDealByTicker.isEmpty()) return;
 
         Deal deal = openedDealByTicker.get();
-        orderService.sendClosingOrder(alertService.findByUserIdAndName(
+
+        orderService.sendClosingOrder(alertService.findByUserIdAndStrategyIdAndName(
                         deal.getUserId(),
+                        deal.getStrategyId(),
                         alert),
                 deal.getTicker(),
                 deal.getUserId(),
                 alertTime,
-                Strategy.BLACK_FLAG,
+                strategyService.findById(deal.getStrategyId()),
                 deal.getId());
 
         deal.setOpen(false);

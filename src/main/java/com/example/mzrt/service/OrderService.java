@@ -1,9 +1,9 @@
 package com.example.mzrt.service;
 
-import com.example.mzrt.enums.Strategy;
 import com.example.mzrt.model.Alert;
 import com.example.mzrt.model.Deal;
 import com.example.mzrt.model.Order;
+import com.example.mzrt.model.Strategy;
 import com.example.mzrt.repository.OrderRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Sort;
@@ -22,16 +22,19 @@ public class OrderService {
     private final DealService dealService;
     private final AlertService alertService;
     private final RestTemplate restTemplate;
+    private final StrategyService strategyService;
 
     @Autowired
     public OrderService(OrderRepository orderRepository,
                         DealService dealService,
                         AlertService alertService,
-                        RestTemplate restTemplate) {
+                        RestTemplate restTemplate,
+                        StrategyService strategyService) {
         this.orderRepository = orderRepository;
         this.dealService = dealService;
         this.alertService = alertService;
         this.restTemplate = restTemplate;
+        this.strategyService = strategyService;
     }
 
     public Order sendOpeningOrder(Alert alert, String ticker, int userId, String alertTime, Strategy strategy) {
@@ -88,19 +91,12 @@ public class OrderService {
         return orderRepository.findByDealId(dealId, Sort.by(Sort.Direction.DESC, "id"));
     }
 
-    public List<Order> findByUserIdAndStrategy(int userId, String strategy) {
-        return orderRepository.findByUserIdAndStrategy(
-                userId,
-                strategy,
-                Sort.by(Sort.Direction.DESC, "id"));
-    }
-
     public void deleteOrdersByUserId(int userId) {
         orderRepository.deleteOrdersByUserId(userId);
     }
 
     public boolean orderIsEmpty(Order order) {
-        return order.getName().equals("") || order.getUserId() == 0;
+        return order.getName() == null || order.getUserId() == 0;
     }
 
     public Order getOrderByStrategy(Strategy strategy,
@@ -109,14 +105,14 @@ public class OrderService {
                                     int userId,
                                     String alertTime) {
 
-        return switch (strategy) {
-            case BLACK_FLAG -> getOrderWithDeal(
+        return switch (strategy.getId()) {
+            case 2 -> getOrderWithDeal(
                     strategy,
                     alert,
                     ticker,
                     userId,
                     alertTime);
-            case MOZART -> createNewOrder(
+            default -> createNewOrder(
                     strategy,
                     alert,
                     ticker,
@@ -135,21 +131,21 @@ public class OrderService {
 
         Optional<Deal> openedDealByTicker = dealService.getOpenedDealByTicker(
                 userId,
-                strategy.name.toLowerCase(),
+                strategy.getName(),
                 ticker);
 
         Deal deal = openedDealByTicker.orElseGet(() -> dealService.getNewDeal(
                 userId,
-                strategy.name.toLowerCase(),
+                strategy,
                 ticker,
                 alert.getSide()));
 
         BinanceDataHolder binanceDataHolder = BinanceDataHolder.getInstance();
 
         double price = 0;
-        if (alert.getNumber() != 0) { //TODO: Need to remake this shit
-            if (dealService.orderIsPresent(deal, alert.getNumber())
-                    || dealService.bestOrderIsPresent(deal, alert.getNumber())) return Order.builder().build();
+        if (alert.isOpening()) {
+            if (dealService.orderIsPresent(deal, alert.getName())
+                    || dealService.bestOrderIsPresent(deal, alert.getName())) return Order.builder().build();
             price = binanceDataHolder.getByTicker(ticker).getPrice();
         }
 
@@ -162,9 +158,13 @@ public class OrderService {
                 deal.getId(),
                 price);
 
-        if (alert.getNumber() != 0) { //TODO: Need to remake this shit
-            dealService.setPrice(deal, alert.getNumber(), price);
-            binanceDataHolder.startProfitTracker(deal, this, alertService, dealService);
+        if (alert.isOpening()) {
+            dealService.setPrice(deal, alert.getName(), price);
+            binanceDataHolder.startProfitTracker(deal,
+                    this,
+                    alertService,
+                    dealService,
+                    strategyService);
         }
         return order;
     }
@@ -179,7 +179,7 @@ public class OrderService {
 
         return Order.builder()
                 .name(alert.getName())
-                .strategy(strategy.name.toLowerCase())
+                .strategy(strategy.getName())
                 .secret(alert.getSecret())
                 .side(alert.getSide())
                 .symbol(ticker)
