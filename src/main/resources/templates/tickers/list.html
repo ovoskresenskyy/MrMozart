@@ -33,21 +33,23 @@
         <thead>
         <tr>
             <th>Name (without USDT)</th>
+            <th>Current price</th>
             <th>Action</th>
         </tr>
         </thead>
 
         <tbody>
-        <tr th:each="ticker: ${tickers}">
-            <td th:text="${ticker.name}"></td>
+        <tr th:each="entity: ${tickersAndPrices}">
+            <td th:text="${entity.ticker.name}"></td>
+            <td th:text="${entity.price}"></td>
             <td>
                 <table>
                     <tr>
-                        <form th:action="@{/tickers/{id}/updating(id=${ticker.id})}" method="GET">
+                        <form th:action="@{/tickers/{id}/updating(id=${entity.ticker.id})}" method="GET">
                             <input type="hidden" name="_method" value="GET">
                             <button class="btn btn-primary" type="submit">Update</button>
                         </form>
-                        <form th:action="@{/tickers/{id}(id=${ticker.id})}" method="POST">
+                        <form th:action="@{/tickers/{id}(id=${entity.ticker.id})}" method="POST">
                             <input type="hidden" name="_method" value="DELETE">
                             <button class="btn btn-danger" type="submit">Delete</button>
                         </form>

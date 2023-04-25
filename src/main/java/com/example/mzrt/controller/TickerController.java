@@ -16,6 +16,7 @@ public class TickerController {
     private final StrategyService strategyService;
     private final TickerService tickerService;
     private final TickerWithProfitService tickerWithProfitService;
+    private final TickerWithCurrentPriceService tickerWithCurrentPriceService;
     private final PercentProfitService percentProfitService;
 
     @Autowired
@@ -23,11 +24,13 @@ public class TickerController {
                             StrategyService strategyService,
                             TickerService tickerService,
                             TickerWithProfitService tickerWithProfitService,
+                            TickerWithCurrentPriceService tickerWithCurrentPriceService,
                             PercentProfitService percentProfitService) {
         this.userService = userService;
         this.strategyService = strategyService;
         this.tickerService = tickerService;
         this.tickerWithProfitService = tickerWithProfitService;
+        this.tickerWithCurrentPriceService = tickerWithCurrentPriceService;
         this.percentProfitService = percentProfitService;
     }
 
@@ -40,7 +43,7 @@ public class TickerController {
     public String getTickers(@PathVariable int userId,
                              Model model) {
         model.addAttribute("user", userService.findById(userId));
-        model.addAttribute("tickers", tickerService.findByUserId(userId));
+        model.addAttribute("tickersAndPrices", tickerWithCurrentPriceService.findByUserId(userId));
         return "tickers/list";
     }
 
