@@ -105,7 +105,7 @@ public class OrderService {
                                     int userId,
                                     String alertTime) {
 
-        return switch (strategy.getId()) {
+        return switch (strategy.getId()) { //TODO: rework
             case 2 -> getOrderWithDeal(
                     strategy,
                     alert,
