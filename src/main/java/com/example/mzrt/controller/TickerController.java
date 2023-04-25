@@ -77,24 +77,24 @@ public class TickerController {
     public String saveTickersProfit(@ModelAttribute("profit") PercentProfit profit) {
         percentProfitService.save(profit);
         return "redirect:/tickers/profits/"
-                + tickerService.findById(profit.getTicker()).getUserId()
+                + tickerService.findById(profit.getTickerId()).getUserId()
                 + "/"
                 + profit.getStrategyId();
     }
 
-    @GetMapping("/{name}/updating")
-    public String tickerUpdateForm(@PathVariable String name, Model model) {
-        Ticker ticker = tickerService.findById(name);
+    @GetMapping("/{id}/updating")
+    public String tickerUpdateForm(@PathVariable int id, Model model) {
+        Ticker ticker = tickerService.findById(id);
         model.addAttribute("user", userService.findById(ticker.getUserId()));
         model.addAttribute("ticker", ticker);
         return "tickers/update";
     }
 
-    @GetMapping("/profit/{tickerName}/{strategyId}/updating")
-    public String tickerProfitUpdateForm(@PathVariable String tickerName,
+    @GetMapping("/profit/{tickerId}/{strategyId}/updating")
+    public String tickerProfitUpdateForm(@PathVariable int tickerId,
                                          @PathVariable int strategyId,
                                          Model model) {
-        Ticker ticker = tickerService.findById(tickerName);
+        Ticker ticker = tickerService.findById(tickerId);
         model.addAttribute("user",
                 userService.findById(ticker.getUserId()));
         model.addAttribute("strategy",
@@ -102,14 +102,14 @@ public class TickerController {
         model.addAttribute("ticker",
                 ticker);
         model.addAttribute("profit",
-                percentProfitService.findByStrategyIdAndTicker(strategyId, tickerName));
+                percentProfitService.findByStrategyIdAndTickerId(strategyId, tickerId));
         return "tickers/profits_update";
     }
 
-    @DeleteMapping("/{name}")
-    public String deleteTicker(@PathVariable String name) {
-        Ticker ticker = tickerService.findById(name);
-        tickerService.deleteById(name);
+    @DeleteMapping("/{id}")
+    public String deleteTicker(@PathVariable int id) {
+        Ticker ticker = tickerService.findById(id);
+        tickerService.deleteById(id);
 
         BinanceDataHolder.getInstance().stopPriceTracking(ticker.getName() + "USDT");
         return "redirect:/tickers/" + ticker.getUserId();

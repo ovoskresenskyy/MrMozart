@@ -44,8 +44,8 @@
             <td>
                 <table>
                     <tr>
-                        <form th:action="@{/tickers/profit/{ticker_name}/{strategy_id}/updating
-                        (ticker_name=${row.ticker.name},strategy_id=${strategy.id})}" method="GET">
+                        <form th:action="@{/tickers/profit/{ticker_id}/{strategy_id}/updating
+                        (ticker_id=${row.ticker.id},strategy_id=${strategy.id})}" method="GET">
                             <input type="hidden" name="_method" value="GET">
                             <button class="btn btn-primary" type="submit">Update</button>
                         </form>

@@ -16,6 +16,7 @@ import org.springframework.data.relational.core.mapping.Table;
 public class Ticker {
 
     @Id
+    private int id;
     private String name;
     @Column("user_id")
     private int userId; //TODO: must be the part of Primary key

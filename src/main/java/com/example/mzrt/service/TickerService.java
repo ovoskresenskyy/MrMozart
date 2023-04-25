@@ -26,18 +26,22 @@ public class TickerService {
     }
 
     public List<Ticker> findByUserId(int userId) {
-        return tickerRepository.findByUserId(userId, Sort.by(Sort.Direction.ASC, "name"));
+        return tickerRepository.findByUserId(userId, Sort.by(Sort.Direction.ASC, "id"));
     }
 
-    public Ticker findById(String name) {
-        return tickerRepository.findById(name).orElseThrow(() -> new ResponseStatusException(NOT_FOUND));
+    public Ticker findById(int id) {
+        return tickerRepository.findById(id).orElseThrow(() -> new ResponseStatusException(NOT_FOUND));
+    }
+
+    public Ticker findByNameAndUserId(String name, int userId) {
+        return tickerRepository.findByNameAndUserId(name.replace("USDT", ""), userId);
     }
 
     public Ticker save(Ticker ticker) {
         return tickerRepository.save(ticker);
     }
 
-    public void deleteById(String name) {
-        tickerRepository.deleteById(name);
+    public void deleteById(int id) {
+        tickerRepository.deleteById(id);
     }
 }

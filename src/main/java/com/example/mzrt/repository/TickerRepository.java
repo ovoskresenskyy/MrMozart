@@ -6,11 +6,12 @@ import org.springframework.data.repository.CrudRepository;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;
-import java.util.Optional;
 
 @Repository
-public interface TickerRepository extends CrudRepository<Ticker, String> {
+public interface TickerRepository extends CrudRepository<Ticker, Integer> {
 
     List<Ticker> findAll();
     List<Ticker> findByUserId(int userId, Sort sort);
+
+    Ticker findByNameAndUserId(String name, int userId);
 }
