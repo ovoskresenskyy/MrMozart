@@ -1,8 +1,8 @@
 package com.example.mzrt.controller.TradingView;
 
-import com.example.mzrt.enums.Strategy;
 import com.example.mzrt.model.Deal;
 import com.example.mzrt.model.Order;
+import com.example.mzrt.model.Strategy;
 import com.example.mzrt.service.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
@@ -19,16 +19,19 @@ public class BlackFlagController {
     private final AlertService alertService;
     private final UserService userService;
     private final DealService dealService;
+    private final StrategyService strategyService;
 
     @Autowired
     public BlackFlagController(OrderService orderService,
                                AlertService alertService,
                                UserService userService,
-                               DealService dealService) {
+                               DealService dealService,
+                               StrategyService strategyService) {
         this.orderService = orderService;
         this.alertService = alertService;
         this.userService = userService;
         this.dealService = dealService;
+        this.strategyService = strategyService;
     }
 
     @PostMapping(value = "/{token}/{ticker}",
@@ -45,9 +48,11 @@ public class BlackFlagController {
 
         int userId = userService.findByToken(token).getId();
 
+        Strategy strategy = strategyService.findById(2);
         if (message.equalsIgnoreCase("Stop Line Change")) return sendStopLoss(userId,
                 ticker,
-                alertTime);
+                alertTime,
+                strategy);
 
         String side = getSide(message);
         if (side.equals("")) return Order.builder().build();
@@ -55,31 +60,33 @@ public class BlackFlagController {
         String alertNumber = getAlertNumber(message);
         if (alertNumber.equals("")) return Order.builder().build();
 
-        return orderService.sendOpeningOrder(alertService.findByUserIdAndName(
+        return orderService.sendOpeningOrder(alertService.findByUserIdAndStrategyIdAndName(
                         userId,
+                        2,
                         alertNumber + side),
                 ticker,
                 userId,
                 alertTime,
-                Strategy.BLACK_FLAG);
+                strategy);
     }
 
-    private Order sendStopLoss(int userId, String ticker, String alertTime) {
+    private Order sendStopLoss(int userId, String ticker, String alertTime, Strategy strategy) {
         Optional<Deal> openedDealByTicker = dealService.getOpenedDealByTicker(
                 userId,
-                Strategy.BLACK_FLAG.name.toLowerCase(),
+                strategy.getName(),
                 ticker);
 
         if (openedDealByTicker.isEmpty()) return Order.builder().build();
 
         Deal deal = openedDealByTicker.get();
-        Order order = orderService.sendClosingOrder(alertService.findByUserIdAndName(
+        Order order = orderService.sendClosingOrder(alertService.findByUserIdAndStrategyIdAndName(
                         userId,
+                        2,
                         deal.getSide().equals("sell") ? "STS" : "STL"),
                 ticker,
                 userId,
                 alertTime,
-                Strategy.BLACK_FLAG,
+                strategy,
                 deal.getId());
 
         deal.setOpen(false);
