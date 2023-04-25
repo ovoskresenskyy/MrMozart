@@ -91,10 +91,6 @@ public class OrderService {
         return orderRepository.findByDealId(dealId, Sort.by(Sort.Direction.DESC, "id"));
     }
 
-    public void deleteOrdersByUserId(int userId) {
-        orderRepository.deleteOrdersByUserId(userId);
-    }
-
     public boolean orderIsEmpty(Order order) {
         return order.getName() == null || order.getUserId() == 0;
     }
@@ -105,22 +101,23 @@ public class OrderService {
                                     int userId,
                                     String alertTime) {
 
-        return switch (strategy.getId()) { //TODO: rework
-            case 2 -> getOrderWithDeal(
-                    strategy,
-                    alert,
-                    ticker,
-                    userId,
-                    alertTime);
-            default -> createNewOrder(
-                    strategy,
-                    alert,
-                    ticker,
-                    userId,
-                    alertTime,
-                    2,
-                    0);
-        };
+        return strategy.isUsesDeal()
+                ?
+                getOrderWithDeal(
+                        strategy,
+                        alert,
+                        ticker,
+                        userId,
+                        alertTime)
+                :
+                createNewOrder(
+                        strategy,
+                        alert,
+                        ticker,
+                        userId,
+                        alertTime,
+                        2,
+                        0);
     }
 
     private Order getOrderWithDeal(Strategy strategy,
