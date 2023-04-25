@@ -45,14 +45,14 @@ public class OrderService {
                 userId,
                 alertTime);
 
-        if (!orderIsEmpty(order)) {
-            Thread t = new Thread(new OrderThreadService(restTemplate,
-                    alert,
-                    order));
-            t.start();
+        if (orderIsEmpty(order)) return order;
 
-            order.setTimestampSent(LocalDateTime.now().format(DateTimeFormatter.ofPattern("dd-MM-yyyy HH:mm:ss")));
-        }
+        Thread t = new Thread(new OrderThreadService(restTemplate,
+                alert,
+                order));
+        t.start();
+
+        order.setTimestampSent(LocalDateTime.now().format(DateTimeFormatter.ofPattern("dd-MM-yyyy HH:mm:ss")));
 
         return save(order);
     }
