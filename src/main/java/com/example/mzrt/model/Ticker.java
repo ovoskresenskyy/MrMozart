@@ -18,6 +18,8 @@ public class Ticker {
     @Id
     private int id;
     private String name;
+    @Column("full_name")
+    private String fullName;
     @Column("user_id")
     private int userId; //TODO: must be the part of Primary key
 }
