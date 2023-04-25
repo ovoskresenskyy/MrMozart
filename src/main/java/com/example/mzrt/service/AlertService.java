@@ -31,8 +31,10 @@ public class AlertService {
         return alertRepository.findById(id).orElseThrow(() -> new ResponseStatusException(NOT_FOUND));
     }
 
-    public Alert findByUserIdAndName(int userId, String name) {
-        return alertRepository.findByUserIdAndName(userId, name).orElseThrow(() -> new ResponseStatusException(NOT_FOUND));
+    public Alert findByUserIdAndStrategyIdAndName(int userId, int strategyId, String name) {
+        return alertRepository.findByUserIdAndStrategyIdAndName(userId,
+                strategyId,
+                name);
     }
 
     public Alert save(Alert alert) {
