@@ -1,6 +1,7 @@
 package com.example.mzrt.service;
 
 import com.example.mzrt.model.Deal;
+import com.example.mzrt.model.Strategy;
 import com.example.mzrt.repository.DealRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Sort;
@@ -20,11 +21,13 @@ public class DealService {
 
     private final DealRepository dealRepository;
     private final PercentProfitService percentProfitService;
+    private final TickerService tickerService;
 
     @Autowired
-    public DealService(DealRepository dealRepository, PercentProfitService percentProfitService) {
+    public DealService(DealRepository dealRepository, PercentProfitService percentProfitService, TickerService tickerService) {
         this.dealRepository = dealRepository;
         this.percentProfitService = percentProfitService;
+        this.tickerService = tickerService;
     }
 
 
@@ -40,17 +43,18 @@ public class DealService {
                                                 String strategy,
                                                 String ticker) {
         return dealRepository.getByUserIdAndStrategyAndTickerAndOpenTrue(userId,
-                strategy,
+                strategy.toLowerCase(),
                 ticker);
     }
 
     public Deal getNewDeal(int userId,
-                           String strategy,
+                           Strategy strategy,
                            String ticker,
                            String side) {
         return dealRepository.save(Deal.builder()
                 .userId(userId)
-                .strategy(strategy)
+                .strategy(strategy.getName().toLowerCase())
+                .strategyId(strategy.getId())
                 .ticker(ticker)
                 .side(side)
                 .open(true)
@@ -61,8 +65,8 @@ public class DealService {
         return dealRepository.getByUserIdAndStrategyId(userId, strategyId, Sort.by(Sort.Direction.DESC, "id"));
     }
 
-    public void setPrice(Deal deal, int alertNumber, double price) {
-        switch (alertNumber) {
+    public void setPrice(Deal deal, String alert, double price) {
+        switch (getAlertNumber(alert)) {
             case 1 -> deal.setFirstPrice(price);
             case 2 -> deal.setSecondPrice(price);
             case 3 -> deal.setThirdPrice(price);
@@ -72,7 +76,12 @@ public class DealService {
         calculateAveragePrice(deal);
     }
 
+    private int getAlertNumber(String alert) {
+        return Character.getNumericValue(alert.charAt(0)); //TODO: need to make something smarter
+    }
+
     private void calculateAveragePrice(Deal deal) {
+
         OptionalDouble average = DoubleStream.of(
                         deal.getFirstPrice(),
                         deal.getSecondPrice(),
@@ -91,9 +100,12 @@ public class DealService {
     private void calculateProfitPrice(Deal deal) {
 
         double avgPrice = deal.getAveragePrice();
-        double takeProfitPercent = percentProfitService.findByStrategyIdAndTicker(
+        double takeProfitPercent = percentProfitService.findByStrategyIdAndTickerId(
                         deal.getStrategyId(),
-                        deal.getTicker())
+                        tickerService.findByNameAndUserId(
+                                        deal.getTicker(),
+                                        deal.getUserId())
+                                .getId())
                 .getValue();
         double profit = avgPrice * takeProfitPercent / 100;
 
@@ -101,8 +113,8 @@ public class DealService {
         dealRepository.save(deal);
     }
 
-    public boolean orderIsPresent(Deal deal, int alertNumber) {
-        return switch (alertNumber) {
+    public boolean orderIsPresent(Deal deal, String alert) {
+        return switch (getAlertNumber(alert)) {
             case 1 -> deal.getFirstPrice() > 0;
             case 2 -> deal.getSecondPrice() > 0;
             case 3 -> deal.getThirdPrice() > 0;
@@ -112,8 +124,8 @@ public class DealService {
         };
     }
 
-    public boolean bestOrderIsPresent(Deal deal, int alertNumber) {
-        return switch (alertNumber) {
+    public boolean bestOrderIsPresent(Deal deal, String alert) {
+        return switch (getAlertNumber(alert)) {
             case 1 -> (deal.getSecondPrice() + deal.getThirdPrice() + deal.getFourthPrice() + deal.getFifthPrice()) > 0;
             case 2 -> (deal.getThirdPrice() + deal.getFourthPrice() + deal.getFifthPrice()) > 0;
             case 3 -> (deal.getFourthPrice() + deal.getFifthPrice()) > 0;
@@ -121,6 +133,4 @@ public class DealService {
             default -> false;
         };
     }
-
-
 }
