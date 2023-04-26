@@ -71,6 +71,7 @@ public class TickerController {
 
     @PostMapping
     public String saveTicker(@ModelAttribute("ticker") Ticker ticker) {
+        ticker.setName(ticker.getName().toUpperCase());
         ticker.setFullName(ticker.getName() + "USDT");
         tickerService.save(ticker);
         BinanceDataHolder.getInstance().startPriceTracking(ticker.getFullName());
