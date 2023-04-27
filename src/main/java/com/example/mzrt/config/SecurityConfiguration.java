@@ -35,6 +35,8 @@ public class SecurityConfiguration {
                 .authorizeHttpRequests((authorize) ->
                         authorize
                                 .requestMatchers("/login",
+                                        "/odsn",
+                                        "/odsn/**",
                                         "/alert",
                                         "/alert/**",
                                         "/bf",
