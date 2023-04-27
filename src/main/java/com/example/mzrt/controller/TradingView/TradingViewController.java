@@ -39,4 +39,10 @@ public class TradingViewController {
         };
     }
 
+    @PostMapping("/test")
+    public Order getTestAlert() {
+        return Order.builder()
+                .name("test")
+                .build();
+    }
 }
