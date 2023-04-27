@@ -53,7 +53,7 @@ public class ProfitTrackerThreadService implements Runnable {
 //            takeProfit = price <= profitPrice;
             takeProfit = currentPrice <= deal.getProfitPrice();
         }
-        sendTakeProfit("STP5", currentPrice);
+        if (takeProfit) sendTakeProfit("STP5", currentPrice);
     }
 
     private void longTakeProfit() {
@@ -72,7 +72,7 @@ public class ProfitTrackerThreadService implements Runnable {
 //            takeProfit = price >= profitPrice;
             takeProfit = currentPrice >= deal.getProfitPrice();
         }
-        sendTakeProfit("LTP5", currentPrice);
+        if (takeProfit) sendTakeProfit("LTP5", currentPrice);
     }
 
     private void sendTakeProfit(String alert, double currentPrice) {
@@ -92,6 +92,7 @@ public class ProfitTrackerThreadService implements Runnable {
 
         deal.setOpen(false);
         deal.setClosingPrice(currentPrice);
+        deal.setClosingAlert(alert);
         dealService.save(deal);
 
         BinanceDataHolder dataHolder = BinanceDataHolder.getInstance();
