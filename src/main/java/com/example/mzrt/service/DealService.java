@@ -35,6 +35,10 @@ public class DealService {
         return dealRepository.findById(id).orElseThrow(() -> new ResponseStatusException(NOT_FOUND));
     }
 
+    public List<Deal> findAllOpened(){
+        return dealRepository.findByOpenTrue();
+    }
+
     public Deal save(Deal deal) {
         return dealRepository.save(deal);
     }
