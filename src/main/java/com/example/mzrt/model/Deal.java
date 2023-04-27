@@ -40,6 +40,8 @@ public class Deal {
     private double profitPrice;
     @Column("closing_price")
     private double closingPrice;
+    @Column("closing_alert")
+    private String closingAlert;
     private boolean open;
 
 }

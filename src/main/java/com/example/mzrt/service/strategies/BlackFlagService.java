@@ -66,6 +66,7 @@ public class BlackFlagService {
         if (openedDealByTicker.isEmpty()) return Order.builder().build();
 
         Deal deal = openedDealByTicker.get();
+        String alert = deal.getSide().equals("sell") ? "SSL" : "LSL";
 
         BinanceDataHolder dataHolder = BinanceDataHolder.getInstance();
         double currentPrice = dataHolder.getByTicker(ticker).getPrice();
@@ -73,7 +74,7 @@ public class BlackFlagService {
         Order order = orderService.sendClosingOrder(alertService.findByUserIdAndStrategyIdAndName(
                         userId,
                         2,
-                        deal.getSide().equals("sell") ? "STS" : "STL"),
+                        alert),
                 ticker,
                 userId,
                 alertTime,
@@ -83,6 +84,7 @@ public class BlackFlagService {
 
         deal.setOpen(false);
         deal.setClosingPrice(currentPrice);
+        deal.setClosingAlert(alert);
         dealService.save(deal);
 
         dataHolder.stopProfitTracker(deal.getId());

@@ -41,6 +41,8 @@
             <th>3 price</th>
             <th>Average price</th>
             <th>Profit price</th>
+            <th>Closing price</th>
+            <th>Closing alert</th>
             <th>Open</th>
             <th>Orders</th>
         </tr>
@@ -56,6 +58,8 @@
             <td th:text="${deal.thirdPrice}"></td>
             <td th:text="${deal.averagePrice}"></td>
             <td th:text="${deal.profitPrice}"></td>
+            <td th:text="${deal.closingPrice}"></td>
+            <td th:text="${deal.closingAlert}"></td>
             <td th:text="${deal.open}"></td>
             <td>
                 <form th:action="@{/orders/{user_id}/deal/{deal_id}/strategy/{strategy_id}
