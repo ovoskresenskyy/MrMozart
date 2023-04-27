@@ -10,7 +10,8 @@ public class BinanceDataHolder {
     private static BinanceDataHolder instance;
 
     public final Map<String, BinancePriceTracker> holder = new HashMap<>();
-    public final Map<Integer, Thread> profitTrackerHolder = new HashMap<>();
+    public final Map<Integer, Thread> profitTreadsHolder = new HashMap<>();
+    public final Map<Integer, ProfitTrackerThreadService> profitTrackerHolder = new HashMap<>();
 
     public static synchronized BinanceDataHolder getInstance() {
         if (instance == null) {
@@ -43,24 +44,32 @@ public class BinanceDataHolder {
                                    StrategyService strategyService) {
 
         if (!profitTrackerHolder.containsKey(deal.getId())) {
-            Thread profitTracker = new Thread(new ProfitTrackerThreadService(
+
+            ProfitTrackerThreadService profitTrackerThreadService = new ProfitTrackerThreadService(
                     getByTicker(deal.getTicker()),
                     deal,
                     orderService,
                     alertService,
                     dealService,
-                    strategyService));
+                    strategyService);
+            Thread profitTracker = new Thread(profitTrackerThreadService);
             profitTracker.start();
 
-            profitTrackerHolder.put(deal.getId(), profitTracker);
+            profitTrackerHolder.put(deal.getId(), profitTrackerThreadService);
+            profitTreadsHolder.put(deal.getId(), profitTracker);
         }
     }
 
     public void stopProfitTracker(int dealId) {
         if (profitTrackerHolder.containsKey(dealId)) {
-            Thread thread = profitTrackerHolder.get(dealId);
-            thread.interrupt();
+            ProfitTrackerThreadService profitTrackerThreadService = profitTrackerHolder.get(dealId);
+            profitTrackerThreadService.setKeepTracking(false);
             profitTrackerHolder.remove(dealId);
+        }
+        if (profitTreadsHolder.containsKey(dealId)) {
+            Thread thread = profitTreadsHolder.get(dealId);
+            thread.interrupt();
+            profitTreadsHolder.remove(dealId);
         }
     }
 }
