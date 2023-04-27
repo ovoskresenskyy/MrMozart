@@ -62,7 +62,8 @@ public class OrderService {
                                   int userId,
                                   String alertTime,
                                   Strategy strategy,
-                                  int dealId) {
+                                  int dealId,
+                                  double price) {
 
         Order order = createNewOrder(strategy,
                 alert,
@@ -70,7 +71,7 @@ public class OrderService {
                 userId,
                 alertTime,
                 dealId,
-                0);
+                price);
 
         Thread t = new Thread(new OrderThreadService(restTemplate, alert, order));
         t.start();

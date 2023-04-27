@@ -1,6 +1,5 @@
 package com.example.mzrt.model;
 
-import com.example.mzrt.enums.Strategy;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;

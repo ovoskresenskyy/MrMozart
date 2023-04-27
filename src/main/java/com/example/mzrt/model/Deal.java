@@ -38,6 +38,8 @@ public class Deal {
     private double averagePrice;
     @Column("profit_price")
     private double profitPrice;
+    @Column("closing_price")
+    private double closingPrice;
     private boolean open;
 
 }

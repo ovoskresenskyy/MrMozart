@@ -66,6 +66,10 @@ public class BlackFlagService {
         if (openedDealByTicker.isEmpty()) return Order.builder().build();
 
         Deal deal = openedDealByTicker.get();
+
+        BinanceDataHolder dataHolder = BinanceDataHolder.getInstance();
+        double currentPrice = dataHolder.getByTicker(ticker).getPrice();
+
         Order order = orderService.sendClosingOrder(alertService.findByUserIdAndStrategyIdAndName(
                         userId,
                         2,
@@ -74,12 +78,13 @@ public class BlackFlagService {
                 userId,
                 alertTime,
                 strategy,
-                deal.getId());
+                deal.getId(),
+                currentPrice);
 
         deal.setOpen(false);
+        deal.setClosingPrice(currentPrice);
         dealService.save(deal);
 
-        BinanceDataHolder dataHolder = BinanceDataHolder.getInstance();
         dataHolder.stopProfitTracker(deal.getId());
 
         return order;
