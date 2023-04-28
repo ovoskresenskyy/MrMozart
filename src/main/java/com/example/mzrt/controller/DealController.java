@@ -1,8 +1,7 @@
 package com.example.mzrt.controller;
 
-import com.example.mzrt.service.DealService;
-import com.example.mzrt.service.StrategyService;
-import com.example.mzrt.service.UserService;
+import com.example.mzrt.model.Deal;
+import com.example.mzrt.service.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -41,5 +40,28 @@ public class DealController {
         model.addAttribute("deals", dealService.getByUserIdAndStrategyId(userId, strategyId));
         return "deals/list";
     }
+
+    @GetMapping("/close/{dealId}")
+    public String getDeals(@PathVariable int dealId, Model model) {
+
+        Deal deal = dealService.findById(dealId);
+
+        BinanceDataHolder dataHolder = BinanceDataHolder.getInstance();
+        deal.setOpen(false);
+        deal.setClosingPrice(dataHolder.getByTicker(deal.getTicker()).getPrice());
+        deal.setClosingAlert("Manual");
+        dealService.save(deal);
+        dataHolder.stopProfitTracker(deal.getId());
+
+        int userId = deal.getUserId();
+        int strategyId = deal.getStrategyId();
+        model.addAttribute("user", userService.findById(userId));
+        model.addAttribute("strategy", strategyService.findById(strategyId));
+        model.addAttribute("deals", dealService.getByUserIdAndStrategyId(userId, strategyId));
+
+        return "deals/list";
+    }
+
+
 
 }

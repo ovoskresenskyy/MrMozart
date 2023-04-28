@@ -45,6 +45,7 @@
             <th>Closing alert</th>
             <th>Open</th>
             <th>Orders</th>
+            <th>Action</th>
         </tr>
         </thead>
 
@@ -68,6 +69,12 @@
                 strategy_id=${strategy.id})}" method="GET">
                     <input type="hidden" name="_method" value="GET">
                     <button class="btn btn-primary" type="submit">Show orders</button>
+                </form>
+            </td>
+            <td>
+                <form th:action="@{/deals/close/{deal_id}(deal_id=${deal.id})}" method="GET">
+                    <input type="hidden" name="_method" value="GET">
+                    <button class="btn btn-danger" type="submit">Close</button>
                 </form>
             </td>
         </tr>
