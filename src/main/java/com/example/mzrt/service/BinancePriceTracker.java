@@ -6,13 +6,14 @@ public class BinancePriceTracker {
 
     private double price;
     private int streamId;
-    private final UMWebsocketClientImpl client;
+    private UMWebsocketClientImpl client;
 
     public BinancePriceTracker() {
-        this.client = new UMWebsocketClientImpl();
+        this.price = 0;
     }
 
     public void startTracking(String ticker) {
+        this.client = new UMWebsocketClientImpl();
         this.streamId = client.aggTradeStream(ticker, ((event) -> {
             this.price = getPriceFromEvent(event);
         }));
