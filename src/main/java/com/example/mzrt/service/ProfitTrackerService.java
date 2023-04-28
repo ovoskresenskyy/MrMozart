@@ -5,7 +5,8 @@ import com.example.mzrt.model.Deal;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 
-public class ProfitTrackerThreadService implements Runnable {
+public class ProfitTrackerService implements Runnable {
+//public class ProfitTrackerService {
 
     private final BinancePriceTracker binancePriceTracker;
     private final Deal deal;
@@ -15,12 +16,12 @@ public class ProfitTrackerThreadService implements Runnable {
     private final StrategyService strategyService;
     private boolean keepTracking;
 
-    public ProfitTrackerThreadService(BinancePriceTracker binancePriceTracker,
-                                      Deal deal,
-                                      OrderService orderService,
-                                      AlertService alertService,
-                                      DealService dealService,
-                                      StrategyService strategyService) {
+    public ProfitTrackerService(BinancePriceTracker binancePriceTracker,
+                                Deal deal,
+                                OrderService orderService,
+                                AlertService alertService,
+                                DealService dealService,
+                                StrategyService strategyService) {
         this.binancePriceTracker = binancePriceTracker;
         this.deal = deal;
         this.orderService = orderService;
@@ -32,9 +33,8 @@ public class ProfitTrackerThreadService implements Runnable {
 
     @Override
     public void run() {
-        String side = deal.getSide();
-        if (side.equals("sell")) shortTakeProfit();
-        else if (side.equals("buy")) longTakeProfit();
+        if (deal.getSide().equals("sell")) shortTakeProfit();
+        else longTakeProfit();
     }
 
     private void shortTakeProfit() {
@@ -42,16 +42,9 @@ public class ProfitTrackerThreadService implements Runnable {
         double currentPrice = 0;
         while (!takeProfit && keepTracking) {
             currentPrice = binancePriceTracker.getPrice();
-//            double profitPrice = deal.getProfitPrice();
-//
-//            System.out.println(deal.getTicker()
-//                    + " Short. Current price ("
-//                    + price
-//                    + ") > profit price ("
-//                    + profitPrice
-//                    + ")");
-//            takeProfit = price <= profitPrice;
-            takeProfit = currentPrice <= deal.getProfitPrice();
+            if (currentPrice == 0) continue;
+            double profitPrice = dealService.findById(deal.getId()).getProfitPrice();
+            takeProfit = currentPrice <= profitPrice;
         }
         if (takeProfit) sendTakeProfit("STP5", currentPrice);
     }
@@ -61,16 +54,9 @@ public class ProfitTrackerThreadService implements Runnable {
         double currentPrice = 0;
         while (!takeProfit && keepTracking) {
             currentPrice = binancePriceTracker.getPrice();
-//            double profitPrice = deal.getProfitPrice();
-//
-//            System.out.println(deal.getTicker()
-//                    + " Long. Current price ("
-//                    + price
-//                    + ") < profit price ("
-//                    + profitPrice
-//                    + ")");
-//            takeProfit = price >= profitPrice;
-            takeProfit = currentPrice >= deal.getProfitPrice();
+            double profitPrice = dealService.findById(deal.getId()).getProfitPrice();
+            if (profitPrice == 0) continue;
+            takeProfit = currentPrice >= profitPrice;
         }
         if (takeProfit) sendTakeProfit("LTP5", currentPrice);
     }

@@ -11,7 +11,7 @@ public class BinanceDataHolder {
 
     public final Map<String, BinancePriceTracker> holder = new HashMap<>();
     public final Map<Integer, Thread> profitTreadsHolder = new HashMap<>();
-    public final Map<Integer, ProfitTrackerThreadService> profitTrackerHolder = new HashMap<>();
+    public final Map<Integer, ProfitTrackerService> profitTrackerHolder = new HashMap<>();
 
     public static synchronized BinanceDataHolder getInstance() {
         if (instance == null) {
@@ -43,26 +43,27 @@ public class BinanceDataHolder {
                                    DealService dealService,
                                    StrategyService strategyService) {
 
+        if (deal.getTicker() == null) return;
         if (!profitTrackerHolder.containsKey(deal.getId())) {
 
-            ProfitTrackerThreadService profitTrackerThreadService = new ProfitTrackerThreadService(
+            ProfitTrackerService profitTrackerService = new ProfitTrackerService(
                     getByTicker(deal.getTicker()),
                     deal,
                     orderService,
                     alertService,
                     dealService,
                     strategyService);
-            Thread profitTracker = new Thread(profitTrackerThreadService);
+            Thread profitTracker = new Thread(profitTrackerService);
             profitTracker.start();
 
-            profitTrackerHolder.put(deal.getId(), profitTrackerThreadService);
+            profitTrackerHolder.put(deal.getId(), profitTrackerService);
             profitTreadsHolder.put(deal.getId(), profitTracker);
         }
     }
 
     public void stopProfitTracker(int dealId) {
         if (profitTrackerHolder.containsKey(dealId)) {
-            ProfitTrackerThreadService profitTrackerThreadService = profitTrackerHolder.get(dealId);
+            ProfitTrackerService profitTrackerThreadService = profitTrackerHolder.get(dealId);
             profitTrackerThreadService.setKeepTracking(false);
             profitTrackerHolder.remove(dealId);
         }
