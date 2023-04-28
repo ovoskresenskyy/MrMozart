@@ -8,6 +8,8 @@ import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.springframework.web.server.ResponseStatusException;
 
+import java.math.BigDecimal;
+import java.math.RoundingMode;
 import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
@@ -35,7 +37,7 @@ public class DealService {
         return dealRepository.findById(id).orElseThrow(() -> new ResponseStatusException(NOT_FOUND));
     }
 
-    public List<Deal> findAllOpened(){
+    public List<Deal> findAllOpened() {
         return dealRepository.findByOpenTrue();
     }
 
@@ -101,7 +103,11 @@ public class DealService {
                 .filter(Objects::nonNull)
                 .average();
 
-        deal.setAveragePrice(average.isPresent() ? average.getAsDouble() : 0);
+        deal.setAveragePrice(average.isPresent()
+                ? BigDecimal.valueOf(average.getAsDouble())
+                .setScale(4, RoundingMode.FLOOR)
+                .doubleValue()
+                : 0);
 
         calculateProfitPrice(deal);
     }
@@ -116,7 +122,9 @@ public class DealService {
                                         deal.getUserId())
                                 .getId())
                 .getValue();
-        double profit = avgPrice * takeProfitPercent / 100;
+        double profit = BigDecimal.valueOf(avgPrice * takeProfitPercent / 100)
+                .setScale(4, RoundingMode.FLOOR)
+                .doubleValue();
 
         deal.setProfitPrice(deal.getSide().equals("buy") ? avgPrice + profit : avgPrice - profit);
         dealRepository.save(deal);
