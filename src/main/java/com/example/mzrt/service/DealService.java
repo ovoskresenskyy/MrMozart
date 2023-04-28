@@ -81,7 +81,12 @@ public class DealService {
     }
 
     private int getAlertNumber(String alert) {
-        return Character.getNumericValue(alert.charAt(0)); //TODO: need to make something smarter
+        if (alert.equals("1S") || alert.equals("1L")) return 1;
+        if (alert.equals("2S") || alert.equals("2L")) return 2;
+        if (alert.equals("3S") || alert.equals("3L")) return 3;
+        if (alert.equals("4S") || alert.equals("4L")) return 4;
+        if (alert.equals("5S") || alert.equals("5L")) return 5;
+        return 0;
     }
 
     private void calculateAveragePrice(Deal deal) {
