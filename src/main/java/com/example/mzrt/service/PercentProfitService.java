@@ -2,6 +2,7 @@ package com.example.mzrt.service;
 
 import com.example.mzrt.model.PercentProfit;
 import com.example.mzrt.repository.PercentProfitsRepository;
+import org.springframework.context.annotation.Profile;
 import org.springframework.stereotype.Service;
 
 @Service
