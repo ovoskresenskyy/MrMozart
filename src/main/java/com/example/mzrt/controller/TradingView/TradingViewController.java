@@ -20,13 +20,13 @@ public class TradingViewController {
         this.mozartService = mozartService;
     }
 
-    @PostMapping(value = "/{token}/{strategy}/{ticker}",
+    @PostMapping(value = "/{token}/{strategy}/{contract}/{ticker}",
             consumes = {"text/plain", "application/*"},
             headers = "content-type=text/json",
             produces = "application/json")
     public Order handleAlert(@PathVariable(value = "token") String token,
                              @PathVariable(value = "strategy") String strategy,
-                             @PathVariable(value = "arbitrage") String arbitrage,
+                             @PathVariable(value = "contract") String contract,
                              @PathVariable(value = "ticker") String ticker,
                              @RequestBody String message) {
 
