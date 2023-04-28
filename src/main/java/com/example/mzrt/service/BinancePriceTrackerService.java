@@ -43,6 +43,7 @@ public class BinancePriceTrackerService {
         BinanceDataHolder dataHolder = BinanceDataHolder.getInstance();
 
         for (Deal deal : dealService.findAllOpened()) {
+            if (deal.getStrategyId() == 1) continue;
             dataHolder.startProfitTracker(deal,
                     orderService,
                     alertService,
