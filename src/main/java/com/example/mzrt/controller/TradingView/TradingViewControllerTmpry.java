@@ -38,11 +38,4 @@ public class TradingViewControllerTmpry {
             default -> Order.builder().build();
         };
     }
-
-    @PostMapping("/test")
-    public Order getTestAlert() {
-        return Order.builder()
-                .name("test")
-                .build();
-    }
 }
