@@ -26,10 +26,11 @@ public class TradingViewController {
             produces = "application/json")
     public Order handleAlert(@PathVariable(value = "token") String token,
                              @PathVariable(value = "strategy") String strategy,
+                             @PathVariable(value = "arbitrage") String arbitrage,
                              @PathVariable(value = "ticker") String ticker,
                              @RequestBody String message) {
 
-        ticker = ticker.toUpperCase() + "USDT";
+        ticker = ticker.toUpperCase();
         String alertTime = LocalDateTime.now().format(DateTimeFormatter.ofPattern("dd-MM-yyyy HH:mm:ss"));
 
         return switch (strategy) {

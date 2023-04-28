@@ -72,9 +72,8 @@ public class TickerController {
     @PostMapping
     public String saveTicker(@ModelAttribute("ticker") Ticker ticker) {
         ticker.setName(ticker.getName().toUpperCase());
-        ticker.setFullName(ticker.getName() + "USDT");
         tickerService.save(ticker);
-        BinanceDataHolder.getInstance().startPriceTracking(ticker.getFullName());
+        BinanceDataHolder.getInstance().startPriceTracking(ticker.getName());
         return "redirect:/tickers/" + ticker.getUserId();
     }
 
@@ -116,7 +115,7 @@ public class TickerController {
         Ticker ticker = tickerService.findById(id);
         tickerService.deleteById(id);
 
-        BinanceDataHolder.getInstance().stopPriceTracking(ticker.getFullName());
+        BinanceDataHolder.getInstance().stopPriceTracking(ticker.getName());
         return "redirect:/tickers/" + ticker.getUserId();
     }
 

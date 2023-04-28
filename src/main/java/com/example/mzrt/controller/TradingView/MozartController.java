@@ -41,7 +41,7 @@ public class MozartController {
                           @RequestBody String alertText) {
 
         String alertTime = LocalDateTime.now().format(DateTimeFormatter.ofPattern("dd-MM-yyyy HH:mm:ss"));
-        ticker = ticker.toUpperCase() + "USDT";
+        ticker = ticker.toUpperCase();
 
         int userId = userService.findByToken(token).getId();
         Strategy strategy = strategyService.findById(1);

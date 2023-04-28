@@ -34,9 +34,7 @@ public class TickerService {
     }
 
     public Ticker findByNameAndUserId(String name, int userId) {
-        return tickerRepository.findByNameAndUserId(name
-                        .replace("USDT", "").toUpperCase(),
-                userId);
+        return tickerRepository.findByNameAndUserId(name, userId);
     }
 
     public Ticker save(Ticker ticker) {

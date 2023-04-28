@@ -35,7 +35,7 @@ public class BinancePriceTrackerService {
 
         List<Ticker> tickers = tickerService.findAll();
         for (Ticker ticker : tickers) {
-            dataHolder.startPriceTracking(ticker.getFullName());
+            dataHolder.startPriceTracking(ticker.getName());
         }
     }
 
