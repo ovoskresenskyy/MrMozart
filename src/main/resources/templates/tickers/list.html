@@ -33,7 +33,8 @@
         <thead>
         <tr>
             <th>Name</th>
-            <th>Current price</th>
+            <th>Current futures price</th>
+            <th>Current spot price</th>
             <th>Action</th>
         </tr>
         </thead>
@@ -41,7 +42,8 @@
         <tbody>
         <tr th:each="entity: ${tickersAndPrices}">
             <td th:text="${entity.ticker.name}"></td>
-            <td th:text="${entity.price}"></td>
+            <td th:text="${entity.futuresPrice}"></td>
+            <td th:text="${entity.spotPrice}"></td>
             <td>
                 <table>
                     <tr>

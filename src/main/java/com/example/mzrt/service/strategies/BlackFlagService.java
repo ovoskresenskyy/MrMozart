@@ -69,7 +69,7 @@ public class BlackFlagService {
         String alert = deal.getSide().equals("sell") ? "SSL" : "LSL";
 
         BinanceDataHolder dataHolder = BinanceDataHolder.getInstance();
-        double currentPrice = dataHolder.getByTicker(ticker).getPrice();
+        double currentPrice = dataHolder.getFuturesByTicker(ticker).getPrice();
 
         Order order = orderService.sendClosingOrder(alertService.findByUserIdAndStrategyIdAndName(
                         userId,

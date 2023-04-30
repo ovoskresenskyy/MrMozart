@@ -1,6 +1,7 @@
 package com.example.mzrt.service;
 
 import com.example.mzrt.model.Deal;
+import com.example.mzrt.service.binance.BinanceFuturesPriceTracker;
 
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
@@ -8,7 +9,7 @@ import java.time.format.DateTimeFormatter;
 public class ProfitTrackerService implements Runnable {
 //public class ProfitTrackerService {
 
-    private final BinancePriceTracker binancePriceTracker;
+    private final BinanceFuturesPriceTracker binancePriceTracker;
     private final Deal deal;
     private final DealService dealService;
     private final OrderService orderService;
@@ -16,7 +17,7 @@ public class ProfitTrackerService implements Runnable {
     private final StrategyService strategyService;
     private boolean keepTracking;
 
-    public ProfitTrackerService(BinancePriceTracker binancePriceTracker,
+    public ProfitTrackerService(BinanceFuturesPriceTracker binancePriceTracker,
                                 Deal deal,
                                 OrderService orderService,
                                 AlertService alertService,

@@ -25,7 +25,8 @@ public class TickerWithCurrentPriceService {
             tickersAndPrices.add(
                     TickerWithCurrentPrice.builder()
                             .ticker(ticker)
-                            .price(binanceDataHolder.getByTicker(ticker.getName()).getPrice())
+                            .futuresPrice(binanceDataHolder.getFuturesByTicker(ticker.getName()).getPrice())
+                            .spotPrice(binanceDataHolder.getSpotByTicker(ticker.getName()).getPrice())
                             .build());
         }
         return tickersAndPrices;

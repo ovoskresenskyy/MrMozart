@@ -144,7 +144,7 @@ public class OrderService {
         if (alert.isOpening()) {
             if (dealService.orderIsPresent(deal, alert.getName())
                     || dealService.bestOrderIsPresent(deal, alert.getName())) return Order.builder().build();
-            price = binanceDataHolder.getByTicker(ticker).getPrice();
+            price = binanceDataHolder.getFuturesByTicker(ticker).getPrice();
         }
 
         Order order = createNewOrder(

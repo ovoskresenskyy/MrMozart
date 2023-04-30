@@ -48,7 +48,7 @@ public class DealController {
 
         BinanceDataHolder dataHolder = BinanceDataHolder.getInstance();
         deal.setOpen(false);
-        deal.setClosingPrice(dataHolder.getByTicker(deal.getTicker()).getPrice());
+        deal.setClosingPrice(dataHolder.getFuturesByTicker(deal.getTicker()).getPrice());
         deal.setClosingAlert("Manual");
         dealService.save(deal);
         dataHolder.stopProfitTracker(deal.getId());

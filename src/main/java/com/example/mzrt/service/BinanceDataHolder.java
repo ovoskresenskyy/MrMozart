@@ -1,6 +1,8 @@
 package com.example.mzrt.service;
 
 import com.example.mzrt.model.Deal;
+import com.example.mzrt.service.binance.BinanceFuturesPriceTracker;
+import com.example.mzrt.service.binance.BinanceSpotPriceTracker;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -8,33 +10,48 @@ import java.util.Map;
 public class BinanceDataHolder {
 
     private static BinanceDataHolder instance;
-
-    public final Map<String, BinancePriceTracker> holder = new HashMap<>();
+    public final Map<String, BinanceFuturesPriceTracker> futuresPriceHolder = new HashMap<>();
+    public final Map<String, BinanceSpotPriceTracker> spotPriceHolder = new HashMap<>();
     public final Map<Integer, Thread> profitTreadsHolder = new HashMap<>();
     public final Map<Integer, ProfitTrackerService> profitTrackerHolder = new HashMap<>();
 
     public static synchronized BinanceDataHolder getInstance() {
-        if (instance == null) {
-            instance = new BinanceDataHolder();
-        }
+        if (instance == null) instance = new BinanceDataHolder();
         return instance;
     }
 
     public void startPriceTracking(String ticker) {
-        if (holder.containsKey(ticker)) return;
+        startFuturesTracking(ticker);
+        startSpotTracking(ticker);
+    }
 
-        BinancePriceTracker binancePriceProvider = new BinancePriceTracker();
-        binancePriceProvider.startTracking(ticker);
-        holder.put(ticker, binancePriceProvider);
+    private void startFuturesTracking(String ticker){
+        if (futuresPriceHolder.containsKey(ticker)) return;
+        BinanceFuturesPriceTracker futuresPriceTracker = new BinanceFuturesPriceTracker();
+        futuresPriceTracker.startTracking(ticker);
+        futuresPriceHolder.put(ticker, futuresPriceTracker);
+    }
+
+    private void startSpotTracking(String ticker){
+        if (spotPriceHolder.containsKey(ticker)) return;
+        BinanceSpotPriceTracker spotPriceTracker = new BinanceSpotPriceTracker();
+        spotPriceTracker.startTracking(ticker);
+        spotPriceHolder.put(ticker, spotPriceTracker);
     }
 
     public void stopPriceTracking(String ticker) {
-        getByTicker(ticker).closeConnection();
-        holder.remove(ticker); //TODO: what if few users use one ticker, and one of them decide to delete it? HAHA
+        getFuturesByTicker(ticker).closeConnection();
+        futuresPriceHolder.remove(ticker); //TODO: what if few users use one ticker, and one of them decide to delete it? HAHA
+
+        getSpotByTicker(ticker).closeConnection();
+        spotPriceHolder.remove(ticker); //TODO: what if few users use one ticker, and one of them decide to delete it? HAHA
     }
 
-    public BinancePriceTracker getByTicker(String ticker) {
-        return holder.get(ticker);
+    public BinanceFuturesPriceTracker getFuturesByTicker(String ticker) {
+        return futuresPriceHolder.get(ticker);
+    }
+    public BinanceSpotPriceTracker getSpotByTicker(String ticker) {
+        return spotPriceHolder.get(ticker);
     }
 
     public void startProfitTracker(Deal deal,
@@ -47,7 +64,7 @@ public class BinanceDataHolder {
         if (!profitTrackerHolder.containsKey(deal.getId())) {
 
             ProfitTrackerService profitTrackerService = new ProfitTrackerService(
-                    getByTicker(deal.getTicker()),
+                    getFuturesByTicker(deal.getTicker()),
                     deal,
                     orderService,
                     alertService,

@@ -12,5 +12,6 @@ import lombok.NoArgsConstructor;
 public class TickerWithCurrentPrice {
 
     private Ticker ticker;
-    private double price;
+    private double futuresPrice;
+    private double spotPrice;
 }
