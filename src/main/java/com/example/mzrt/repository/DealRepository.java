@@ -15,7 +15,6 @@ public interface DealRepository extends CrudRepository<Deal, Integer> {
                                                                      String strategy,
                                                                      String ticker);
 
-    List<Deal> getByUserIdAndStrategyId(int userId, int strategyId, Sort sort);
-
+    List<Deal> getByUserIdAndStrategyIdAndOpen(int userId, int strategyId, boolean open, Sort sort);
     List<Deal> findByOpenTrue();
 }

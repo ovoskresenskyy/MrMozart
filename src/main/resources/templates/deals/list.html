@@ -39,7 +39,7 @@
             <th>1 price</th>
             <th>2 price</th>
             <th>3 price</th>
-            <th>Average price</th>
+            <th>Avg price</th>
             <th>Profit price</th>
             <th>Closing price</th>
             <th>Closing alert</th>
@@ -61,7 +61,7 @@
             <td th:text="${deal.profitPrice}"></td>
             <td th:text="${deal.closingPrice}"></td>
             <td th:text="${deal.closingAlert}"></td>
-            <td th:text="${deal.open}"></td>
+            <td th:style="${deal.open} ? 'background-color: #00ff00' : 'background-color: #808080'"></td>
             <td>
                 <form th:action="@{/orders/{user_id}/deal/{deal_id}/strategy/{strategy_id}
                 (user_id=${user.id},
@@ -72,7 +72,7 @@
                 </form>
             </td>
             <td>
-                <form th:action="@{/deals/close/{deal_id}(deal_id=${deal.id})}" method="GET">
+                <form th:if="${deal.open}" th:action="@{/deals/close/{deal_id}(deal_id=${deal.id})}" method="GET">
                     <input type="hidden" name="_method" value="GET">
                     <button class="btn btn-danger" type="submit">Close</button>
                 </form>
@@ -80,6 +80,7 @@
         </tr>
         </tbody>
     </table>
+
 </div>
 </body>
 </html>

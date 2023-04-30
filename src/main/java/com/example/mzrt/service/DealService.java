@@ -67,8 +67,11 @@ public class DealService {
                 .build());
     }
 
-    public List<Deal> getByUserIdAndStrategyId(int userId, int strategyId) {
-        return dealRepository.getByUserIdAndStrategyId(userId, strategyId, Sort.by(Sort.Direction.DESC, "id"));
+    public List<Deal> getByUserIdAndStrategyId(int userId, int strategyId, boolean isOpen) {
+        return dealRepository.getByUserIdAndStrategyIdAndOpen(userId,
+                strategyId,
+                isOpen,
+                Sort.by(Sort.Direction.DESC, "id"));
     }
 
     public void setPrice(Deal deal, String alert, double price) {

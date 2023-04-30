@@ -9,6 +9,8 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 
+import java.util.List;
+
 @Controller
 @RequestMapping("/deals")
 public class DealController {
@@ -37,7 +39,9 @@ public class DealController {
                            Model model) {
         model.addAttribute("user", userService.findById(userId));
         model.addAttribute("strategy", strategyService.findById(strategyId));
-        model.addAttribute("deals", dealService.getByUserIdAndStrategyId(userId, strategyId));
+        List<Deal> deals = dealService.getByUserIdAndStrategyId(userId, strategyId, true);
+        deals.addAll(dealService.getByUserIdAndStrategyId(userId, strategyId, false));
+        model.addAttribute("deals", deals);
         return "deals/list";
     }
 
@@ -55,10 +59,11 @@ public class DealController {
 
         int userId = deal.getUserId();
         int strategyId = deal.getStrategyId();
-        model.addAttribute("user", userService.findById(userId));
+        model.addAttribute("user",userService.findById(userId));
         model.addAttribute("strategy", strategyService.findById(strategyId));
-        model.addAttribute("deals", dealService.getByUserIdAndStrategyId(userId, strategyId));
-
+        List<Deal> deals = dealService.getByUserIdAndStrategyId(userId, strategyId, true);
+        deals.addAll(dealService.getByUserIdAndStrategyId(userId, strategyId, false));
+        model.addAttribute("deals", deals);
         return "deals/list";
     }
 
