@@ -35,12 +35,8 @@ public class SecurityConfiguration {
                 .authorizeHttpRequests((authorize) ->
                         authorize
                                 .requestMatchers("/login",
-                                        "/odsn",
                                         "/odsn/**",
-                                        "/alert",
-                                        "/alert/**",
-                                        "/bf",
-                                        "/bf/**"
+                                        "/alert/**"
                                 ).permitAll()
                                 .requestMatchers("/orders/**",
                                         "/users/**",
