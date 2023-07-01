@@ -114,7 +114,7 @@ public class DealService {
 
     private void calculateAveragePrice(Deal deal) {
 
-        OptionalDouble average = DoubleStream.of(
+        OptionalDouble averageOptional = DoubleStream.of(
                         deal.getFirstPrice(),
                         deal.getSecondPrice(),
                         deal.getThirdPrice(),
@@ -124,11 +124,8 @@ public class DealService {
                 .filter(Objects::nonNull)
                 .average();
 
-        deal.setAveragePrice(average.isPresent()
-                ? BigDecimal.valueOf(average.getAsDouble())
-                .setScale(4, RoundingMode.FLOOR)
-                .doubleValue()
-                : 0);
+        double averagePrice = averageOptional.isPresent() ? roundPrice(averageOptional.getAsDouble()) : 0;
+        deal.setAveragePrice(averagePrice);
 
         calculateProfitPrice(deal);
     }
@@ -144,17 +141,30 @@ public class DealService {
                                         deal.getUserId())
                                 .getId())
                 .getValue();
-        double profit = BigDecimal.valueOf(avgPrice * takeProfitPercent / 100)
-                .setScale(4, RoundingMode.FLOOR)
-                .doubleValue();
+
+        double profit = avgPrice * takeProfitPercent / 100;
 
         /* For the short positions our profit price always lower than the average price of the deal
          * For the long - higher than the average price of the deal */
         boolean aShort = Side.isShort(deal.getSide());
-        double profitPrice = aShort ? avgPrice - profit : avgPrice + profit;
+        double profitPrice = aShort
+                ? roundPrice(avgPrice - profit)
+                : roundPrice(avgPrice + profit);
 
         deal.setProfitPrice(profitPrice);
         dealRepository.save(deal);
+    }
+
+    /**
+     * This method round the received price to 4 sings
+     *
+     * @param price - Price to be processed
+     * @return Rounded price
+     */
+    private double roundPrice(double price) {
+        BigDecimal bd = new BigDecimal(price)
+                .setScale(4, RoundingMode.HALF_EVEN);
+        return bd.doubleValue();
     }
 
     public boolean orderIsPresent(Deal deal, String alert) {
