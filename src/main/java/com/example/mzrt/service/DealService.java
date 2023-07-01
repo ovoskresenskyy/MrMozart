@@ -1,5 +1,6 @@
 package com.example.mzrt.service;
 
+import com.example.mzrt.enums.Side;
 import com.example.mzrt.model.Deal;
 import com.example.mzrt.model.Strategy;
 import com.example.mzrt.repository.DealRepository;
