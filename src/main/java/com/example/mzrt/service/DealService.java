@@ -71,7 +71,7 @@ public class DealService {
                            String side) {
 
         String strategyName = strategy.getName().toLowerCase();
-        String sideName = Side.valueByAction(side).name;
+        String sideName = Side.valueBySide(side).name;
 
         Deal newDeal = Deal.builder()
                 .userId(userId)
