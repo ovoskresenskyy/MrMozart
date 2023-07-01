@@ -1,5 +1,6 @@
 package com.example.mzrt.service.strategies;
 
+import com.example.mzrt.enums.Side;
 import com.example.mzrt.model.Deal;
 import com.example.mzrt.model.Order;
 import com.example.mzrt.model.Strategy;
@@ -66,7 +67,7 @@ public class BlackFlagService {
         if (openedDealByTicker.isEmpty()) return Order.builder().build();
 
         Deal deal = openedDealByTicker.get();
-        String alert = deal.getSide().equals("sell") ? "SSL" : "LSL";
+        String closingAlert = Side.getClosingAlert(deal.getSide());
 
         BinanceDataHolder dataHolder = BinanceDataHolder.getInstance();
         double currentPrice = dataHolder.getFuturesByTicker(ticker).getPrice();
@@ -74,7 +75,7 @@ public class BlackFlagService {
         Order order = orderService.sendClosingOrder(alertService.findByUserIdAndStrategyIdAndName(
                         userId,
                         2,
-                        alert),
+                        closingAlert),
                 ticker,
                 userId,
                 alertTime,
@@ -84,7 +85,7 @@ public class BlackFlagService {
 
         deal.setOpen(false);
         deal.setClosingPrice(currentPrice);
-        deal.setClosingAlert(alert);
+        deal.setClosingAlert(closingAlert);
         dealService.save(deal);
 
         dataHolder.stopProfitTracker(deal.getId());
