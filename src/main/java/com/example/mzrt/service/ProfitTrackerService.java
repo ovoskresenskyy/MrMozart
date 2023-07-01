@@ -1,5 +1,6 @@
 package com.example.mzrt.service;
 
+import com.example.mzrt.enums.Side;
 import com.example.mzrt.model.Deal;
 import com.example.mzrt.service.binance.BinanceFuturesPriceTracker;
 
@@ -7,7 +8,6 @@ import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 
 public class ProfitTrackerService implements Runnable {
-//public class ProfitTrackerService {
 
     private final BinanceFuturesPriceTracker binancePriceTracker;
     private final Deal deal;
@@ -17,6 +17,7 @@ public class ProfitTrackerService implements Runnable {
     private final StrategyService strategyService;
     private boolean keepTracking;
 
+    //TODO: too many parameters
     public ProfitTrackerService(BinanceFuturesPriceTracker binancePriceTracker,
                                 Deal deal,
                                 OrderService orderService,
@@ -32,10 +33,19 @@ public class ProfitTrackerService implements Runnable {
         this.keepTracking = true;
     }
 
+    /**
+     * This method init the new instance.
+     * According to the side it will start the different methods
+     */
     @Override
     public void run() {
-        if (deal.getSide().equals("sell")) shortTakeProfit();
-        else longTakeProfit();
+        boolean aShort = Side.isShort(deal.getSide());
+
+        if (aShort) {
+            shortTakeProfit();
+        } else {
+            longTakeProfit();
+        }
     }
 
     private void shortTakeProfit() {
