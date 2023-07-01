@@ -57,14 +57,20 @@ public class DealService {
                            Strategy strategy,
                            String ticker,
                            String side) {
-        return dealRepository.save(Deal.builder()
+
+        String strategyName = strategy.getName().toLowerCase();
+        String sideName = Side.valueByAction(side).name;
+
+        Deal newDeal = Deal.builder()
                 .userId(userId)
-                .strategy(strategy.getName().toLowerCase())
+                .strategy(strategyName)
                 .strategyId(strategy.getId())
                 .ticker(ticker)
-                .side(side)
+                .side(sideName)
                 .open(true)
-                .build());
+                .build();
+
+        return dealRepository.save(newDeal);
     }
 
     public List<Deal> getByUserIdAndStrategyId(int userId, int strategyId, boolean isOpen) {
