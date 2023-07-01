@@ -33,7 +33,7 @@ public enum Side {
      * @param action - 'sell/buy'
      * @return The enum if the matched side
      */
-    public static Side valueByAction(String action) {
+    private static Side valueByAction(String action) {
         return BY_ACTION.get(action);
     }
 
@@ -43,7 +43,7 @@ public enum Side {
      * @param name - 'Short/Long'
      * @return The enum if the matched side
      */
-    public static Side valueByName(String name) {
+    private static Side valueByName(String name) {
         return BY_NAME.get(name);
     }
 
