@@ -62,7 +62,7 @@ public class DealService {
      * @param userId   - ID of user which is that deal
      * @param strategy - Name of the strategy
      * @param ticker   - Name of the pair like 'BTCUSDT'
-     * @param side     - Sell / buy
+     * @param side     - Sell / buy (because it's receives from the alert)
      * @return - The created deal, saved into the repository
      */
     public Deal getNewDeal(int userId,
