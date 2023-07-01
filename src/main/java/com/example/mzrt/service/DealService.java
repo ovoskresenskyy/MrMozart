@@ -133,6 +133,7 @@ public class DealService {
         calculateProfitPrice(deal);
     }
 
+    //TODO: need to decompose + comment
     private void calculateProfitPrice(Deal deal) {
 
         double avgPrice = deal.getAveragePrice();
@@ -147,7 +148,12 @@ public class DealService {
                 .setScale(4, RoundingMode.FLOOR)
                 .doubleValue();
 
-        deal.setProfitPrice(deal.getSide().equals("buy") ? avgPrice + profit : avgPrice - profit);
+        /* For the short positions our profit price always lower than the average price of the deal
+         * For the long - higher than the average price of the deal */
+        boolean aShort = Side.isShort(deal.getSide());
+        double profitPrice = aShort ? avgPrice - profit : avgPrice + profit;
+
+        deal.setProfitPrice(profitPrice);
         dealRepository.save(deal);
     }
 
