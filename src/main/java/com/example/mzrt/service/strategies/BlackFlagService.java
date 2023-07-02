@@ -48,8 +48,8 @@ public class BlackFlagService {
                     strategy);
         }
 
-        String side = getSide(message);
-        if (side.equals("")) return Order.builder().build();
+        /* For BlackFlag strategy need to separate alert from the text message. */
+        String alertName = alertService.getAlertFromMessage(message);
 
         String alertNumber = getAlertNumber(message);
         if (alertNumber.equals("")) return Order.builder().build();
@@ -100,16 +100,4 @@ public class BlackFlagService {
         return order;
     }
 
-    private String getSide(String message) {
-        if (message.indexOf("long trend") > 0) return "L";
-        if (message.indexOf("short trend") > 0) return "S";
-        return "";
-    }
-
-    private String getAlertNumber(String message) {
-        int index = message.indexOf("Fib");
-        if (index == 0) return "";
-
-        return String.valueOf(message.charAt(index + 3));
-    }
 }
