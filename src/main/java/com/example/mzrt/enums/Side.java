@@ -4,8 +4,9 @@ import java.util.HashMap;
 import java.util.Map;
 
 public enum Side {
-    SHORT("Short", "sell", "SSL"),
-    LONG("Long", "buy", "LSL");
+    SHORT("Short", "S", "sell", "SSL"),
+    LONG("Long", "L", "buy", "LSL"),
+    EMPTY("", "", "", "");
 
     private static final Map<String, Side> BY_ACTION = new HashMap<>();
     private static final Map<String, Side> BY_NAME = new HashMap<>();
@@ -18,11 +19,13 @@ public enum Side {
     }
 
     public final String name;
+    public final String shortName;
     public final String action;
     public final String closingAlert;
 
-    Side(String name, String action, String closingAlert) {
+    Side(String name, String shortName, String action, String closingAlert) {
         this.name = name;
+        this.shortName = shortName;
         this.action = action;
         this.closingAlert = closingAlert;
     }
@@ -48,18 +51,33 @@ public enum Side {
     }
 
     /**
-     * This method simply returns the value of enum by the received side
+     * This method simply returns the value of enum by the received name
      * No matter is it new or the old one
      *
-     * @param side - 'Short/Long' or 'sell/buy'
-     * @return The enum if the matched side
+     * @param name - 'Short/Long' or 'sell/buy'
+     * @return The enum if the matched name
      */
-    public static Side valueBySide(String side) {
-        Side sideByAction = valueByAction(side);
+    public static Side sideByName(String name) {
+        Side sideByAction = valueByAction(name);
         if (sideByAction == null) {
-            return valueByName(side);
+            return valueByName(name);
         }
         return sideByAction;
+    }
+
+    /**
+     * This method determines value by the part of the received message
+     *
+     * @param message - Received text in the alert message
+     * @return Matched side
+     */
+    public static Side getSideByMessage(String message) {
+        if (message.indexOf("long trend") > 0) {
+            return LONG;
+        } else if (message.indexOf("short trend") > 0) {
+            return SHORT;
+        }
+        return EMPTY;
     }
 
     /**
@@ -69,7 +87,7 @@ public enum Side {
      * @return True if it's SHORT, false if it's LONG
      */
     public static boolean isShort(String side) {
-        return valueBySide(side) == Side.SHORT;
+        return sideByName(side) == Side.SHORT;
     }
 
     /**
@@ -79,6 +97,6 @@ public enum Side {
      * @return SSL if it's Short/sell, LSL if it's Long/buy
      */
     public static String getClosingAlert(String side) {
-        return valueBySide(side).closingAlert;
+        return sideByName(side).closingAlert;
     }
 }
