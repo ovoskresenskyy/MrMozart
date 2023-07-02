@@ -43,7 +43,6 @@
             <th>Profit price</th>
             <th>Closing price</th>
             <th>Closing alert</th>
-            <th>Open</th>
             <th>Orders</th>
             <th>Action</th>
         </tr>
@@ -53,7 +52,10 @@
         <tr th:each="deal: ${deals}">
             <td th:text="${deal.id}"></td>
             <td th:text="${deal.ticker}"></td>
-            <td th:text="${deal.side}"></td>
+            <td th:style="${deal.side} == 'Short'
+            ? (${deal.open} ? 'color: #30D5C8' : 'color: #000000')
+            : (${deal.open} ? 'color: #FF6600' : 'color: #000000')"
+                th:text="${deal.side}"></td>
             <td th:text="${deal.firstPrice}"></td>
             <td th:text="${deal.secondPrice}"></td>
             <td th:text="${deal.thirdPrice}"></td>
@@ -61,7 +63,6 @@
             <td th:text="${deal.profitPrice}"></td>
             <td th:text="${deal.closingPrice}"></td>
             <td th:text="${deal.closingAlert}"></td>
-            <td th:style="${deal.open} ? 'background-color: #00ff00' : 'background-color: #808080'"></td>
             <td>
                 <form th:action="@{/orders/{user_id}/deal/{deal_id}/strategy/{strategy_id}
                 (user_id=${user.id},
