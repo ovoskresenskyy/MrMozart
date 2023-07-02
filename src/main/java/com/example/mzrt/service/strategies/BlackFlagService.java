@@ -1,6 +1,6 @@
 package com.example.mzrt.service.strategies;
 
-import com.example.mzrt.enums.Side;
+import com.example.mzrt.model.Alert;
 import com.example.mzrt.model.Deal;
 import com.example.mzrt.model.Order;
 import com.example.mzrt.model.Strategy;
@@ -8,6 +8,8 @@ import com.example.mzrt.service.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.Optional;
 
 import static com.example.mzrt.CryptoConstants.BF_STRATEGY_ID;
@@ -36,8 +38,18 @@ public class BlackFlagService {
         this.userService = userService;
     }
 
-    public Order handleAlert(String token, String message, String ticker, String alertTime) {
-
+    /**
+     * This method is responsible for handling the received alerts from the TradingView
+     * The message comes as text, so we need process the text and make the simple alert from it.
+     *
+     * @param token   - Users token
+     * @param message - Text message inside the alert
+     * @param ticker  - Coin pair like BTCUSDT
+     * @return Created new order if everything is ok, or empty ony if not.
+     */
+    public Order handleAlert(String token, String message, String ticker) {
+        String alertTime = LocalDateTime.now().format(DateTimeFormatter.ofPattern("dd-MM-yyyy HH:mm:ss"));
+        Strategy strategy = strategyService.findById(BF_STRATEGY_ID);
         int userId = userService.findByToken(token).getId();
 
         /* Check if it StopLoss, so send it immediately. */
@@ -51,13 +63,13 @@ public class BlackFlagService {
         /* For BlackFlag strategy need to separate alert from the text message. */
         String alertName = alertService.getAlertFromMessage(message);
 
-        String alertNumber = getAlertNumber(message);
-        if (alertNumber.equals("")) return Order.builder().build();
+        /* If it's wrong message, return empty order. */
+        if (alertName.equals("")) {
+            return Order.builder().build();
+        }
 
-        return orderService.sendOpeningOrder(alertService.findByUserIdAndStrategyIdAndName(
-                        userId,
-                        2,
-                        alertNumber + side),
+        Alert alert = alertService.findByUserIdAndStrategyIdAndName(userId, BF_STRATEGY_ID, alertName);
+        return orderService.sendOpeningOrder(alert,
                 ticker,
                 userId,
                 alertTime,
