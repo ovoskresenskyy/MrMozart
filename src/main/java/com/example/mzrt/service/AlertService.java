@@ -9,6 +9,7 @@ import org.springframework.web.server.ResponseStatusException;
 
 import java.util.List;
 
+import static com.example.mzrt.enums.Side.getSideByMessage;
 import static org.springframework.http.HttpStatus.NOT_FOUND;
 
 @Service

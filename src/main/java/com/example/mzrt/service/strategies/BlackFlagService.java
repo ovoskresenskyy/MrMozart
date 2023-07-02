@@ -10,6 +10,10 @@ import org.springframework.stereotype.Service;
 
 import java.util.Optional;
 
+import static com.example.mzrt.CryptoConstants.BF_STRATEGY_ID;
+import static com.example.mzrt.enums.AlertMessage.isStopLoss;
+import static com.example.mzrt.enums.Side.getClosingAlert;
+
 @Service
 public class BlackFlagService {
 
@@ -35,11 +39,14 @@ public class BlackFlagService {
     public Order handleAlert(String token, String message, String ticker, String alertTime) {
 
         int userId = userService.findByToken(token).getId();
-        Strategy strategy = strategyService.findById(2);
-        if (message.equalsIgnoreCase("Stop Line Change")) return sendStopLoss(userId,
-                ticker,
-                alertTime,
-                strategy);
+
+        /* Check if it StopLoss, so send it immediately. */
+        if (isStopLoss(message)) {
+            return sendStopLoss(userId,
+                    ticker,
+                    alertTime,
+                    strategy);
+        }
 
         String side = getSide(message);
         if (side.equals("")) return Order.builder().build();
@@ -67,7 +74,7 @@ public class BlackFlagService {
         if (openedDealByTicker.isEmpty()) return Order.builder().build();
 
         Deal deal = openedDealByTicker.get();
-        String closingAlert = Side.getClosingAlert(deal.getSide());
+        String closingAlert = getClosingAlert(deal.getSide());
 
         BinanceDataHolder dataHolder = BinanceDataHolder.getInstance();
         double currentPrice = dataHolder.getFuturesByTicker(ticker).getPrice();

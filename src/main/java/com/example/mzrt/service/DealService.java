@@ -1,6 +1,5 @@
 package com.example.mzrt.service;
 
-import com.example.mzrt.enums.Side;
 import com.example.mzrt.model.Deal;
 import com.example.mzrt.model.Strategy;
 import com.example.mzrt.repository.DealRepository;
@@ -17,6 +16,8 @@ import java.util.Optional;
 import java.util.OptionalDouble;
 import java.util.stream.DoubleStream;
 
+import static com.example.mzrt.enums.Side.isShort;
+import static com.example.mzrt.enums.Side.sideByName;
 import static org.springframework.http.HttpStatus.NOT_FOUND;
 
 @Service
@@ -70,15 +71,12 @@ public class DealService {
                            String ticker,
                            String side) {
 
-        String strategyName = strategy.getName().toLowerCase();
-        String sideName = Side.valueBySide(side).name;
-
         Deal newDeal = Deal.builder()
                 .userId(userId)
-                .strategy(strategyName)
+                .strategy(strategy.getName().toLowerCase())
                 .strategyId(strategy.getId())
                 .ticker(ticker)
-                .side(sideName)
+                .side(sideByName(side).name)
                 .open(true)
                 .build();
 
@@ -146,7 +144,7 @@ public class DealService {
 
         /* For the short positions our profit price always lower than the average price of the deal
          * For the long - higher than the average price of the deal */
-        boolean aShort = Side.isShort(deal.getSide());
+        boolean aShort = isShort(deal.getSide());
         double profitPrice = aShort
                 ? roundPrice(avgPrice - profit)
                 : roundPrice(avgPrice + profit);

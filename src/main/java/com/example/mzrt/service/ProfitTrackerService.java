@@ -1,11 +1,12 @@
 package com.example.mzrt.service;
 
-import com.example.mzrt.enums.Side;
 import com.example.mzrt.model.Deal;
 import com.example.mzrt.service.binance.BinanceFuturesPriceTracker;
 
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
+
+import static com.example.mzrt.enums.Side.isShort;
 
 public class ProfitTrackerService implements Runnable {
 
@@ -39,7 +40,7 @@ public class ProfitTrackerService implements Runnable {
      */
     @Override
     public void run() {
-        boolean aShort = Side.isShort(deal.getSide());
+        boolean aShort = isShort(deal.getSide());
 
         if (aShort) {
             shortTakeProfit();
