@@ -43,5 +43,7 @@ public class Deal {
     @Column("closing_alert")
     private String closingAlert;
     private boolean open;
+    @Column("last_change_time")
+    private String lastChangeTime;
 
 }
