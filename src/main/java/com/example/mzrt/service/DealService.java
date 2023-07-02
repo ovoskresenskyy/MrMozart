@@ -98,9 +98,11 @@ public class DealService {
             case 4 -> deal.setFourthPrice(price);
             case 5 -> deal.setFifthPrice(price);
         }
-        calculateAveragePrice(deal);
+        setAveragePrice(deal);
+        setProfitPrice(deal);
     }
 
+    //TODO: comment
     private int getAlertNumber(String alert) {
         if (alert.equals("1S") || alert.equals("1L")) return 1;
         if (alert.equals("2S") || alert.equals("2L")) return 2;
@@ -110,8 +112,14 @@ public class DealService {
         return 0;
     }
 
-    private void calculateAveragePrice(Deal deal) {
+    //TODO: comment
+    private void setAveragePrice(Deal deal) {
+        double averagePrice = calculateAveragePrice(deal);
+        deal.setAveragePrice(averagePrice);
+    }
 
+    //TODO: comment
+    private double calculateAveragePrice(Deal deal){
         OptionalDouble averageOptional = DoubleStream.of(
                         deal.getFirstPrice(),
                         deal.getSecondPrice(),
@@ -122,35 +130,33 @@ public class DealService {
                 .filter(Objects::nonNull)
                 .average();
 
-        double averagePrice = averageOptional.isPresent() ? roundPrice(averageOptional.getAsDouble()) : 0;
-        deal.setAveragePrice(averagePrice);
-
-        calculateProfitPrice(deal);
+        return averageOptional.isPresent() ? roundPrice(averageOptional.getAsDouble()) : 0;
     }
 
-    //TODO: need to decompose + comment
-    private void calculateProfitPrice(Deal deal) {
-
-        double avgPrice = deal.getAveragePrice();
-        double takeProfitPercent = percentProfitService.findByStrategyIdAndTickerId(
-                        deal.getStrategyId(),
-                        tickerService.findByNameAndUserId(
-                                        deal.getTicker(),
-                                        deal.getUserId())
-                                .getId())
-                .getValue();
-
-        double profit = avgPrice * takeProfitPercent / 100;
-
-        /* For the short positions our profit price always lower than the average price of the deal
-         * For the long - higher than the average price of the deal */
-        boolean aShort = isShort(deal.getSide());
-        double profitPrice = aShort
-                ? roundPrice(avgPrice - profit)
-                : roundPrice(avgPrice + profit);
+    //TODO: comment
+    private void setProfitPrice(Deal deal) {
+        double profitPrice = getProfitPrice(deal);
 
         deal.setProfitPrice(profitPrice);
         dealRepository.save(deal);
+    }
+
+    private double getProfitPrice(Deal deal) {
+        double averagePrice = deal.getAveragePrice();
+        double takeProfitPercent = getTakeProfitPercent(deal);
+        double profit = averagePrice * takeProfitPercent / 100;
+
+        /* For the short positions our profit price always lower than the average price of the deal
+         * For the long positions - higher than the average price of the deal */
+        boolean aShort = isShort(deal.getSide());
+        return roundPrice(aShort ? averagePrice - profit : averagePrice + profit);
+    }
+
+    private double getTakeProfitPercent(Deal deal) {
+        int strategyId = deal.getStrategyId();
+        int tickerId = tickerService.findByNameAndUserId(deal.getTicker(), deal.getUserId()).getId();
+
+        return percentProfitService.findByStrategyIdAndTickerId(strategyId, tickerId).getValue();
     }
 
     /**
