@@ -1,5 +1,6 @@
 package com.example.mzrt.service;
 
+import com.example.mzrt.model.Alert;
 import com.example.mzrt.model.Deal;
 import com.example.mzrt.service.binance.BinanceFuturesPriceTracker;
 
@@ -70,24 +71,18 @@ public class ProfitTrackerService implements Runnable {
         if (takeProfit) sendTakeProfit("LTP5", currentPrice);
     }
 
-    private void sendTakeProfit(String alert, double currentPrice) {
+    //TODO Decompose
+    private void sendTakeProfit(String alertName, double currentPrice) {
+        Alert alert = alertService.findByUserIdAndStrategyIdAndName(deal.getUserId(), deal.getStrategyId(), alertName);
+        String alertTime = LocalDateTime.now().format(DateTimeFormatter.ofPattern("dd-MM-yyyy HH:mm:ss"));
 
-        orderService.sendClosingOrder(alertService.findByUserIdAndStrategyIdAndName(
-                        deal.getUserId(),
-                        deal.getStrategyId(),
-                        alert),
-                deal.getTicker(),
-                deal.getUserId(),
-                LocalDateTime
-                        .now()
-                        .format(DateTimeFormatter.ofPattern("dd-MM-yyyy HH:mm:ss")),
-                strategyService.findById(deal.getStrategyId()),
-                deal.getId(),
-                currentPrice);
+        orderService.placeOrder(deal, alert, alertTime);
 
         deal.setOpen(false);
         deal.setClosingPrice(currentPrice);
-        deal.setClosingAlert(alert);
+        deal.setClosingAlert(alertName);
+        String currentTime = LocalDateTime.now().format(DateTimeFormatter.ofPattern("dd-MM-yyyy HH:mm:ss"));
+        deal.setLastChangeTime(currentTime);
         dealService.save(deal);
 
         BinanceDataHolder dataHolder = BinanceDataHolder.getInstance();

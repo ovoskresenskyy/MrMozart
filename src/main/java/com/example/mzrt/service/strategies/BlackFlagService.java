@@ -47,7 +47,7 @@ public class BlackFlagService {
      * @param ticker  - Coin pair like BTCUSDT
      * @return Created new order if everything is ok, or empty ony if not.
      */
-    public Order handleAlert(String token, String message, String ticker) {
+    public Order handleAlert(String token, String message, String ticker) { //TODO decompose
         String alertTime = LocalDateTime.now().format(DateTimeFormatter.ofPattern("dd-MM-yyyy HH:mm:ss"));
         Strategy strategy = strategyService.findById(BF_STRATEGY_ID);
         int userId = userService.findByToken(token).getId();
@@ -69,14 +69,28 @@ public class BlackFlagService {
         }
 
         Alert alert = alertService.findByUserIdAndStrategyIdAndName(userId, BF_STRATEGY_ID, alertName);
-        return orderService.sendOpeningOrder(alert,
-                ticker,
-                userId,
-                alertTime,
-                strategy);
+        Deal deal = dealService.getDealByTicker(userId, strategy, ticker, alert.getSide());
+        Order order = orderService.placeOrder(deal, alert, alertTime);
 
+        if (alert.isOpening()) {
+            dealService.setPriceAndUpdateRelation(deal, alert.getName(), order.getPrice());
+            startProfitTracker(deal);
+        }
+
+        dealService.updateLastChangesTime(deal);
+
+        return order;
     }
 
+    private void startProfitTracker(Deal deal){
+        BinanceDataHolder binanceDataHolder = BinanceDataHolder.getInstance();
+        binanceDataHolder.startProfitTracker(deal,
+                orderService,
+                alertService,
+                dealService);
+    }
+
+    //TODO Decompose
     private Order sendStopLoss(int userId, String ticker, String alertTime, Strategy strategy) {
         Optional<Deal> openedDealByTicker = dealService.getOpenedDealByTicker(
                 userId,
@@ -91,20 +105,14 @@ public class BlackFlagService {
         BinanceDataHolder dataHolder = BinanceDataHolder.getInstance();
         double currentPrice = dataHolder.getFuturesByTicker(ticker).getPrice();
 
-        Order order = orderService.sendClosingOrder(alertService.findByUserIdAndStrategyIdAndName(
-                        userId,
-                        2,
-                        closingAlert),
-                ticker,
-                userId,
-                alertTime,
-                strategy,
-                deal.getId(),
-                currentPrice);
+        Alert alert = alertService.findByUserIdAndStrategyIdAndName(userId, BF_STRATEGY_ID, closingAlert);
+        Order order = orderService.placeOrder(deal, alert, alertTime);
 
         deal.setOpen(false);
         deal.setClosingPrice(currentPrice);
         deal.setClosingAlert(closingAlert);
+        String currentTime = LocalDateTime.now().format(DateTimeFormatter.ofPattern("dd-MM-yyyy HH:mm:ss"));
+        deal.setLastChangeTime(currentTime);
         dealService.save(deal);
 
         dataHolder.stopProfitTracker(deal.getId());
