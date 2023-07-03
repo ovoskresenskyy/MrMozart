@@ -1,4 +1,4 @@
-package com.example.mzrt.controller.TradingView;
+package com.example.mzrt.controller;
 
 import com.example.mzrt.model.Order;
 import com.example.mzrt.service.strategies.BlackFlagService;
