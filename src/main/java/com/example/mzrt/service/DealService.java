@@ -53,11 +53,36 @@ public class DealService {
         return dealRepository.getByUserIdAndStrategyAndTickerAndOpenTrue(userId, strategy.toLowerCase(), ticker);
     }
 
-    public List<Deal> getByUserIdAndStrategyId(int userId, int strategyId, boolean isOpen) {
+    /**
+     * This method is responsible for getting full list of the deals of the user
+     * by the received strategy.
+     * <p>
+     * First it's filled by opened deals, then by closed.
+     *
+     * @param userId     - ID of the user which deals are
+     * @param strategyId - ID of the chosen strategy
+     * @return List of the opened and closed deals
+     */
+    public List<Deal> getUserDealsByStrategy(int userId, int strategyId) {
+        List<Deal> deals = getByUserIdAndStrategyId(userId, strategyId, true);
+        deals.addAll(getByUserIdAndStrategyId(userId, strategyId, false));
+        return deals;
+    }
+
+    /**
+     * This method is responsible for getting the list of the deals from the repository
+     * according to the received parameters
+     *
+     * @param userId     - ID of the user which deals are
+     * @param strategyId - ID of the chosen strategy
+     * @param isOpen     - Mark if we need list of opened or closed deals
+     * @return List of the deals
+     */
+    private List<Deal> getByUserIdAndStrategyId(int userId, int strategyId, boolean isOpen) {
         return dealRepository.getByUserIdAndStrategyIdAndOpen(userId,
                 strategyId,
                 isOpen,
-                Sort.by(Sort.Direction.DESC, "id"));
+                Sort.by(Sort.Direction.DESC, "lastChangeTime"));
     }
 
     /**
