@@ -54,6 +54,7 @@ public class DealController {
         deal.setOpen(false);
         deal.setClosingPrice(dataHolder.getFuturesByTicker(deal.getTicker()).getPrice());
         deal.setClosingAlert("Manual");
+        dealService.updateLastChangesTime(deal);
         dealService.save(deal);
         dataHolder.stopProfitTracker(deal.getId());
 
