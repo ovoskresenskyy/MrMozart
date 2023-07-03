@@ -120,3 +120,4 @@ fabric.properties
 
 target/
 /logs/binance-java-connector/
+/src/main/resources/keystore/mzrttest_.p12
