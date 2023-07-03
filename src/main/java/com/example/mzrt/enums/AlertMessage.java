@@ -5,7 +5,8 @@ import java.util.Map;
 
 public enum AlertMessage {
 
-    STOP_LINE_CHANGE("Stop Line Change");
+    STOP_LINE_CHANGE("Stop Line Change"),
+    STOP_TREND("Stop Trend");
 
     private static final Map<String, AlertMessage> BY_NAME = new HashMap<>();
 
@@ -31,7 +32,6 @@ public enum AlertMessage {
         return BY_NAME.get(name);
     }
 
-
     /**
      * This method determines is the received message told to stop lossing the value
      *
@@ -40,6 +40,16 @@ public enum AlertMessage {
      */
     public static boolean isStopLoss(String message) {
         return valueByName(message) == STOP_LINE_CHANGE;
+    }
+
+    /**
+     * This method determines is the received message told to stop the trend
+     *
+     * @param message - Received message in the alert
+     * @return True if it's StopTrend alert, false if not
+     */
+    public static boolean isStopTrend(String message) {
+        return valueByName(message) == STOP_TREND;
     }
 
 }
