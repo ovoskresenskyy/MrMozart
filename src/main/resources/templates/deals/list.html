@@ -43,6 +43,7 @@
             <th>Profit price</th>
             <th>Closing price</th>
             <th>Closing alert</th>
+            <th>Changed</th>
             <th>Orders</th>
             <th>Action</th>
         </tr>
@@ -63,6 +64,7 @@
             <td th:text="${deal.profitPrice}"></td>
             <td th:text="${deal.closingPrice}"></td>
             <td th:text="${deal.closingAlert}"></td>
+            <td th:text="${deal.lastChangeTime}" th:type="datetime"></td>
             <td>
                 <form th:action="@{/orders/{user_id}/deal/{deal_id}/strategy/{strategy_id}
                 (user_id=${user.id},
