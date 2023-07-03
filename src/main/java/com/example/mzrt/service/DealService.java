@@ -1,5 +1,6 @@
 package com.example.mzrt.service;
 
+import com.example.mzrt.enums.AlertMessage;
 import com.example.mzrt.model.Deal;
 import com.example.mzrt.model.Strategy;
 import com.example.mzrt.repository.DealRepository;
@@ -10,6 +11,8 @@ import org.springframework.web.server.ResponseStatusException;
 
 import java.math.BigDecimal;
 import java.math.RoundingMode;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
@@ -34,7 +37,6 @@ public class DealService {
         this.tickerService = tickerService;
     }
 
-
     public Deal findById(int id) {
         return dealRepository.findById(id).orElseThrow(() -> new ResponseStatusException(NOT_FOUND));
     }
@@ -47,12 +49,29 @@ public class DealService {
         return dealRepository.save(deal);
     }
 
-    public Optional<Deal> getOpenedDealByTicker(int userId,
-                                                String strategy,
-                                                String ticker) {
-        return dealRepository.getByUserIdAndStrategyAndTickerAndOpenTrue(userId,
-                strategy.toLowerCase(),
-                ticker);
+    public Optional<Deal> getOpenedDealByTicker(int userId, String strategy, String ticker) {
+        return dealRepository.getByUserIdAndStrategyAndTickerAndOpenTrue(userId, strategy.toLowerCase(), ticker);
+    }
+
+    public List<Deal> getByUserIdAndStrategyId(int userId, int strategyId, boolean isOpen) {
+        return dealRepository.getByUserIdAndStrategyIdAndOpen(userId,
+                strategyId,
+                isOpen,
+                Sort.by(Sort.Direction.DESC, "id"));
+    }
+
+    /**
+     * This method is responsible for getting exist opened deal or creating the new one if it isn't.
+     *
+     * @param userId   - ID of the user
+     * @param strategy - Strategy
+     * @param ticker   - Coin pair like BTCUSDT
+     * @param side     - Side name (Short / Long)
+     * @return Exist deal or a new one
+     */
+    public Deal getDealByTicker(int userId, Strategy strategy, String ticker, String side) {
+        Optional<Deal> openedDeal = getOpenedDealByTicker(userId, strategy.getName(), ticker);
+        return openedDeal.orElseGet(() -> getNewDeal(userId, strategy, ticker, side));
     }
 
     /**
@@ -83,43 +102,32 @@ public class DealService {
         return dealRepository.save(newDeal);
     }
 
-    public List<Deal> getByUserIdAndStrategyId(int userId, int strategyId, boolean isOpen) {
-        return dealRepository.getByUserIdAndStrategyIdAndOpen(userId,
-                strategyId,
-                isOpen,
-                Sort.by(Sort.Direction.DESC, "id"));
+    public void setPriceAndUpdateRelation(Deal deal, String alert, double price) {
+        setPrice(deal, alert, price);
+
+        double averagePrice = calculateAveragePrice(deal);
+        deal.setAveragePrice(averagePrice);
+
+        double profitPrice = calculateProfitPrice(deal);
+        deal.setProfitPrice(profitPrice);
+
+        dealRepository.save(deal);
     }
 
-    public void setPrice(Deal deal, String alert, double price) {
-        switch (getAlertNumber(alert)) {
+    private void setPrice(Deal deal, String alert, double price) {
+        int alertNumber = AlertMessage.valueByName(alert).getNumber();
+
+        switch (alertNumber) {
             case 1 -> deal.setFirstPrice(price);
             case 2 -> deal.setSecondPrice(price);
             case 3 -> deal.setThirdPrice(price);
             case 4 -> deal.setFourthPrice(price);
             case 5 -> deal.setFifthPrice(price);
         }
-        setAveragePrice(deal);
-        setProfitPrice(deal);
     }
 
     //TODO: comment
-    private int getAlertNumber(String alert) {
-        if (alert.equals("1S") || alert.equals("1L")) return 1;
-        if (alert.equals("2S") || alert.equals("2L")) return 2;
-        if (alert.equals("3S") || alert.equals("3L")) return 3;
-        if (alert.equals("4S") || alert.equals("4L")) return 4;
-        if (alert.equals("5S") || alert.equals("5L")) return 5;
-        return 0;
-    }
-
-    //TODO: comment
-    private void setAveragePrice(Deal deal) {
-        double averagePrice = calculateAveragePrice(deal);
-        deal.setAveragePrice(averagePrice);
-    }
-
-    //TODO: comment
-    private double calculateAveragePrice(Deal deal){
+    private double calculateAveragePrice(Deal deal) {
         OptionalDouble averageOptional = DoubleStream.of(
                         deal.getFirstPrice(),
                         deal.getSecondPrice(),
@@ -133,15 +141,7 @@ public class DealService {
         return averageOptional.isPresent() ? roundPrice(averageOptional.getAsDouble()) : 0;
     }
 
-    //TODO: comment
-    private void setProfitPrice(Deal deal) {
-        double profitPrice = getProfitPrice(deal);
-
-        deal.setProfitPrice(profitPrice);
-        dealRepository.save(deal);
-    }
-
-    private double getProfitPrice(Deal deal) {
+    private double calculateProfitPrice(Deal deal) {
         double averagePrice = deal.getAveragePrice();
         double takeProfitPercent = getTakeProfitPercent(deal);
         double profit = averagePrice * takeProfitPercent / 100;
@@ -171,24 +171,9 @@ public class DealService {
         return bd.doubleValue();
     }
 
-    public boolean orderIsPresent(Deal deal, String alert) {
-        return switch (getAlertNumber(alert)) {
-            case 1 -> deal.getFirstPrice() > 0;
-            case 2 -> deal.getSecondPrice() > 0;
-            case 3 -> deal.getThirdPrice() > 0;
-            case 4 -> deal.getFourthPrice() > 0;
-            case 5 -> deal.getFifthPrice() > 0;
-            default -> true;
-        };
-    }
-
-    public boolean bestOrderIsPresent(Deal deal, String alert) {
-        return switch (getAlertNumber(alert)) {
-            case 1 -> (deal.getSecondPrice() + deal.getThirdPrice() + deal.getFourthPrice() + deal.getFifthPrice()) > 0;
-            case 2 -> (deal.getThirdPrice() + deal.getFourthPrice() + deal.getFifthPrice()) > 0;
-            case 3 -> (deal.getFourthPrice() + deal.getFifthPrice()) > 0;
-            case 4 -> deal.getFifthPrice() > 0;
-            default -> false;
-        };
+    public void updateLastChangesTime(Deal deal) {
+        String currentTime = LocalDateTime.now().format(DateTimeFormatter.ofPattern("dd-MM-yyyy HH:mm:ss"));
+        deal.setLastChangeTime(currentTime);
+        dealRepository.save(deal);
     }
 }
