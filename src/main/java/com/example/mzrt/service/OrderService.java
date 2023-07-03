@@ -13,26 +13,19 @@ import org.springframework.web.client.RestTemplate;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.List;
-import java.util.Optional;
 
 @Service
 public class OrderService {
 
     private final OrderRepository orderRepository;
-    private final DealService dealService;
-    private final AlertService alertService;
     private final RestTemplate restTemplate;
     private final StrategyService strategyService;
 
     @Autowired
     public OrderService(OrderRepository orderRepository,
-                        DealService dealService,
-                        AlertService alertService,
                         RestTemplate restTemplate,
                         StrategyService strategyService) {
         this.orderRepository = orderRepository;
-        this.dealService = dealService;
-        this.alertService = alertService;
         this.restTemplate = restTemplate;
         this.strategyService = strategyService;
     }
