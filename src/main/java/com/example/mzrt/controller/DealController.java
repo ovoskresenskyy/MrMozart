@@ -2,6 +2,7 @@ package com.example.mzrt.controller;
 
 import com.example.mzrt.model.Deal;
 import com.example.mzrt.service.*;
+import org.jetbrains.annotations.NotNull;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -37,12 +38,7 @@ public class DealController {
     public String getDeals(@PathVariable int userId,
                            @PathVariable int strategyId,
                            Model model) {
-        model.addAttribute("user", userService.findById(userId));
-        model.addAttribute("strategy", strategyService.findById(strategyId));
-        List<Deal> deals = dealService.getByUserIdAndStrategyId(userId, strategyId, true);
-        deals.addAll(dealService.getByUserIdAndStrategyId(userId, strategyId, false));
-        model.addAttribute("deals", deals);
-        return "deals/list";
+        return fillDealsList(userId, strategyId, model);
     }
 
     @GetMapping("/close/{dealId}")
@@ -60,14 +56,16 @@ public class DealController {
 
         int userId = deal.getUserId();
         int strategyId = deal.getStrategyId();
-        model.addAttribute("user",userService.findById(userId));
-        model.addAttribute("strategy", strategyService.findById(strategyId));
-        List<Deal> deals = dealService.getByUserIdAndStrategyId(userId, strategyId, true);
-        deals.addAll(dealService.getByUserIdAndStrategyId(userId, strategyId, false));
-        model.addAttribute("deals", deals);
-        return "deals/list";
+        return fillDealsList(userId, strategyId, model);
     }
 
-
-
+    @NotNull
+    private String fillDealsList(@PathVariable int userId,
+                                 @PathVariable int strategyId,
+                                 Model model) {
+        model.addAttribute("user", userService.findById(userId));
+        model.addAttribute("strategy", strategyService.findById(strategyId));
+        model.addAttribute("deals", dealService.getUserDealsByStrategy(userId, strategyId));
+        return "deals/list";
+    }
 }
