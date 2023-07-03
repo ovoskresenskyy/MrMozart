@@ -1,5 +1,6 @@
 package com.example.mzrt.service;
 
+import com.example.mzrt.enums.AlertMessage;
 import com.example.mzrt.model.Alert;
 import com.example.mzrt.model.Deal;
 import com.example.mzrt.model.Order;
@@ -30,55 +31,27 @@ public class OrderService {
         this.strategyService = strategyService;
     }
 
-    public Order sendOpeningOrder(Alert alert, String ticker, int userId, String alertTime, Strategy strategy) {
-
-        Order order = getOrderByStrategy(strategy,
-                alert,
-                ticker,
-                userId,
-                alertTime);
-
-        if (orderIsEmpty(order)) return order;
-
-        Thread t = new Thread(new OrderThreadService(restTemplate,
-                alert,
-                order));
-        t.start();
-
-        order.setTimestampSent(LocalDateTime.now().format(DateTimeFormatter.ofPattern("dd-MM-yyyy HH:mm:ss")));
-
-        return save(order);
+    public Order save(Order order) {
+        return orderRepository.save(order);
     }
 
-    public Order sendClosingOrder(Alert alert,
-                                  String ticker,
-                                  int userId,
-                                  String alertTime,
-                                  Strategy strategy,
-                                  int dealId,
-                                  double price) {
+    public Order placeOrder(Deal deal, Alert alert, String alertTime) {
+        return placeOrder(deal, alert, alertTime, deal.getTicker());
+    }
 
-        Order order = createNewOrder(strategy,
-                alert,
-                ticker,
-                userId,
-                alertTime,
-                dealId,
-                price);
+    public Order placeOrder(Deal deal, Alert alert, String alertTime, String ticker) {
+        Order order = getOrder(deal, alert, alertTime, ticker);
+
+        if (orderIsEmpty(order)) {
+            return order;
+        }
 
         Thread t = new Thread(new OrderThreadService(restTemplate, alert, order));
         t.start();
 
         order.setTimestampSent(LocalDateTime.now().format(DateTimeFormatter.ofPattern("dd-MM-yyyy HH:mm:ss")));
+
         return save(order);
-    }
-
-    public Order save(Order order) {
-        return orderRepository.save(order);
-    }
-
-    public List<Order> findByUserId(int userId) {
-        return orderRepository.findByUserId(userId, Sort.by(Sort.Direction.DESC, "id"));
     }
 
     public List<Order> findByDealId(int dealId) {
@@ -89,95 +62,75 @@ public class OrderService {
         return order.getName() == null || order.getUserId() == 0;
     }
 
-    public Order getOrderByStrategy(Strategy strategy,
-                                    Alert alert,
-                                    String ticker,
-                                    int userId,
-                                    String alertTime) {
-
-        return strategy.isUsesDeal()
-                ?
-                getOrderWithDeal(
-                        strategy,
-                        alert,
-                        ticker,
-                        userId,
-                        alertTime)
-                :
-                createNewOrder(
-                        strategy,
-                        alert,
-                        ticker,
-                        userId,
-                        alertTime,
-                        2,
-                        0);
-    }
-
-    private Order getOrderWithDeal(Strategy strategy,
-                                   Alert alert,
-                                   String ticker,
-                                   int userId,
-                                   String alertTime) {
-
-        Optional<Deal> openedDealByTicker = dealService.getOpenedDealByTicker(
-                userId,
-                strategy.getName(),
-                ticker);
-
-        Deal deal = openedDealByTicker.orElseGet(() -> dealService.getNewDeal(
-                userId,
-                strategy,
-                ticker,
-                alert.getSide()));
-
-        BinanceDataHolder binanceDataHolder = BinanceDataHolder.getInstance();
+    private Order getOrder(Deal deal, Alert alert, String alertTime, String ticker) {
+        Strategy strategy = strategyService.findById(deal.getStrategyId());
 
         double price = 0;
-        if (alert.isOpening()) {
-            if (dealService.orderIsPresent(deal, alert.getName())
-                    || dealService.bestOrderIsPresent(deal, alert.getName())) return Order.builder().build();
-            price = binanceDataHolder.getFuturesByTicker(ticker).getPrice();
+        if (strategy.isUsesDeal() && alert.isOpening()) {
+            if (!needToOpenOrder(deal, alert)) {
+                return Order.builder().build();
+            }
+            price = getCurrentPrice(ticker);
         }
-
-        Order order = createNewOrder(
-                strategy,
-                alert,
-                ticker,
-                userId,
-                alertTime,
-                deal.getId(),
-                price);
-
-        if (alert.isOpening()) {
-            dealService.setPrice(deal, alert.getName(), price);
-            binanceDataHolder.startProfitTracker(deal,
-                    this,
-                    alertService,
-                    dealService,
-                    strategyService);
-        }
-        return order;
+        return createNewOrder(deal, strategy, alert, alertTime, ticker, price);
     }
 
-    private Order createNewOrder(Strategy strategy,
-                                 Alert alert,
-                                 String ticker,
-                                 int userId,
-                                 String alertTime,
-                                 int dealId,
-                                 double price) {
+    private boolean needToOpenOrder(Deal deal, Alert alert) {
+        boolean orderIsPresent = orderIsPresent(deal, alert.getName());
+        boolean bestOrderIsPresent = bestOrderIsPresent(deal, alert.getName());
 
+        /* Will not create new order if it was opened with the same alert
+         * or if already present order with the higher alert number   */
+        return !orderIsPresent && !bestOrderIsPresent;
+    }
+
+    private double getCurrentPrice(String ticker) {
+        BinanceDataHolder binanceDataHolder = BinanceDataHolder.getInstance();
+        /* Get the current price from the binance price tracker. */
+        return binanceDataHolder.getFuturesByTicker(ticker).getPrice();
+    }
+
+    private Order createNewOrder(Deal deal,
+                                 Strategy strategy,
+                                 Alert alert,
+                                 String alertTime,
+                                 String ticker,
+                                 double price) {
         return Order.builder()
                 .name(alert.getName())
                 .strategy(strategy.getName())
                 .secret(alert.getSecret())
                 .side(alert.getSide())
                 .symbol(ticker)
-                .userId(userId)
+                .userId(deal.getUserId())
                 .timestamp(alertTime)
-                .dealId(dealId)
+                .dealId(deal.getId())
                 .price(price)
                 .build();
+    }
+
+    private boolean orderIsPresent(Deal deal, String alert) {
+        int alertNumber = AlertMessage.valueByName(alert).getNumber();
+
+        return switch (alertNumber) {
+            case 1 -> deal.getFirstPrice() > 0;
+            case 2 -> deal.getSecondPrice() > 0;
+            case 3 -> deal.getThirdPrice() > 0;
+            case 4 -> deal.getFourthPrice() > 0;
+            case 5 -> deal.getFifthPrice() > 0;
+            default -> true;
+        };
+    }
+
+    private boolean bestOrderIsPresent(Deal deal, String alert) {
+        int alertNumber = AlertMessage.valueByName(alert).getNumber();
+
+        return switch (alertNumber) {
+            case 1 -> (deal.getSecondPrice() + deal.getThirdPrice() + deal.getFourthPrice() + deal.getFifthPrice()) > 0;
+            case 2 -> (deal.getThirdPrice() + deal.getFourthPrice() + deal.getFifthPrice()) > 0;
+            case 3 -> (deal.getFourthPrice() + deal.getFifthPrice()) > 0;
+            case 4 -> deal.getFifthPrice() > 0;
+            default -> false;
+        };
     }
 }
