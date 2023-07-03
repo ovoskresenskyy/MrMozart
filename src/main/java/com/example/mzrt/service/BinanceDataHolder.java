@@ -57,8 +57,7 @@ public class BinanceDataHolder {
     public void startProfitTracker(Deal deal,
                                    OrderService orderService,
                                    AlertService alertService,
-                                   DealService dealService,
-                                   StrategyService strategyService) {
+                                   DealService dealService) {
 
         if (deal.getTicker() == null) return;
         if (!profitTrackerHolder.containsKey(deal.getId())) {
@@ -68,8 +67,7 @@ public class BinanceDataHolder {
                     deal,
                     orderService,
                     alertService,
-                    dealService,
-                    strategyService);
+                    dealService);
             Thread profitTracker = new Thread(profitTrackerService);
             profitTracker.start();
 

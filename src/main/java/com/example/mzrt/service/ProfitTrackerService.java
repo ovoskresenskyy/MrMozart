@@ -15,7 +15,6 @@ public class ProfitTrackerService implements Runnable {
     private final DealService dealService;
     private final OrderService orderService;
     private final AlertService alertService;
-    private final StrategyService strategyService;
     private boolean keepTracking;
 
     //TODO: too many parameters
@@ -23,14 +22,12 @@ public class ProfitTrackerService implements Runnable {
                                 Deal deal,
                                 OrderService orderService,
                                 AlertService alertService,
-                                DealService dealService,
-                                StrategyService strategyService) {
+                                DealService dealService) {
         this.binancePriceTracker = binancePriceTracker;
         this.deal = deal;
         this.orderService = orderService;
         this.alertService = alertService;
         this.dealService = dealService;
-        this.strategyService = strategyService;
         this.keepTracking = true;
     }
 

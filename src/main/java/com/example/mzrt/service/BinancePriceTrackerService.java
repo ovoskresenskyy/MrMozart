@@ -13,18 +13,15 @@ public class BinancePriceTrackerService {
     private final AlertService alertService;
     private final OrderService orderService;
     private final DealService dealService;
-    private final StrategyService strategyService;
 
     public BinancePriceTrackerService(TickerService tickerService,
                                       AlertService alertService,
                                       OrderService orderService,
-                                      DealService dealService,
-                                      StrategyService strategyService) {
+                                      DealService dealService) {
         this.tickerService = tickerService;
         this.alertService = alertService;
         this.orderService = orderService;
         this.dealService = dealService;
-        this.strategyService = strategyService;
 
         startCurrentPriceTracking();
         startProfitTrackers();
@@ -47,8 +44,7 @@ public class BinancePriceTrackerService {
             dataHolder.startProfitTracker(deal,
                     orderService,
                     alertService,
-                    dealService,
-                    strategyService);
+                    dealService);
         }
     }
 }
