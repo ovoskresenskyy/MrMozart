@@ -8,6 +8,20 @@
           href="https://stackpath.bootstrapcdn.com/bootstrap/4.1.3/css/bootstrap.min.css"
           integrity="sha384-MCw98/SFnGE8fJT3GXwEOngsV7Zt27NXFoaoApmYm81iuXoPkFOJwJ8ERdknLPMO"
           crossorigin="anonymous">
+    <style>
+        table {
+            /*width: 50%;*/
+            /*height: 50%;*/
+            /*border-spacing: 0;*/
+        }
+        td {
+            /*border: 3px solid black;*/
+        }
+        separator {
+            border: 1px solid black;
+            height: 2px;
+        }
+    </style>
 </head>
 <body>
 <div>
@@ -50,7 +64,45 @@
         </thead>
 
         <tbody>
-        <tr th:each="deal: ${deals}">
+        <tr th:each="deal: ${openedDeals}">
+            <td th:text="${deal.id}"></td>
+            <td th:text="${deal.ticker}"></td>
+            <td th:style="${deal.side} == 'Short'
+            ? (${deal.open} ? 'color: #30D5C8' : 'color: #000000')
+            : (${deal.open} ? 'color: #FF6600' : 'color: #000000')"
+                th:text="${deal.side}"></td>
+            <td th:text="${deal.firstPrice}"></td>
+            <td th:text="${deal.secondPrice}"></td>
+            <td th:text="${deal.thirdPrice}"></td>
+            <td th:text="${deal.averagePrice}"></td>
+            <td th:text="${deal.profitPrice}"></td>
+            <td th:text="${deal.closingPrice}"></td>
+            <td th:text="${deal.closingAlert}"></td>
+            <td th:text="${deal.lastChangeTime}" th:type="datetime"></td>
+            <td>
+                <form th:action="@{/orders/{user_id}/deal/{deal_id}/strategy/{strategy_id}
+                (user_id=${user.id},
+                deal_id=${deal.id},
+                strategy_id=${strategy.id})}" method="GET">
+                    <input type="hidden" name="_method" value="GET">
+                    <button class="btn btn-primary" type="submit">Show orders</button>
+                </form>
+            </td>
+            <td>
+                <form th:if="${deal.open}" th:action="@{/deals/close/{deal_id}(deal_id=${deal.id})}" method="GET">
+                    <input type="hidden" name="_method" value="GET">
+                    <button class="btn btn-danger" type="submit">Close</button>
+                </form>
+            </td>
+        </tr>
+        </tbody>
+
+        <tr style="max-height: 2px">
+            <td style="max-height: 2px"></td>
+        </tr>
+
+        <tbody>
+        <tr th:each="deal: ${closedDeals}">
             <td th:text="${deal.id}"></td>
             <td th:text="${deal.ticker}"></td>
             <td th:style="${deal.side} == 'Short'

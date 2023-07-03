@@ -78,7 +78,7 @@ public class DealService {
      * @param isOpen     - Mark if we need list of opened or closed deals
      * @return List of the deals
      */
-    private List<Deal> getByUserIdAndStrategyId(int userId, int strategyId, boolean isOpen) {
+    public List<Deal> getByUserIdAndStrategyId(int userId, int strategyId, boolean isOpen) {
         return dealRepository.getByUserIdAndStrategyIdAndOpen(userId,
                 strategyId,
                 isOpen,

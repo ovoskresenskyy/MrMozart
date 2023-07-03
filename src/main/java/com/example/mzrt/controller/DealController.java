@@ -65,7 +65,11 @@ public class DealController {
                                  Model model) {
         model.addAttribute("user", userService.findById(userId));
         model.addAttribute("strategy", strategyService.findById(strategyId));
-        model.addAttribute("deals", dealService.getUserDealsByStrategy(userId, strategyId));
+//        model.addAttribute("deals", dealService.getUserDealsByStrategy(userId, strategyId));
+        List<Deal> openedDeals = dealService.getByUserIdAndStrategyId(userId, strategyId, true);
+        model.addAttribute("openedDeals", openedDeals);
+        List<Deal> closedDeals = dealService.getByUserIdAndStrategyId(userId, strategyId, false);
+        model.addAttribute("closedDeals", closedDeals);
         return "deals/list";
     }
 }
