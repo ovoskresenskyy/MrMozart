@@ -197,8 +197,7 @@ public class DealService {
     }
 
     public void updateLastChangesTime(Deal deal) {
-        String currentTime = LocalDateTime.now().format(DateTimeFormatter.ofPattern("dd-MM-yyyy HH:mm:ss"));
-        deal.setLastChangeTime(currentTime);
+        deal.setLastChangeTime(LocalDateTime.now());
         dealRepository.save(deal);
     }
 }

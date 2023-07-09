@@ -8,6 +8,8 @@ import org.springframework.data.annotation.Id;
 import org.springframework.data.relational.core.mapping.Column;
 import org.springframework.data.relational.core.mapping.Table;
 
+import java.time.LocalDateTime;
+
 @Data
 @Builder
 @NoArgsConstructor
@@ -44,6 +46,6 @@ public class Deal {
     private String closingAlert;
     private boolean open;
     @Column("last_change_time")
-    private String lastChangeTime;
+    private LocalDateTime lastChangeTime;
 
 }

@@ -111,8 +111,7 @@ public class BlackFlagService {
         deal.setOpen(false);
         deal.setClosingPrice(currentPrice);
         deal.setClosingAlert(closingAlert);
-        String currentTime = LocalDateTime.now().format(DateTimeFormatter.ofPattern("dd-MM-yyyy HH:mm:ss"));
-        deal.setLastChangeTime(currentTime);
+        deal.setLastChangeTime(LocalDateTime.now());
         dealService.save(deal);
 
         dataHolder.stopProfitTracker(deal.getId());
