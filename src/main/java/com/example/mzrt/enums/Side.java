@@ -4,8 +4,8 @@ import java.util.HashMap;
 import java.util.Map;
 
 public enum Side {
-    SHORT("Short", "S", "sell", "SSL"),
-    LONG("Long", "L", "buy", "LSL"),
+    SHORT("Short", "S", "sell", "STS"),
+    LONG("Long", "L", "buy", "STL"),
     EMPTY("", "", "", "");
 
     private static final Map<String, Side> BY_ACTION = new HashMap<>();
@@ -21,13 +21,13 @@ public enum Side {
     public final String name;
     public final String shortName;
     public final String action;
-    public final String closingAlert;
+    public final String stopTrendAlert;
 
-    Side(String name, String shortName, String action, String closingAlert) {
+    Side(String name, String shortName, String action, String stopTrendAlert) {
         this.name = name;
         this.shortName = shortName;
         this.action = action;
-        this.closingAlert = closingAlert;
+        this.stopTrendAlert = stopTrendAlert;
     }
 
     /**
@@ -66,21 +66,6 @@ public enum Side {
     }
 
     /**
-     * This method determines value by the part of the received message
-     *
-     * @param message - Received text in the alert message
-     * @return Matched side
-     */
-    public static Side getSideByMessage(String message) {
-        if (message.indexOf("long trend") > 0) {
-            return LONG;
-        } else if (message.indexOf("short trend") > 0) {
-            return SHORT;
-        }
-        return EMPTY;
-    }
-
-    /**
      * This method is determines if the current side is a short pos ar a long.
      *
      * @param side - 'sell/buy' for the old deals, 'Short/Long' for the new one
@@ -91,12 +76,12 @@ public enum Side {
     }
 
     /**
-     * This method returns the closing aleert according to the received side
+     * This method returns the closing alert according to the received side
      *
      * @param side - 'sell/buy' for the old deals, 'Short/Long' for the new one
      * @return SSL if it's Short/sell, LSL if it's Long/buy
      */
-    public static String getClosingAlert(String side) {
-        return sideByName(side).closingAlert;
+    public static String getStopTrendAlert(String side) {
+        return isShort(side) ? SHORT.stopTrendAlert : LONG.stopTrendAlert;
     }
 }
