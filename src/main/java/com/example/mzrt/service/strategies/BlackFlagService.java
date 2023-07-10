@@ -13,8 +13,8 @@ import java.time.format.DateTimeFormatter;
 import java.util.Optional;
 
 import static com.example.mzrt.CryptoConstants.BF_STRATEGY_ID;
-import static com.example.mzrt.enums.AlertMessage.isStopLoss;
-import static com.example.mzrt.enums.Side.getClosingAlert;
+import static com.example.mzrt.enums.AlertMessage.*;
+import static com.example.mzrt.enums.Side.*;
 
 @Service
 public class BlackFlagService {
@@ -48,27 +48,17 @@ public class BlackFlagService {
      * @return Created new order if everything is ok, or empty ony if not.
      */
     public Order handleAlert(String token, String message, String ticker) { //TODO decompose
-        String alertTime = LocalDateTime.now().format(DateTimeFormatter.ofPattern("dd-MM-yyyy HH:mm:ss"));
-        Strategy strategy = strategyService.findById(BF_STRATEGY_ID);
         int userId = userService.findByToken(token).getId();
 
-        /* Check if it StopLoss, so send it immediately. */
-        if (isStopLoss(message)) {
-            return sendStopLoss(userId,
-                    ticker,
-                    alertTime,
-                    strategy);
+        /* Check if we need to close the deal immediately. */
+        if (isDealClosing(message)) {
+            return sendDealClosingOrder(message, ticker, userId);
         }
 
-        /* For BlackFlag strategy need to separate alert from the text message. */
-        String alertName = alertService.getAlertFromMessage(message);
+        Strategy strategy = strategyService.findById(BF_STRATEGY_ID);
+        String alertTime = LocalDateTime.now().format(DateTimeFormatter.ofPattern("dd-MM-yyyy HH:mm:ss"));
 
-        /* If it's wrong message, return empty order. */
-        if (alertName.equals("")) {
-            return Order.builder().build();
-        }
-
-        Alert alert = alertService.findByUserIdAndStrategyIdAndName(userId, BF_STRATEGY_ID, alertName);
+        Alert alert = alertService.findByUserIdAndStrategyIdAndName(userId, BF_STRATEGY_ID, message);
         Deal deal = dealService.getDealByTicker(userId, strategy, ticker, alert.getSide());
         Order order = orderService.placeOrder(deal, alert, alertTime);
 
@@ -82,7 +72,20 @@ public class BlackFlagService {
         return order;
     }
 
-    private void startProfitTracker(Deal deal){
+    private Order sendDealClosingOrder(String message, String ticker, int userId) {
+        Deal deal = getDeal(userId, ticker);
+
+        if (deal == null) {
+            return Order.builder().build();
+        }
+
+        Order order = sendClosingOrder(deal, message);
+        closeDeal(deal, message);
+
+        return order;
+    }
+
+    private void startProfitTracker(Deal deal) {
         BinanceDataHolder binanceDataHolder = BinanceDataHolder.getInstance();
         binanceDataHolder.startProfitTracker(deal,
                 orderService,
@@ -90,33 +93,52 @@ public class BlackFlagService {
                 dealService);
     }
 
+    private Order sendClosingOrder(Deal deal, String message) {
+        Alert alert = getAlert(deal, message);
+        String alertTime = LocalDateTime.now().format(DateTimeFormatter.ofPattern("dd-MM-yyyy HH:mm:ss"));
+        return orderService.placeOrder(deal, alert, alertTime);
+    }
+
+    private Alert getAlert(Deal deal, String message) {
+        if (isStopTrendText(message)) {
+            message = getStopTrendAlert(deal.getSide());
+        }
+        return alertService.findByUserIdAndStrategyIdAndName(deal.getUserId(), BF_STRATEGY_ID, message);
+    }
+
+    private Deal getDeal(int userId, String ticker) {
+        Strategy strategy = strategyService.findById(BF_STRATEGY_ID);
+        Optional<Deal> openedDeal = dealService.getOpenedDealByTicker(userId, strategy.getName(), ticker);
+
+        if (openedDeal.isEmpty()) {
+            return null;
+        }
+        return openedDeal.get();
+    }
+
     //TODO Decompose
-    private Order sendStopLoss(int userId, String ticker, String alertTime, Strategy strategy) {
-        Optional<Deal> openedDealByTicker = dealService.getOpenedDealByTicker(
-                userId,
-                strategy.getName(),
-                ticker);
-
-        if (openedDealByTicker.isEmpty()) return Order.builder().build();
-
-        Deal deal = openedDealByTicker.get();
-        String closingAlert = getClosingAlert(deal.getSide());
-
-        BinanceDataHolder dataHolder = BinanceDataHolder.getInstance();
-        double currentPrice = dataHolder.getFuturesByTicker(ticker).getPrice();
-
-        Alert alert = alertService.findByUserIdAndStrategyIdAndName(userId, BF_STRATEGY_ID, closingAlert);
-        Order order = orderService.placeOrder(deal, alert, alertTime);
+    private void closeDeal(Deal deal, String message) {
+        double currentPrice = getCurrentPrice(deal.getTicker());
 
         deal.setOpen(false);
         deal.setClosingPrice(currentPrice);
-        deal.setClosingAlert(closingAlert);
+        deal.setClosingAlert(message);
         deal.setLastChangeTime(LocalDateTime.now());
         dealService.save(deal);
 
-        dataHolder.stopProfitTracker(deal.getId());
-
-        return order;
+        stopTracking(deal.getId());
     }
 
+    //TODO bad place
+    private double getCurrentPrice(String ticker) {
+        BinanceDataHolder dataHolder = BinanceDataHolder.getInstance();
+        return dataHolder.getFuturesByTicker(ticker).getPrice();
+
+    }
+
+    //TODO bad place
+    private void stopTracking(int dealId) {
+        BinanceDataHolder dataHolder = BinanceDataHolder.getInstance();
+        dataHolder.stopProfitTracker(dealId);
+    }
 }
