@@ -63,7 +63,7 @@ public class BlackFlagService {
         Order order = orderService.placeOrder(deal, alert, alertTime);
 
         if (alert.isOpening()) {
-            dealService.setPriceAndUpdateRelation(deal, alert.getName(), order.getPrice());
+            dealService.setPrices(deal, alert.getName(), order.getPrice());
             startProfitTracker(deal);
         }
 

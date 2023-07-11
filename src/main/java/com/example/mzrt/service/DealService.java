@@ -1,6 +1,5 @@
 package com.example.mzrt.service;
 
-import com.example.mzrt.enums.AlertMessage;
 import com.example.mzrt.model.Deal;
 import com.example.mzrt.model.Strategy;
 import com.example.mzrt.repository.DealRepository;
@@ -9,17 +8,10 @@ import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.springframework.web.server.ResponseStatusException;
 
-import java.math.BigDecimal;
-import java.math.RoundingMode;
 import java.time.LocalDateTime;
 import java.util.List;
-import java.util.Objects;
 import java.util.Optional;
-import java.util.OptionalDouble;
-import java.util.stream.DoubleStream;
 
-import static com.example.mzrt.CryptoConstants.ROUNDING_ACCURACY;
-import static com.example.mzrt.enums.Side.isShort;
 import static com.example.mzrt.enums.Side.sideByName;
 import static org.springframework.http.HttpStatus.NOT_FOUND;
 
@@ -27,14 +19,12 @@ import static org.springframework.http.HttpStatus.NOT_FOUND;
 public class DealService {
 
     private final DealRepository dealRepository;
-    private final PercentProfitService percentProfitService;
-    private final TickerService tickerService;
+    private final DealPriceService dealPriceService;
 
     @Autowired
-    public DealService(DealRepository dealRepository, PercentProfitService percentProfitService, TickerService tickerService) {
+    public DealService(DealRepository dealRepository, DealPriceService dealPriceService) {
         this.dealRepository = dealRepository;
-        this.percentProfitService = percentProfitService;
-        this.tickerService = tickerService;
+        this.dealPriceService = dealPriceService;
     }
 
     public Deal findById(int id) {
@@ -127,14 +117,10 @@ public class DealService {
         return dealRepository.save(newDeal);
     }
 
-    public void setPriceAndUpdateRelation(Deal deal, String alert, double price) {
-        setPrice(deal, alert, price);
-
-        double averagePrice = calculateAveragePrice(deal);
-        deal.setAveragePrice(averagePrice);
-
-        double profitPrice = calculateProfitPrice(deal);
-        deal.setProfitPrice(profitPrice);
+    public void setPrices(Deal deal, String alert, double price) {
+        dealPriceService.setPriceByAlert(deal, alert, price);
+        deal.setAveragePrice(dealPriceService.getAvgPrice(deal));
+        deal.setProfitPrice(dealPriceService.getProfitPrice(deal));
 
         dealRepository.save(deal);
     }
