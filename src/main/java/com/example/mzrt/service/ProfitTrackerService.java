@@ -71,21 +71,16 @@ public class ProfitTrackerService implements Runnable {
         if (takeProfit) sendTakeProfit("LTP5", currentPrice);
     }
 
-    //TODO Decompose
     private void sendTakeProfit(String alertName, double currentPrice) {
         Alert alert = alertService.findByUserIdAndStrategyIdAndName(deal.getUserId(), deal.getStrategyId(), alertName);
         String alertTime = LocalDateTime.now().format(DateTimeFormatter.ofPattern("dd-MM-yyyy HH:mm:ss"));
 
         orderService.placeOrder(deal, alert, alertTime);
 
-        deal.setOpen(false);
-        deal.setClosingPrice(currentPrice);
-        deal.setClosingAlert(alertName);
-        deal.setLastChangeTime(LocalDateTime.now());
-        dealService.save(deal);
+        //TODO: close only if TP5
+        dealService.closeDeal(deal, currentPrice, alertName);
 
-        BinanceDataHolder dataHolder = BinanceDataHolder.getInstance();
-        dataHolder.stopProfitTracker(deal.getId());
+        BinanceDataHolder.getInstance().stopProfitTracker(deal.getId());
     }
 
     public void setKeepTracking(boolean keepTracking) {

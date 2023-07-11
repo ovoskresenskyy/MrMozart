@@ -1,7 +1,10 @@
 package com.example.mzrt.controller;
 
 import com.example.mzrt.model.Deal;
-import com.example.mzrt.service.*;
+import com.example.mzrt.service.BinanceDataHolder;
+import com.example.mzrt.service.DealService;
+import com.example.mzrt.service.StrategyService;
+import com.example.mzrt.service.UserService;
 import org.jetbrains.annotations.NotNull;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -9,8 +12,6 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
-
-import java.util.List;
 
 @Controller
 @RequestMapping("/deals")
@@ -42,21 +43,17 @@ public class DealController {
     }
 
     @GetMapping("/close/{dealId}")
-    public String getDeals(@PathVariable int dealId, Model model) {
-
+    public String closeDeal(@PathVariable int dealId, Model model) {
         Deal deal = dealService.findById(dealId);
 
         BinanceDataHolder dataHolder = BinanceDataHolder.getInstance();
-        deal.setOpen(false);
-        deal.setClosingPrice(dataHolder.getFuturesByTicker(deal.getTicker()).getPrice());
-        deal.setClosingAlert("Manual");
-        dealService.updateLastChangesTime(deal);
-        dealService.save(deal);
+        double currentPrice = dataHolder.getFuturesByTicker(deal.getTicker()).getPrice();
+
+        dealService.closeDeal(deal, currentPrice, "Manual");
+
         dataHolder.stopProfitTracker(deal.getId());
 
-        int userId = deal.getUserId();
-        int strategyId = deal.getStrategyId();
-        return fillDealsList(userId, strategyId, model);
+        return fillDealsList(deal.getUserId(), deal.getStrategyId(), model);
     }
 
     @NotNull

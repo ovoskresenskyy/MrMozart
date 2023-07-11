@@ -80,7 +80,13 @@ public class BlackFlagService {
         }
 
         Order order = sendClosingOrder(deal, message);
-        closeDeal(deal, message);
+
+        BinanceDataHolder dataHolder = BinanceDataHolder.getInstance();
+        double currentPrice = dataHolder.getFuturesByTicker(ticker).getPrice();
+
+        dealService.closeDeal(deal, currentPrice, message);
+
+        dataHolder.stopProfitTracker(deal.getId());
 
         return order;
     }
@@ -114,31 +120,5 @@ public class BlackFlagService {
             return null;
         }
         return openedDeal.get();
-    }
-
-    //TODO Decompose
-    private void closeDeal(Deal deal, String message) {
-        double currentPrice = getCurrentPrice(deal.getTicker());
-
-        deal.setOpen(false);
-        deal.setClosingPrice(currentPrice);
-        deal.setClosingAlert(message);
-        deal.setLastChangeTime(LocalDateTime.now());
-        dealService.save(deal);
-
-        stopTracking(deal.getId());
-    }
-
-    //TODO bad place
-    private double getCurrentPrice(String ticker) {
-        BinanceDataHolder dataHolder = BinanceDataHolder.getInstance();
-        return dataHolder.getFuturesByTicker(ticker).getPrice();
-
-    }
-
-    //TODO bad place
-    private void stopTracking(int dealId) {
-        BinanceDataHolder dataHolder = BinanceDataHolder.getInstance();
-        dataHolder.stopProfitTracker(dealId);
     }
 }
