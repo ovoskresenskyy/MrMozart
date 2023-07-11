@@ -1,10 +1,8 @@
 package com.example.mzrt.controller;
 
+import com.example.mzrt.model.Alert;
 import com.example.mzrt.model.Deal;
-import com.example.mzrt.service.BinanceDataHolder;
-import com.example.mzrt.service.DealService;
-import com.example.mzrt.service.StrategyService;
-import com.example.mzrt.service.UserService;
+import com.example.mzrt.service.*;
 import org.jetbrains.annotations.NotNull;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -13,6 +11,8 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 
+import static com.example.mzrt.enums.Side.*;
+
 @Controller
 @RequestMapping("/deals")
 public class DealController {
@@ -20,14 +20,20 @@ public class DealController {
     private final UserService userService;
     private final StrategyService strategyService;
     private final DealService dealService;
+    private final OrderService orderService;
+    private final AlertService alertService;
 
     @Autowired
     public DealController(UserService userService,
                           StrategyService strategyService,
-                          DealService dealService) {
+                          DealService dealService,
+                          OrderService orderService,
+                          AlertService alertService) {
         this.userService = userService;
         this.strategyService = strategyService;
         this.dealService = dealService;
+        this.orderService = orderService;
+        this.alertService = alertService;
     }
 
     @GetMapping
@@ -45,6 +51,10 @@ public class DealController {
     @GetMapping("/close/{dealId}")
     public String closeDeal(@PathVariable int dealId, Model model) {
         Deal deal = dealService.findById(dealId);
+        boolean aShort = isShort(deal.getSide());
+
+        Alert alert = alertService.getAlert(deal, aShort ? SHORT.manualClosingAlert : LONG.manualClosingAlert);
+        orderService.sendClosingOrder(deal, alert);
 
         dealService.closeDeal(deal, "Manual");
 
