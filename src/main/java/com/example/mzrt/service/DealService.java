@@ -12,13 +12,13 @@ import org.springframework.web.server.ResponseStatusException;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
 import java.time.LocalDateTime;
-import java.time.format.DateTimeFormatter;
 import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
 import java.util.OptionalDouble;
 import java.util.stream.DoubleStream;
 
+import static com.example.mzrt.CryptoConstants.ROUNDING_ACCURACY;
 import static com.example.mzrt.enums.Side.isShort;
 import static com.example.mzrt.enums.Side.sideByName;
 import static org.springframework.http.HttpStatus.NOT_FOUND;
@@ -191,8 +191,7 @@ public class DealService {
      * @return Rounded price
      */
     private double roundPrice(double price) {
-        BigDecimal bd = new BigDecimal(price)
-                .setScale(4, RoundingMode.HALF_EVEN);
+        BigDecimal bd = new BigDecimal(price).setScale(ROUNDING_ACCURACY, RoundingMode.HALF_EVEN);
         return bd.doubleValue();
     }
 
