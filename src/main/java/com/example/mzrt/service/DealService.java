@@ -19,12 +19,10 @@ import static org.springframework.http.HttpStatus.NOT_FOUND;
 public class DealService {
 
     private final DealRepository dealRepository;
-    private final DealPriceService dealPriceService;
 
     @Autowired
-    public DealService(DealRepository dealRepository, DealPriceService dealPriceService) {
+    public DealService(DealRepository dealRepository) {
         this.dealRepository = dealRepository;
-        this.dealPriceService = dealPriceService;
     }
 
     public Deal findById(int id) {
@@ -139,14 +137,6 @@ public class DealService {
                 .build();
 
         return dealRepository.save(newDeal);
-    }
-
-    public void setPrices(Deal deal, String alert, double price) {
-        dealPriceService.setPriceByAlert(deal, alert, price);
-        deal.setAveragePrice(dealPriceService.getAvgPrice(deal));
-        deal.setProfitPrice(dealPriceService.getProfitPrice(deal));
-
-        dealRepository.save(deal);
     }
 
     /**

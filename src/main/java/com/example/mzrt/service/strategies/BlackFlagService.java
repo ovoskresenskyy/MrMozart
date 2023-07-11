@@ -23,6 +23,7 @@ public class BlackFlagService {
     private final OrderService orderService;
     private final AlertService alertService;
     private final DealService dealService;
+    private final DealPriceService dealPriceService;
     private final UserService userService;
 
     @Autowired
@@ -30,11 +31,13 @@ public class BlackFlagService {
                             OrderService orderService,
                             AlertService alertService,
                             DealService dealService,
+                            DealPriceService dealPriceService,
                             UserService userService) {
         this.strategyService = strategyService;
         this.orderService = orderService;
         this.alertService = alertService;
         this.dealService = dealService;
+        this.dealPriceService = dealPriceService;
         this.userService = userService;
     }
 
@@ -63,7 +66,8 @@ public class BlackFlagService {
         Order order = orderService.placeOrder(deal, alert, alertTime);
 
         if (alert.isOpening()) {
-            dealService.setPrices(deal, alert.getName(), order.getPrice());
+            dealPriceService.setPrices(deal, alert.getName(), order.getPrice());
+            dealService.save(deal);
             startProfitTracker(deal);
         }
 
@@ -72,6 +76,7 @@ public class BlackFlagService {
         return order;
     }
 
+    //TODO decompose better
     private Order sendDealClosingOrder(String message, String ticker, int userId) {
         Deal deal = getDeal(userId, ticker);
 

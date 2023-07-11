@@ -22,7 +22,14 @@ public class DealPriceService {
         this.percentProfitService = percentProfitService;
     }
 
-    public void setPriceByAlert(Deal deal, String alert, double price) {
+    public void setPrices(Deal deal, String alert, double price) {
+        setPriceByAlert(deal, alert, price);
+        deal.setAveragePrice(getAvgPrice(deal));
+        deal.setProfitPrice(getProfitPrice(deal));
+    }
+
+
+    private void setPriceByAlert(Deal deal, String alert, double price) {
         switch (AlertMessage.valueByName(alert).getNumber()) {
             case 1 -> deal.setFirstPrice(price);
             case 2 -> deal.setSecondPrice(price);
@@ -32,7 +39,7 @@ public class DealPriceService {
         }
     }
 
-    public double getAvgPrice(Deal deal) {
+    private double getAvgPrice(Deal deal) {
         OptionalDouble averageOptional = DoubleStream.of(
                         deal.getFirstPrice(),
                         deal.getSecondPrice(),
@@ -47,7 +54,7 @@ public class DealPriceService {
     }
 
     //TODO: comment
-    public double getProfitPrice(Deal deal) {
+    private double getProfitPrice(Deal deal) {
         double averagePrice = deal.getAveragePrice();
         double profit = averagePrice * percentProfitService.getPercent(deal) / 100;
 
