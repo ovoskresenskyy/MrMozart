@@ -133,4 +133,10 @@ public class OrderService {
             default -> false;
         };
     }
+
+    public Order sendClosingOrder(Deal deal, Alert alert) {
+        String alertTime = LocalDateTime.now().format(DateTimeFormatter.ofPattern("dd-MM-yyyy HH:mm:ss"));
+        return placeOrder(deal, alert, alertTime);
+    }
+
 }

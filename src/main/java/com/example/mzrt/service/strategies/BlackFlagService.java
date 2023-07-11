@@ -84,7 +84,8 @@ public class BlackFlagService {
             return Order.builder().build();
         }
 
-        Order order = sendClosingOrder(deal, message);
+        Alert alert = alertService.getAlert(deal, message);
+        Order order = orderService.sendClosingOrder(deal, alert);
 
         dealService.closeDeal(deal, message);
 
@@ -97,19 +98,6 @@ public class BlackFlagService {
                 orderService,
                 alertService,
                 dealService);
-    }
-
-    private Order sendClosingOrder(Deal deal, String message) {
-        Alert alert = getAlert(deal, message);
-        String alertTime = LocalDateTime.now().format(DateTimeFormatter.ofPattern("dd-MM-yyyy HH:mm:ss"));
-        return orderService.placeOrder(deal, alert, alertTime);
-    }
-
-    private Alert getAlert(Deal deal, String message) {
-        if (isStopTrendText(message)) {
-            message = getStopTrendAlert(deal.getSide());
-        }
-        return alertService.findByUserIdAndStrategyIdAndName(deal.getUserId(), BF_STRATEGY_ID, message);
     }
 
     private Deal getDeal(int userId, String ticker) {
