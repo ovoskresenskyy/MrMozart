@@ -45,15 +45,19 @@ public class DealService {
      * This method is responsible for closing the deal and updating all needed fields
      *
      * @param deal         - The deal to be closed
-     * @param currentPrice - The current price of the ticker
      * @param alert        - The closing alert
      */
-    public void closeDeal(Deal deal, double currentPrice, String alert) {
+    public void closeDeal(Deal deal, String alert) {
+        BinanceDataHolder dataHolder = BinanceDataHolder.getInstance();
+        double currentPrice = dataHolder.getFuturesByTicker(deal.getTicker()).getPrice();
+
         deal.setOpen(false);
         deal.setClosingPrice(currentPrice);
         deal.setClosingAlert(alert);
         deal.setLastChangeTime(LocalDateTime.now());
         save(deal);
+
+        dataHolder.stopProfitTracker(deal.getId());
     }
 
     /**

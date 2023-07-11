@@ -86,12 +86,7 @@ public class BlackFlagService {
 
         Order order = sendClosingOrder(deal, message);
 
-        BinanceDataHolder dataHolder = BinanceDataHolder.getInstance();
-        double currentPrice = dataHolder.getFuturesByTicker(ticker).getPrice();
-
-        dealService.closeDeal(deal, currentPrice, message);
-
-        dataHolder.stopProfitTracker(deal.getId());
+        dealService.closeDeal(deal, message);
 
         return order;
     }

@@ -46,12 +46,7 @@ public class DealController {
     public String closeDeal(@PathVariable int dealId, Model model) {
         Deal deal = dealService.findById(dealId);
 
-        BinanceDataHolder dataHolder = BinanceDataHolder.getInstance();
-        double currentPrice = dataHolder.getFuturesByTicker(deal.getTicker()).getPrice();
-
-        dealService.closeDeal(deal, currentPrice, "Manual");
-
-        dataHolder.stopProfitTracker(deal.getId());
+        dealService.closeDeal(deal, "Manual");
 
         return fillDealsList(deal.getUserId(), deal.getStrategyId(), model);
     }

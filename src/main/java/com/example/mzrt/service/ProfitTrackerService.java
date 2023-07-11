@@ -78,7 +78,7 @@ public class ProfitTrackerService implements Runnable {
         orderService.placeOrder(deal, alert, alertTime);
 
         //TODO: close only if TP5
-        dealService.closeDeal(deal, currentPrice, alertName);
+        dealService.closeDeal(deal, alertName);
 
         BinanceDataHolder.getInstance().stopProfitTracker(deal.getId());
     }
