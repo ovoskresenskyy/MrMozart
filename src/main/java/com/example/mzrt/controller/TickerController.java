@@ -99,14 +99,10 @@ public class TickerController {
                                          @PathVariable int strategyId,
                                          Model model) {
         Ticker ticker = tickerService.findById(tickerId);
-        model.addAttribute("user",
-                userService.findById(ticker.getUserId()));
-        model.addAttribute("strategy",
-                strategyService.findById(strategyId));
-        model.addAttribute("ticker",
-                ticker);
-        model.addAttribute("profit",
-                percentProfitService.findByStrategyIdAndTickerId(strategyId, tickerId));
+        model.addAttribute("user", userService.findById(ticker.getUserId()));
+        model.addAttribute("strategy", strategyService.findById(strategyId));
+        model.addAttribute("ticker", ticker);
+        model.addAttribute("profit", percentProfitService.getPercentProfit(strategyId, tickerId));
         return "tickers/profits_update";
     }
 
@@ -118,5 +114,4 @@ public class TickerController {
         BinanceDataHolder.getInstance().stopPriceTracking(ticker.getName());
         return "redirect:/tickers/" + ticker.getUserId();
     }
-
 }

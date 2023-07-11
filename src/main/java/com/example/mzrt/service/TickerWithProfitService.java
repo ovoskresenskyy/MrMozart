@@ -1,6 +1,5 @@
 package com.example.mzrt.service;
 
-import com.example.mzrt.model.PercentProfit;
 import com.example.mzrt.model.Ticker;
 import com.example.mzrt.model.TickerWithProfit;
 import org.springframework.stereotype.Service;
@@ -26,13 +25,9 @@ public class TickerWithProfitService {
             tickersAndProfits.add(
                     TickerWithProfit.builder()
                             .ticker(ticker)
-                            .percent(getPercentProfit(strategyId, ticker.getId()))
+                            .percent(percentProfitService.getPercentProfit(strategyId, ticker.getId()))
                             .build());
         }
         return tickersAndProfits;
-    }
-
-    private PercentProfit getPercentProfit(int strategyId, int tickerId){
-        return percentProfitService.findByStrategyIdAndTickerId(strategyId, tickerId);
     }
 }
