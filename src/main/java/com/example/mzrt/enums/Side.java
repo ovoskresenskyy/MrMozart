@@ -4,9 +4,9 @@ import java.util.HashMap;
 import java.util.Map;
 
 public enum Side {
-    SHORT("Short", "S", "sell", "STS"),
-    LONG("Long", "L", "buy", "STL"),
-    EMPTY("", "", "", "");
+    SHORT("Short", "S", "sell", "STS", "SSL"),
+    LONG("Long", "L", "buy", "STL", "LSL"),
+    EMPTY("", "", "", "", "");
 
     private static final Map<String, Side> BY_ACTION = new HashMap<>();
     private static final Map<String, Side> BY_NAME = new HashMap<>();
@@ -22,12 +22,14 @@ public enum Side {
     public final String shortName;
     public final String action;
     public final String stopTrendAlert;
+    public final String manualClosingAlert;
 
-    Side(String name, String shortName, String action, String stopTrendAlert) {
+    Side(String name, String shortName, String action, String stopTrendAlert, String manualClosingAlert) {
         this.name = name;
         this.shortName = shortName;
         this.action = action;
         this.stopTrendAlert = stopTrendAlert;
+        this.manualClosingAlert = manualClosingAlert;
     }
 
     /**
