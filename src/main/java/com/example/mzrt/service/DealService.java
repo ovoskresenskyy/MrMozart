@@ -44,22 +44,6 @@ public class DealService {
     }
 
     /**
-     * This method is responsible for getting full list of the deals of the user
-     * by the received strategy.
-     * <p>
-     * First it's filled by opened deals, then by closed.
-     *
-     * @param userId     - ID of the user which deals are
-     * @param strategyId - ID of the chosen strategy
-     * @return List of the opened and closed deals
-     */
-    public List<Deal> getUserDealsByStrategy(int userId, int strategyId) {
-        List<Deal> deals = getByUserIdAndStrategyId(userId, strategyId, true);
-        deals.addAll(getByUserIdAndStrategyId(userId, strategyId, false));
-        return deals;
-    }
-
-    /**
      * This method is responsible for getting the list of the deals from the repository
      * according to the received parameters
      *
@@ -68,10 +52,35 @@ public class DealService {
      * @param isOpen     - Mark if we need list of opened or closed deals
      * @return List of the deals
      */
-    public List<Deal> getByUserIdAndStrategyId(int userId, int strategyId, boolean isOpen) {
-        return dealRepository.getByUserIdAndStrategyIdAndOpen(userId,
+    public List<Deal> getDeals(int userId, int strategyId, boolean isOpen) {
+        return isOpen
+                ? getOpenedDeals(userId, strategyId)
+                : getClosedDeals(userId, strategyId);
+    }
+
+    /**
+     * This method is responsible for getting the list of the all opened deals at the current time
+     *
+     * @param userId     - ID of the user which deals are
+     * @param strategyId - ID of the chosen strategy
+     * @return List of the opened deals
+     */
+    private List<Deal> getOpenedDeals(int userId, int strategyId) {
+        return dealRepository.getByUserIdAndStrategyIdAndOpenIsTrue(userId,
                 strategyId,
-                isOpen,
+                Sort.by(Sort.Direction.DESC, "lastChangeTime"));
+    }
+
+    /**
+     * This method is responsible for getting the list of the all closed deals
+     *
+     * @param userId     - ID of the user which deals are
+     * @param strategyId - ID of the chosen strategy
+     * @return List of the closed deals
+     */
+    private List<Deal> getClosedDeals(int userId, int strategyId) {
+        return dealRepository.getByUserIdAndStrategyIdAndOpenIsFalse(userId,
+                strategyId,
                 Sort.by(Sort.Direction.DESC, "lastChangeTime"));
     }
 
