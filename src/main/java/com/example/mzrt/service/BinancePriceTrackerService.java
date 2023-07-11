@@ -6,6 +6,8 @@ import org.springframework.stereotype.Service;
 
 import java.util.List;
 
+import static com.example.mzrt.CryptoConstants.MOZART_STRATEGY_ID;
+
 @Service
 public class BinancePriceTrackerService {
 
@@ -40,7 +42,10 @@ public class BinancePriceTrackerService {
         BinanceDataHolder dataHolder = BinanceDataHolder.getInstance();
 
         for (Deal deal : dealService.findAllOpened()) {
-            if (deal.getStrategyId() == 1) continue;
+            if (deal.getStrategyId() == MOZART_STRATEGY_ID) {
+                continue;
+            }
+
             dataHolder.startProfitTracker(deal,
                     orderService,
                     alertService,
