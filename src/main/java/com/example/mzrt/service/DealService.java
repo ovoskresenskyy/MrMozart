@@ -125,62 +125,12 @@ public class DealService {
         dealRepository.save(deal);
     }
 
-    private void setPrice(Deal deal, String alert, double price) {
-        int alertNumber = AlertMessage.valueByName(alert).getNumber();
-
-        switch (alertNumber) {
-            case 1 -> deal.setFirstPrice(price);
-            case 2 -> deal.setSecondPrice(price);
-            case 3 -> deal.setThirdPrice(price);
-            case 4 -> deal.setFourthPrice(price);
-            case 5 -> deal.setFifthPrice(price);
-        }
-    }
-
-    //TODO: comment
-    private double calculateAveragePrice(Deal deal) {
-        OptionalDouble averageOptional = DoubleStream.of(
-                        deal.getFirstPrice(),
-                        deal.getSecondPrice(),
-                        deal.getThirdPrice(),
-                        deal.getFourthPrice(),
-                        deal.getFifthPrice())
-                .filter(price -> price != 0)
-                .filter(Objects::nonNull)
-                .average();
-
-        return averageOptional.isPresent() ? roundPrice(averageOptional.getAsDouble()) : 0;
-    }
-
-    private double calculateProfitPrice(Deal deal) {
-        double averagePrice = deal.getAveragePrice();
-        double takeProfitPercent = getTakeProfitPercent(deal);
-        double profit = averagePrice * takeProfitPercent / 100;
-
-        /* For the short positions our profit price always lower than the average price of the deal
-         * For the long positions - higher than the average price of the deal */
-        boolean aShort = isShort(deal.getSide());
-        return roundPrice(aShort ? averagePrice - profit : averagePrice + profit);
-    }
-
-    private double getTakeProfitPercent(Deal deal) {
-        int strategyId = deal.getStrategyId();
-        int tickerId = tickerService.findByNameAndUserId(deal.getTicker(), deal.getUserId()).getId();
-
-        return percentProfitService.findByStrategyIdAndTickerId(strategyId, tickerId).getValue();
-    }
-
     /**
-     * This method round the received price to 4 sings
+     * This method is responsible for update the time of the last changing inside the deal
+     * by getting the current time.
      *
-     * @param price - Price to be processed
-     * @return Rounded price
+     * @param deal - The deal to be updated
      */
-    private double roundPrice(double price) {
-        BigDecimal bd = new BigDecimal(price).setScale(ROUNDING_ACCURACY, RoundingMode.HALF_EVEN);
-        return bd.doubleValue();
-    }
-
     public void updateLastChangesTime(Deal deal) {
         deal.setLastChangeTime(LocalDateTime.now());
         dealRepository.save(deal);
