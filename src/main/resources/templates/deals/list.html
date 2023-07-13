@@ -68,8 +68,8 @@
             <td th:text="${deal.id}"></td>
             <td th:text="${deal.ticker}"></td>
             <td th:style="${deal.side} == 'Short'
-            ? (${deal.open} ? 'color: #30D5C8' : 'color: #000000')
-            : (${deal.open} ? 'color: #FF6600' : 'color: #000000')"
+            ? (${deal.open} ? 'color: #FF6600' : 'color: #000000')
+            : (${deal.open} ? 'color: #30D5C8' : 'color: #000000')"
                 th:text="${deal.side}"></td>
             <td th:text="${deal.firstPrice}"></td>
             <td th:text="${deal.secondPrice}"></td>
