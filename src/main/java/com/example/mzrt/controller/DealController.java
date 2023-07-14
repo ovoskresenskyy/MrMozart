@@ -51,12 +51,13 @@ public class DealController {
     @GetMapping("/close/{dealId}")
     public String closeDeal(@PathVariable int dealId, Model model) {
         Deal deal = dealService.findById(dealId);
-        boolean aShort = isShort(deal.getSide());
+        if (deal.isOpen()) {
+            String message = getManualClosingAlertBySide(deal.getSide());
+            Alert alert = alertService.getAlert(deal, message);
 
-        Alert alert = alertService.getAlert(deal, aShort ? SHORT.manualClosingAlert : LONG.manualClosingAlert);
-        orderService.sendClosingOrder(deal, alert);
-
-        dealService.closeDeal(deal, "Manual");
+            orderService.sendClosingOrder(deal, alert);
+            dealService.closeDeal(deal, "Manual");
+        }
 
         return fillDealsList(deal.getUserId(), deal.getStrategyId(), model);
     }

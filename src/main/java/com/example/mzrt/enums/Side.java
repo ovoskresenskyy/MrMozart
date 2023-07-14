@@ -86,4 +86,8 @@ public enum Side {
     public static String getStopTrendAlert(String side) {
         return isShort(side) ? SHORT.stopTrendAlert : LONG.stopTrendAlert;
     }
+
+    public static String getManualClosingAlertBySide(String side) {
+        return isShort(side) ? SHORT.manualClosingAlert : LONG.manualClosingAlert;
+    }
 }
