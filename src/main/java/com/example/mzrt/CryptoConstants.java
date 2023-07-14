@@ -14,4 +14,9 @@ public class CryptoConstants {
      * This constant will hold the accuracy of the rounding for the deal prices
      */
     public static int ROUNDING_ACCURACY = 4;
+
+    /**
+     * This constant will hold the time of pause before order sending in ms
+     */
+    public static long PAUSE_TIME = 1000;
 }
