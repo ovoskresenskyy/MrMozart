@@ -15,6 +15,8 @@ import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.List;
 
+import static com.example.mzrt.enums.AlertMessage.isTradeEntry;
+
 @Service
 public class OrderService {
 
@@ -66,10 +68,7 @@ public class OrderService {
         Strategy strategy = strategyService.findById(deal.getStrategyId());
 
         double price = 0;
-        if (strategy.isUsesDeal() && alert.isOpening()) {
-            if (!needToOpenOrder(deal, alert)) {
-                return Order.builder().build();
-            }
+        if (strategy.isUsesDeal() && isTradeEntry(alert.getName())) {
             price = getCurrentPrice(ticker);
         }
         return createNewOrder(deal, strategy, alert, alertTime, ticker, price);

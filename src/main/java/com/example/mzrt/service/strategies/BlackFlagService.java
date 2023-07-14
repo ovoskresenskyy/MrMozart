@@ -13,8 +13,8 @@ import java.time.format.DateTimeFormatter;
 import java.util.Optional;
 
 import static com.example.mzrt.CryptoConstants.BF_STRATEGY_ID;
-import static com.example.mzrt.enums.AlertMessage.*;
-import static com.example.mzrt.enums.Side.*;
+import static com.example.mzrt.enums.AlertMessage.isDealClosing;
+import static com.example.mzrt.enums.AlertMessage.isTradeEntry;
 
 @Service
 public class BlackFlagService {
@@ -60,12 +60,11 @@ public class BlackFlagService {
 
         Strategy strategy = strategyService.findById(BF_STRATEGY_ID);
         String alertTime = LocalDateTime.now().format(DateTimeFormatter.ofPattern("dd-MM-yyyy HH:mm:ss"));
-
         Alert alert = alertService.findByUserIdAndStrategyIdAndName(userId, BF_STRATEGY_ID, message);
         Deal deal = dealService.getDealByTicker(userId, strategy, ticker, alert.getSide());
         Order order = orderService.placeOrder(deal, alert, alertTime);
 
-        if (alert.isOpening()) {
+        if (isTradeEntry(alert.getName())) {
             dealPriceService.setPrices(deal, alert.getName(), order.getPrice());
             dealService.save(deal);
             startProfitTracker(deal);
