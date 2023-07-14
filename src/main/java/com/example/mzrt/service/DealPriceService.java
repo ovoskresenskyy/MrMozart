@@ -53,13 +53,21 @@ public class DealPriceService {
         return averageOptional.isPresent() ? roundPrice(averageOptional.getAsDouble()) : 0;
     }
 
-    //TODO: comment
+    /**
+     * This method is responsible for calculating the profit price
+     * by getting average price of the deal and adding or subtracting profit
+     * according to the Side
+     * <p>
+     * For the short positions our profit price always lower than the average price of the deal
+     * For the long positions - higher than the average price of the deal
+     *
+     * @param deal - The deal to be processed
+     * @return - Calculated profit price
+     */
     private double getProfitPrice(Deal deal) {
         double averagePrice = deal.getAveragePrice();
         double profit = averagePrice * percentProfitService.getPercent(deal) / 100;
 
-        /* For the short positions our profit price always lower than the average price of the deal
-         * For the long positions - higher than the average price of the deal */
         return roundPrice(isShort(deal.getSide())
                 ? averagePrice - profit
                 : averagePrice + profit);
@@ -75,5 +83,4 @@ public class DealPriceService {
         BigDecimal bd = new BigDecimal(price).setScale(ROUNDING_ACCURACY, RoundingMode.HALF_EVEN);
         return bd.doubleValue();
     }
-
 }

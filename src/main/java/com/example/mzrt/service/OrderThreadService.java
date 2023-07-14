@@ -7,6 +7,8 @@ import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
 import org.springframework.web.client.RestTemplate;
 
+import static com.example.mzrt.CryptoConstants.PAUSE_TIME;
+
 public class OrderThreadService implements Runnable {
 
     private final RestTemplate restTemplate;
@@ -23,11 +25,7 @@ public class OrderThreadService implements Runnable {
 
     @Override
     public void run() {
-        try {
-            Thread.sleep(alert.getPause() * 1000);
-        } catch (InterruptedException e) {
-            throw new RuntimeException(e);
-        }
+        pause(alert.getPause() * PAUSE_TIME);
 
         HttpHeaders headers = new HttpHeaders();
         headers.setContentType(MediaType.APPLICATION_JSON);
@@ -35,5 +33,19 @@ public class OrderThreadService implements Runnable {
         restTemplate.postForObject(alert.getWebhook(),
                 new HttpEntity<>(order, headers),
                 Order.class);
+    }
+
+    /**
+     * This method makes the pause before order sending.
+     * We use that to make sure that the order is opened before
+     *
+     * @param pauseTime - Time in ms
+     */
+    private void pause(long pauseTime) {
+        try {
+            Thread.sleep(pauseTime);
+        } catch (InterruptedException e) {
+            throw new RuntimeException(e);
+        }
     }
 }

@@ -42,15 +42,12 @@ public class OrderService {
     }
 
     public Order placeOrder(Deal deal, Alert alert, String alertTime, String ticker) {
-        Order order = getOrder(deal, alert, alertTime, ticker);
-
-        if (orderIsEmpty(order)) {
-            return order;
+        if (!needToOpenOrder(deal, alert)) {
+            return Order.builder().build();
         }
 
-        Thread t = new Thread(new OrderThreadService(restTemplate, alert, order));
-        t.start();
-
+        Order order = getOrder(deal, alert, alertTime, ticker);
+        new Thread(new OrderThreadService(restTemplate, alert, order)).start();
         order.setTimestampSent(LocalDateTime.now().format(DateTimeFormatter.ofPattern("dd-MM-yyyy HH:mm:ss")));
 
         return save(order);
@@ -58,10 +55,6 @@ public class OrderService {
 
     public List<Order> findByDealId(int dealId) {
         return orderRepository.findByDealId(dealId, Sort.by(Sort.Direction.DESC, "id"));
-    }
-
-    public boolean orderIsEmpty(Order order) {
-        return order.getName() == null || order.getUserId() == 0;
     }
 
     private Order getOrder(Deal deal, Alert alert, String alertTime, String ticker) {
