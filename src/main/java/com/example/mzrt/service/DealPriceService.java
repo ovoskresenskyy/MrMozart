@@ -28,6 +28,11 @@ public class DealPriceService {
         deal.setProfitPrice(getProfitPrice(deal));
     }
 
+    public double getCurrentPrice(String ticker) {
+        BinanceDataHolder binanceDataHolder = BinanceDataHolder.getInstance();
+        /* Get the current price from the binance price tracker. */
+        return binanceDataHolder.getFuturesByTicker(ticker).getPrice();
+    }
 
     private void setPriceByAlert(Deal deal, String alert, double price) {
         switch (AlertMessage.valueByName(alert).getNumber()) {

@@ -65,7 +65,8 @@ public class BlackFlagService {
         Order order = orderService.placeOrder(deal, alert, alertTime);
 
         if (isTradeEntry(alert.getName())) {
-            dealPriceService.setPrices(deal, alert.getName(), order.getPrice());
+            double currentPrice = dealPriceService.getCurrentPrice(ticker);
+            dealPriceService.setPrices(deal, alert.getName(), currentPrice);
             dealService.save(deal);
             startProfitTracker(deal);
         }

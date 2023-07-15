@@ -60,11 +60,7 @@ public class OrderService {
     private Order getOrder(Deal deal, Alert alert, String alertTime, String ticker) {
         Strategy strategy = strategyService.findById(deal.getStrategyId());
 
-        double price = 0;
-        if (strategy.isUsesDeal() && isTradeEntry(alert.getName())) {
-            price = getCurrentPrice(ticker);
-        }
-        return createNewOrder(deal, strategy, alert, alertTime, ticker, price);
+        return createNewOrder(deal, strategy, alert, alertTime, ticker);
     }
 
     private boolean needToOpenOrder(Deal deal, Alert alert) {
@@ -76,18 +72,11 @@ public class OrderService {
         return !orderIsPresent && !bestOrderIsPresent;
     }
 
-    private double getCurrentPrice(String ticker) {
-        BinanceDataHolder binanceDataHolder = BinanceDataHolder.getInstance();
-        /* Get the current price from the binance price tracker. */
-        return binanceDataHolder.getFuturesByTicker(ticker).getPrice();
-    }
-
     private Order createNewOrder(Deal deal,
                                  Strategy strategy,
                                  Alert alert,
                                  String alertTime,
-                                 String ticker,
-                                 double price) {
+                                 String ticker) {
         return Order.builder()
                 .name(alert.getName())
                 .strategy(strategy.getName())
@@ -97,7 +86,6 @@ public class OrderService {
                 .userId(deal.getUserId())
                 .timestamp(alertTime)
                 .dealId(deal.getId())
-                .price(price)
                 .build();
     }
 
