@@ -71,28 +71,6 @@ public enum AlertMessage {
     }
 
     /**
-     * This method determines is the received message told to stop lossing the value
-     *
-     * @param message - Received message in the alert
-     * @return True if it's StopLoss alert, false if not
-     */
-    public static boolean isStopLoss(String message) {
-        return valueByName(message) == SSL || valueByName(message) == LSL;
-    }
-
-    /**
-     * This method determines is the received message told to stop the trend
-     *
-     * @param message - Received message in the alert
-     * @return True if it's StopTrend alert, false if not
-     */
-    public static boolean isStopTrend(String message) {
-        return valueByName(message) == STOP_TREND
-                || valueByName(message) == STS
-                || valueByName(message) == STL;
-    }
-
-    /**
      * This method determines is the received message told to stop the trend
      *
      * @param message - Received message in the alert
@@ -109,7 +87,11 @@ public enum AlertMessage {
      * @return True if deal must be closed, false if not
      */
     public static boolean isDealClosing(String message) {
-        return isStopLoss(message) || isStopTrend(message);
+        return valueByName(message) == SSL
+                || valueByName(message) == LSL
+                || valueByName(message) == STS
+                || valueByName(message) == STL
+                || valueByName(message) == STOP_TREND;
     }
 
     /**

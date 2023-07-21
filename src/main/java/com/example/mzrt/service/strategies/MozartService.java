@@ -10,7 +10,7 @@ import org.springframework.stereotype.Service;
 
 import static com.example.mzrt.CryptoConstants.MOZART_DEAL_ID;
 import static com.example.mzrt.CryptoConstants.MOZART_STRATEGY_ID;
-import static com.example.mzrt.enums.AlertMessage.isStopTrend;
+import static com.example.mzrt.enums.AlertMessage.*;
 
 @Service
 public class MozartService {
@@ -33,7 +33,7 @@ public class MozartService {
     public void handleAlert(String token, String message, String ticker) {
         int userId = userService.findByToken(token).getId();
 
-        if (isStopTrend(message)) {
+        if (isStopTrendText(message)) {
             sendStopTrend(userId, ticker);
             return;
         }
