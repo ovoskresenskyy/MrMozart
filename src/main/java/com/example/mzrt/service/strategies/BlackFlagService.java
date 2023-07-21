@@ -2,19 +2,18 @@ package com.example.mzrt.service.strategies;
 
 import com.example.mzrt.model.Alert;
 import com.example.mzrt.model.Deal;
-import com.example.mzrt.model.Order;
 import com.example.mzrt.model.Strategy;
 import com.example.mzrt.service.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
-import java.time.format.DateTimeFormatter;
 import java.util.Optional;
 
 import static com.example.mzrt.CryptoConstants.BF_STRATEGY_ID;
 import static com.example.mzrt.enums.AlertMessage.isDealClosing;
-import static com.example.mzrt.enums.AlertMessage.isTradeEntry;
+import static com.example.mzrt.enums.AlertMessage.isStopTrendText;
+import static com.example.mzrt.enums.Side.getStopTrendAlert;
 
 @Service
 public class BlackFlagService {
@@ -73,10 +72,6 @@ public class BlackFlagService {
             dealService.save(deal);
             startProfitTracker(deal);
         }
-
-        dealService.updateLastChangesTime(deal);
-
-        return order;
     }
 
     //TODO decompose better

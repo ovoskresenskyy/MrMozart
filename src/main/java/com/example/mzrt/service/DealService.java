@@ -142,15 +142,4 @@ public class DealService {
 
         return dealRepository.save(newDeal);
     }
-
-    /**
-     * This method is responsible for update the time of the last changing inside the deal
-     * by getting the current time.
-     *
-     * @param deal - The deal to be updated
-     */
-    public void updateLastChangesTime(Deal deal) {
-        deal.setLastChangeTime(LocalDateTime.now());
-        dealRepository.save(deal);
-    }
 }
