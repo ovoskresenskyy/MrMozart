@@ -86,8 +86,9 @@ public class BlackFlagService {
             return;
         }
 
-        Alert alert = alertService.getAlert(deal, message);
-        Order order = orderService.sendClosingOrder(deal, alert);
+        if (isStopTrendText(message)) {
+            message = getStopTrendAlert(deal.getSide());
+        }
 
         orderService.send(deal, alertService.getAlert(deal, message));
         dealService.closeDeal(deal, message);
