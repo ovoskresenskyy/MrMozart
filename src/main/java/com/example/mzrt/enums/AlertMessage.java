@@ -6,41 +6,41 @@ import java.util.Map;
 public enum AlertMessage {
 
     /* Short open */
-    S1("1S", 1, true, false),
-    S2("2S", 2, true, false),
-    S3("3S", 3, true, false),
-    S4("4S", 4, true, false),
-    S5("5S", 5, true, false),
+    S1("1S", 1,  false),
+    S2("2S", 2,  false),
+    S3("3S", 3,  false),
+    S4("4S", 4,  false),
+    S5("5S", 5,  false),
 
     /* Short take profit */
-    STP1("STP1", 1, false, true),
-    STP2("STP2", 2, false, true),
-    STP3("STP3", 3, false, true),
-    STP4("STP4", 4, false, true),
-    STP5("STP5", 5, false, true),
+    STP1("STP1", 1,  true),
+    STP2("STP2", 2,  true),
+    STP3("STP3", 3,  true),
+    STP4("STP4", 4,  true),
+    STP5("STP5", 5,  true),
 
     /* Long open */
-    L1("1L", 1, true, false),
-    L2("2L", 2, true, false),
-    L3("3L", 3, true, false),
-    L4("4L", 4, true, false),
-    L5("5L", 5, true, false),
+    L1("1L", 1,  false),
+    L2("2L", 2,  false),
+    L3("3L", 3,  false),
+    L4("4L", 4,  false),
+    L5("5L", 5,  false),
 
     /* Short take profit */
-    LTP1("LTP1", 1, false, true),
-    LTP2("LTP2", 2, false, true),
-    LTP3("LTP3", 3, false, true),
-    LTP4("LTP4", 4, false, true),
-    LTP5("LTP5", 5, false, true),
+    LTP1("LTP1", 1,  true),
+    LTP2("LTP2", 2,  true),
+    LTP3("LTP3", 3,  true),
+    LTP4("LTP4", 4,  true),
+    LTP5("LTP5", 5,  true),
 
     /* Stop lose */
-    SSL("SSL", 0, false, false),
-    LSL("LSL", 0, false, false),
+    SSL("SSL", 0,  false),
+    LSL("LSL", 0,  false),
 
     /* Stop trend */
-    STOP_TREND("Stop Trend", 0, false, false),
-    STL("STL", 0, false, false),
-    STS("STS", 0, false, false);
+    STOP_TREND("Stop Trend", 0,  false),
+    STL("STL", 0,  false),
+    STS("STS", 0,  false);
 
     private static final Map<String, AlertMessage> BY_NAME = new HashMap<>();
 
@@ -52,13 +52,11 @@ public enum AlertMessage {
 
     private final String name;
     private final int number;
-    private final boolean tradeEntry;
     private final boolean takeProfit;
 
-    AlertMessage(String name, int number, boolean tradeEntry, boolean takeProfit) {
+    AlertMessage(String name, int number, boolean takeProfit) {
         this.name = name;
         this.number = number;
-        this.tradeEntry = tradeEntry;
         this.takeProfit = takeProfit;
     }
 
@@ -112,16 +110,6 @@ public enum AlertMessage {
      */
     public static boolean isDealClosing(String message) {
         return isStopLoss(message) || isStopTrend(message);
-    }
-
-    /**
-     * This method determines is the received order it's the trade entry
-     *
-     * @param message - Message of the alert
-     * @return True if S1-5 / L1-5, false if not
-     */
-    public static boolean isTradeEntry(String message) {
-        return valueByName(message).tradeEntry;
     }
 
     /**
