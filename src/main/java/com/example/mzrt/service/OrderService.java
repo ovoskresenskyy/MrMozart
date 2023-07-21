@@ -62,25 +62,16 @@ public class OrderService {
         return orderRepository.findByDealId(dealId, Sort.by(Sort.Direction.DESC, "id"));
     }
 
-    private Order getOrder(Deal deal, Alert alert, String alertTime, String ticker) {
-        Strategy strategy = strategyService.findById(deal.getStrategyId());
-
-        return createNewOrder(deal, strategy, alert, alertTime, ticker);
-    }
-
-    private boolean needToOpenOrder(Deal deal, Alert alert) {
-        boolean orderIsPresent = orderIsPresent(deal, alert.getName());
-        boolean bestOrderIsPresent = bestOrderIsPresent(deal, alert.getName());
-
+    private boolean isRedundant(Deal deal, Alert alert) {
         /* Will not create new order if it was opened with the same alert
          * or if already present order with the higher alert number   */
-        return !orderIsPresent && !bestOrderIsPresent;
+        return currentIsPresent(deal, alert.getName())
+                || higherIsPresent(deal, alert.getName());
     }
 
     private Order createNewOrder(Deal deal,
                                  Strategy strategy,
                                  Alert alert,
-                                 String alertTime,
                                  String ticker) {
         return Order.builder()
                 .name(alert.getName())
@@ -94,7 +85,7 @@ public class OrderService {
                 .build();
     }
 
-    private boolean orderIsPresent(Deal deal, String alert) {
+    private boolean currentIsPresent(Deal deal, String alert) {
         int alertNumber = AlertMessage.valueByName(alert).getNumber();
 
         return switch (alertNumber) {
@@ -107,7 +98,7 @@ public class OrderService {
         };
     }
 
-    private boolean bestOrderIsPresent(Deal deal, String alert) {
+    private boolean higherIsPresent(Deal deal, String alert) {
         int alertNumber = AlertMessage.valueByName(alert).getNumber();
 
         return switch (alertNumber) {
@@ -118,10 +109,4 @@ public class OrderService {
             default -> false;
         };
     }
-
-    public Order sendClosingOrder(Deal deal, Alert alert) {
-        String alertTime = LocalDateTime.now().format(DateTimeFormatter.ofPattern("dd-MM-yyyy HH:mm:ss"));
-        return placeOrder(deal, alert, alertTime);
-    }
-
 }
