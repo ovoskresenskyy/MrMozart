@@ -4,9 +4,6 @@ import com.example.mzrt.model.Alert;
 import com.example.mzrt.model.Deal;
 import com.example.mzrt.service.binance.BinanceFuturesPriceTracker;
 
-import java.time.LocalDateTime;
-import java.time.format.DateTimeFormatter;
-
 import static com.example.mzrt.enums.Side.isShort;
 
 public class ProfitTrackerService implements Runnable {
@@ -73,7 +70,7 @@ public class ProfitTrackerService implements Runnable {
 
     private void sendTakeProfit(String alertName, double currentPrice) {
         Alert alert = alertService.findByUserIdAndStrategyIdAndName(deal.getUserId(), deal.getStrategyId(), alertName);
-        String alertTime = LocalDateTime.now().format(DateTimeFormatter.ofPattern("dd-MM-yyyy HH:mm:ss"));
+        orderService.send(deal, alert);
 
         orderService.placeOrder(deal, alert, alertTime);
 

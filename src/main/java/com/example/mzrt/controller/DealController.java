@@ -55,7 +55,7 @@ public class DealController {
             String message = getManualClosingAlertBySide(deal.getSide());
             Alert alert = alertService.getAlert(deal, message);
 
-            orderService.sendClosingOrder(deal, alert);
+            orderService.send(deal, alert);
             dealService.closeDeal(deal, "Manual");
         }
 

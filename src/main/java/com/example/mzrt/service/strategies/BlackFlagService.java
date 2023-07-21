@@ -59,14 +59,17 @@ public class BlackFlagService {
         }
 
         Strategy strategy = strategyService.findById(BF_STRATEGY_ID);
-        String alertTime = LocalDateTime.now().format(DateTimeFormatter.ofPattern("dd-MM-yyyy HH:mm:ss"));
         Alert alert = alertService.findByUserIdAndStrategyIdAndName(userId, BF_STRATEGY_ID, message);
         Deal deal = dealService.getDealByTicker(userId, strategy, ticker, alert.getSide());
-        Order order = orderService.placeOrder(deal, alert, alertTime);
 
-        if (isTradeEntry(alert.getName())) {
-            double currentPrice = dealPriceService.getCurrentPrice(ticker);
+        boolean orderIsSent = orderService.send(deal, alert);
+
+        if (alert.isOpening() && orderIsSent) {
+            BinanceDataHolder dataHolder = BinanceDataHolder.getInstance();
+            double currentPrice = dataHolder.getFuturesByTicker(deal.getTicker()).getPrice();
+
             dealPriceService.setPrices(deal, alert.getName(), currentPrice);
+            deal.setLastChangeTime(LocalDateTime.now());
             dealService.save(deal);
             startProfitTracker(deal);
         }
@@ -87,6 +90,7 @@ public class BlackFlagService {
         Alert alert = alertService.getAlert(deal, message);
         Order order = orderService.sendClosingOrder(deal, alert);
 
+        orderService.send(deal, alertService.getAlert(deal, message));
         dealService.closeDeal(deal, message);
 
         return order;

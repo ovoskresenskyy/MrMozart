@@ -37,16 +37,20 @@ public class OrderService {
         return orderRepository.save(order);
     }
 
-    public Order placeOrder(Deal deal, Alert alert, String alertTime) {
-        return placeOrder(deal, alert, alertTime, deal.getTicker());
+    public boolean send(Deal deal, Alert alert) {
+        return send(deal, alert, deal.getTicker());
     }
 
-    public Order placeOrder(Deal deal, Alert alert, String alertTime, String ticker) {
-        if (!needToOpenOrder(deal, alert)) {
-            return Order.builder().build();
+    public boolean send(Deal deal, Alert alert, String ticker) {
+        if (alert.isOpening() && isRedundant(deal, alert)) {
+            return false;
         }
 
-        Order order = getOrder(deal, alert, alertTime, ticker);
+        Order order = createNewOrder(deal,
+                strategyService.findById(deal.getStrategyId()),
+                alert,
+                ticker);
+        /* Create pause between receiving the alert and sending order */
         new Thread(new OrderThreadService(restTemplate, alert, order)).start();
         order.setTimestampSent(LocalDateTime.now().format(DateTimeFormatter.ofPattern("dd-MM-yyyy HH:mm:ss")));
 
@@ -84,7 +88,7 @@ public class OrderService {
                 .side(alert.getSide())
                 .symbol(ticker)
                 .userId(deal.getUserId())
-                .timestamp(alertTime)
+                .timestamp(LocalDateTime.now().format(DateTimeFormatter.ofPattern("dd-MM-yyyy HH:mm:ss")))
                 .dealId(deal.getId())
                 .build();
     }

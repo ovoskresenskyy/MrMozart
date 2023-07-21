@@ -45,21 +45,14 @@ public class MozartService {
 
         Alert alert = alertService.findByUserIdAndStrategyIdAndName(userId, MOZART_STRATEGY_ID, message);
         Deal deal = dealService.findById(MOZART_DEAL_ID);
-        Order order = orderService.placeOrder(deal, alert, alertTime, ticker);
-        dealService.updateLastChangesTime(deal);
-        return order;
+        orderService.send(deal, alert, ticker);
     }
 
     private Order sendStopTrend(int userId, String ticker, String alertTime, Strategy strategy) {
         Alert sts = alertService.findByUserIdAndStrategyIdAndName(userId, MOZART_STRATEGY_ID, "STS");
         Alert stl = alertService.findByUserIdAndStrategyIdAndName(userId, MOZART_STRATEGY_ID, "STL");
-        Deal deal = dealService.findById(MOZART_DEAL_ID);
 
-        orderService.placeOrder(deal, sts, alertTime, ticker);
-        Order orderSTL = orderService.placeOrder(deal, stl, alertTime, ticker);
-
-        dealService.updateLastChangesTime(deal);
-
-        return orderSTL;
+        orderService.send(deal, sts, ticker);
+        orderService.send(deal, stl, ticker);
     }
 }
