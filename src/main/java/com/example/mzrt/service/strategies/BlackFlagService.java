@@ -48,14 +48,14 @@ public class BlackFlagService {
      * @param token   - Users token
      * @param message - Text message inside the alert
      * @param ticker  - Coin pair like BTCUSDT
-     * @return Created new order if everything is ok, or empty ony if not.
      */
-    public Order handleAlert(String token, String message, String ticker) { //TODO decompose
+    public void handleAlert(String token, String message, String ticker) { //TODO decompose
         int userId = userService.findByToken(token).getId();
 
         /* Check if we need to close the deal immediately. */
         if (isDealClosing(message)) {
-            return sendDealClosingOrder(message, ticker, userId);
+            sendDealClosingOrder(message, ticker, userId);
+            return;
         }
 
         Strategy strategy = strategyService.findById(BF_STRATEGY_ID);
@@ -80,11 +80,10 @@ public class BlackFlagService {
     }
 
     //TODO decompose better
-    private Order sendDealClosingOrder(String message, String ticker, int userId) {
+    private void sendDealClosingOrder(String message, String ticker, int userId) {
         Deal deal = getDeal(userId, ticker);
-
         if (deal == null) {
-            return Order.builder().build();
+            return;
         }
 
         Alert alert = alertService.getAlert(deal, message);
@@ -92,8 +91,6 @@ public class BlackFlagService {
 
         orderService.send(deal, alertService.getAlert(deal, message));
         dealService.closeDeal(deal, message);
-
-        return order;
     }
 
     private void startProfitTracker(Deal deal) {

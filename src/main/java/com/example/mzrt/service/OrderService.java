@@ -15,8 +15,6 @@ import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.List;
 
-import static com.example.mzrt.enums.AlertMessage.isTradeEntry;
-
 @Service
 public class OrderService {
 
@@ -52,9 +50,12 @@ public class OrderService {
                 ticker);
         /* Create pause between receiving the alert and sending order */
         new Thread(new OrderThreadService(restTemplate, alert, order)).start();
+        /* Setting SENT timestamp */
         order.setTimestampSent(LocalDateTime.now().format(DateTimeFormatter.ofPattern("dd-MM-yyyy HH:mm:ss")));
 
-        return save(order);
+        save(order);
+
+        return true;
     }
 
     public List<Order> findByDealId(int dealId) {
