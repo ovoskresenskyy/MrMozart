@@ -41,6 +41,12 @@ public class AlertService implements CryptoConstants {
                 name);
     }
 
+    public Alert findByDealAndName(Deal deal, String name) {
+        return alertRepository.findByUserIdAndStrategyIdAndName(deal.getUserId(),
+                deal.getStrategyId(),
+                name);
+    }
+
     public Alert save(Alert alert) {
         return alertRepository.save(alert);
     }
