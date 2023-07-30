@@ -37,7 +37,6 @@
             <th>Secret</th>
             <th>Side</th>
             <th>Pause to start (seconds)</th>
-            <th>Used to open deals</th>
             <th>Action</th>
         </tr>
         </thead>
@@ -49,7 +48,6 @@
             <td th:text="${alert.secret}"></td>
             <td th:text="${alert.side}"></td>
             <td th:text="${alert.pause}"></td>
-            <td th:text="${alert.opening}"></td>
             <td>
                 <form th:action="@{/alerts/updating/{id}(id=${alert.id})}" method="GET">
                     <input type="hidden" name="_method" value="GET">
