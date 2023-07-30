@@ -6,6 +6,7 @@ import com.example.mzrt.model.Alert;
 import com.example.mzrt.model.Deal;
 import com.example.mzrt.service.binance.BinanceFuturesPriceTracker;
 
+import static com.example.mzrt.enums.AlertMessage.LTP5;
 import static com.example.mzrt.enums.Side.isShort;
 
 public class ProfitTrackerService implements Runnable, CryptoConstants {
@@ -48,41 +49,58 @@ public class ProfitTrackerService implements Runnable, CryptoConstants {
 
     private void shortTakeProfit() {
         boolean takeProfit = false;
-        double currentPrice = 0;
+        double currentPrice;
         while (!takeProfit && keepTracking) {
+            pause(DEFAULT_PAUSE_TIME);
+
             currentPrice = binancePriceTracker.getPrice();
-            if (currentPrice == 0) continue;
-            double profitPrice = dealService.findById(deal.getId()).getProfitPrice();
-            takeProfit = currentPrice <= profitPrice;
+            if (currentPrice == 0) {
+                continue;
+            }
+
+            takeProfit = currentPrice <= deal.getProfitPrice();
         }
-        if (takeProfit) sendTakeProfit("STP5", currentPrice);
+        if (takeProfit) sendTakeProfit(AlertMessage.STP5.getName());
     }
 
     private void longTakeProfit() {
         boolean takeProfit = false;
-        double currentPrice = 0;
+        double currentPrice;
         while (!takeProfit && keepTracking) {
+            pause(DEFAULT_PAUSE_TIME);
+
             currentPrice = binancePriceTracker.getPrice();
-            double profitPrice = dealService.findById(deal.getId()).getProfitPrice();
-            if (profitPrice == 0) continue;
-            takeProfit = currentPrice >= profitPrice;
+            if (currentPrice == 0) {
+                continue;
+            }
+
+            takeProfit = currentPrice >= deal.getProfitPrice();
         }
-        if (takeProfit) sendTakeProfit("LTP5", currentPrice);
+        if (takeProfit) sendTakeProfit(LTP5.getName());
     }
 
-    private void sendTakeProfit(String alertName, double currentPrice) {
+    private void sendTakeProfit(String alertName) {
         Alert alert = alertService.findByUserIdAndStrategyIdAndName(deal.getUserId(), deal.getStrategyId(), alertName);
         orderService.send(deal, alert);
 
-        orderService.placeOrder(deal, alert, alertTime);
-
-        //TODO: close only if TP5
+        //TODO: have to close only if TP5
         dealService.closeDeal(deal, alertName);
-
-        BinanceDataHolder.getInstance().stopProfitTracker(deal.getId());
     }
 
     public void setKeepTracking(boolean keepTracking) {
         this.keepTracking = keepTracking;
+    }
+
+    /**
+     * This method is a wrapper for a Thread.sleep
+     *
+     * @param time - Time in ms, how long current thread will sleep
+     */
+    private void pause(long time) {
+        try {
+            Thread.sleep(time);
+        } catch (InterruptedException e) {
+            throw new RuntimeException(e);
+        }
     }
 }
