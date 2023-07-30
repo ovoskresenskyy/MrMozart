@@ -11,8 +11,7 @@ import org.springframework.stereotype.Service;
 import java.time.LocalDateTime;
 import java.util.Optional;
 
-import static com.example.mzrt.enums.AlertMessage.isDealClosing;
-import static com.example.mzrt.enums.AlertMessage.isStopTrendText;
+import static com.example.mzrt.enums.AlertMessage.*;
 import static com.example.mzrt.enums.Side.getStopTrendAlert;
 
 @Service

@@ -16,7 +16,12 @@ public interface CryptoConstants {
     int ROUNDING_ACCURACY = 4;
 
     /**
-     * This constant will hold the time of pause before order sending in ms
+     * This constant is holding the time of pause before order sending in ms
      */
-    long DEFAULT_PAUSE_TIME = 1000;
+    long ORDER_SENDING_PAUSE_TIME = 1000;
+    /**
+     * This constant is holding the time of pause between each iteration of determining
+     * of profit price to send the Take profit order
+     */
+    long PROFIT_PRICE_SEARCHING_PAUSE_TIME = 1000 / 2;
 }

@@ -93,12 +93,10 @@ public class ProfitTrackerService implements Runnable, CryptoConstants {
 
     /**
      * This method is a wrapper for a Thread.sleep
-     *
-     * @param time - Time in ms, how long current thread will sleep
      */
-    private void pause(long time) {
+    private void pause() {
         try {
-            Thread.sleep(time);
+            Thread.sleep(PROFIT_PRICE_SEARCHING_PAUSE_TIME);
         } catch (InterruptedException e) {
             throw new RuntimeException(e);
         }
