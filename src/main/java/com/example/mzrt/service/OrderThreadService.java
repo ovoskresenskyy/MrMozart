@@ -24,7 +24,7 @@ public class OrderThreadService implements Runnable, CryptoConstants {
 
     @Override
     public void run() {
-        pause(alert.getPause() * DEFAULT_PAUSE_TIME);
+        pause(alert.getPause() * ORDER_SENDING_PAUSE_TIME);
 
         HttpHeaders headers = new HttpHeaders();
         headers.setContentType(MediaType.APPLICATION_JSON);

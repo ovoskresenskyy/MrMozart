@@ -1,6 +1,5 @@
 package com.example.mzrt.service;
 
-import com.example.mzrt.enums.AlertMessage;
 import com.example.mzrt.model.Alert;
 import com.example.mzrt.model.Deal;
 import com.example.mzrt.model.Order;
@@ -40,7 +39,7 @@ public class OrderService {
     }
 
     public boolean send(Deal deal, Alert alert, String ticker) {
-        if (alert.isOpening() && isRedundant(deal, alert)) {
+        if (OrderPriceService.isRedundant(deal, alert)) {
             return false;
         }
 
@@ -62,13 +61,6 @@ public class OrderService {
         return orderRepository.findByDealId(dealId, Sort.by(Sort.Direction.DESC, "id"));
     }
 
-    private boolean isRedundant(Deal deal, Alert alert) {
-        /* Will not create new order if it was opened with the same alert
-         * or if already present order with the higher alert number   */
-        return currentIsPresent(deal, alert.getName())
-                || higherIsPresent(deal, alert.getName());
-    }
-
     private Order createNewOrder(Deal deal,
                                  Strategy strategy,
                                  Alert alert,
@@ -85,28 +77,4 @@ public class OrderService {
                 .build();
     }
 
-    private boolean currentIsPresent(Deal deal, String alert) {
-        int alertNumber = AlertMessage.valueByName(alert).getNumber();
-
-        return switch (alertNumber) {
-            case 1 -> deal.getFirstPrice() > 0;
-            case 2 -> deal.getSecondPrice() > 0;
-            case 3 -> deal.getThirdPrice() > 0;
-            case 4 -> deal.getFourthPrice() > 0;
-            case 5 -> deal.getFifthPrice() > 0;
-            default -> true;
-        };
-    }
-
-    private boolean higherIsPresent(Deal deal, String alert) {
-        int alertNumber = AlertMessage.valueByName(alert).getNumber();
-
-        return switch (alertNumber) {
-            case 1 -> (deal.getSecondPrice() + deal.getThirdPrice() + deal.getFourthPrice() + deal.getFifthPrice()) > 0;
-            case 2 -> (deal.getThirdPrice() + deal.getFourthPrice() + deal.getFifthPrice()) > 0;
-            case 3 -> (deal.getFourthPrice() + deal.getFifthPrice()) > 0;
-            case 4 -> deal.getFifthPrice() > 0;
-            default -> false;
-        };
-    }
 }
