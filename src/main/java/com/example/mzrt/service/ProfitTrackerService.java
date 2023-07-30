@@ -1,12 +1,14 @@
 package com.example.mzrt.service;
 
+import com.example.mzrt.CryptoConstants;
+import com.example.mzrt.enums.AlertMessage;
 import com.example.mzrt.model.Alert;
 import com.example.mzrt.model.Deal;
 import com.example.mzrt.service.binance.BinanceFuturesPriceTracker;
 
 import static com.example.mzrt.enums.Side.isShort;
 
-public class ProfitTrackerService implements Runnable {
+public class ProfitTrackerService implements Runnable, CryptoConstants {
 
     private final BinanceFuturesPriceTracker binancePriceTracker;
     private final Deal deal;

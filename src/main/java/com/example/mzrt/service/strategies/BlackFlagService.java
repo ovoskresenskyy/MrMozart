@@ -1,5 +1,6 @@
 package com.example.mzrt.service.strategies;
 
+import com.example.mzrt.CryptoConstants;
 import com.example.mzrt.model.Alert;
 import com.example.mzrt.model.Deal;
 import com.example.mzrt.model.Strategy;
@@ -10,13 +11,12 @@ import org.springframework.stereotype.Service;
 import java.time.LocalDateTime;
 import java.util.Optional;
 
-import static com.example.mzrt.CryptoConstants.BF_STRATEGY_ID;
 import static com.example.mzrt.enums.AlertMessage.isDealClosing;
 import static com.example.mzrt.enums.AlertMessage.isStopTrendText;
 import static com.example.mzrt.enums.Side.getStopTrendAlert;
 
 @Service
-public class BlackFlagService {
+public class BlackFlagService implements CryptoConstants {
 
     private final StrategyService strategyService;
     private final OrderService orderService;

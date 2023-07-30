@@ -1,5 +1,6 @@
 package com.example.mzrt.service;
 
+import com.example.mzrt.CryptoConstants;
 import com.example.mzrt.model.Alert;
 import com.example.mzrt.model.Order;
 import org.springframework.http.HttpEntity;
@@ -7,9 +8,7 @@ import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
 import org.springframework.web.client.RestTemplate;
 
-import static com.example.mzrt.CryptoConstants.PAUSE_TIME;
-
-public class OrderThreadService implements Runnable {
+public class OrderThreadService implements Runnable, CryptoConstants {
 
     private final RestTemplate restTemplate;
     private final Alert alert;
@@ -25,7 +24,7 @@ public class OrderThreadService implements Runnable {
 
     @Override
     public void run() {
-        pause(alert.getPause() * PAUSE_TIME);
+        pause(alert.getPause() * DEFAULT_PAUSE_TIME);
 
         HttpHeaders headers = new HttpHeaders();
         headers.setContentType(MediaType.APPLICATION_JSON);

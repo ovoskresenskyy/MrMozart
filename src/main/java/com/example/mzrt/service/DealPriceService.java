@@ -1,5 +1,6 @@
 package com.example.mzrt.service;
 
+import com.example.mzrt.CryptoConstants;
 import com.example.mzrt.enums.AlertMessage;
 import com.example.mzrt.model.Deal;
 import org.springframework.stereotype.Service;
@@ -10,11 +11,10 @@ import java.util.Objects;
 import java.util.OptionalDouble;
 import java.util.stream.DoubleStream;
 
-import static com.example.mzrt.CryptoConstants.ROUNDING_ACCURACY;
 import static com.example.mzrt.enums.Side.isShort;
 
 @Service
-public class DealPriceService {
+public class DealPriceService implements CryptoConstants {
 
     private final PercentProfitService percentProfitService;
 

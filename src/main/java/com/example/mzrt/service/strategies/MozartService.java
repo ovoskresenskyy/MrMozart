@@ -1,5 +1,6 @@
 package com.example.mzrt.service.strategies;
 
+import com.example.mzrt.CryptoConstants;
 import com.example.mzrt.model.Alert;
 import com.example.mzrt.model.Deal;
 import com.example.mzrt.service.AlertService;
@@ -8,12 +9,10 @@ import com.example.mzrt.service.OrderService;
 import com.example.mzrt.service.UserService;
 import org.springframework.stereotype.Service;
 
-import static com.example.mzrt.CryptoConstants.MOZART_DEAL_ID;
-import static com.example.mzrt.CryptoConstants.MOZART_STRATEGY_ID;
 import static com.example.mzrt.enums.AlertMessage.*;
 
 @Service
-public class MozartService {
+public class MozartService implements CryptoConstants {
 
     private final OrderService orderService;
     private final AlertService alertService;

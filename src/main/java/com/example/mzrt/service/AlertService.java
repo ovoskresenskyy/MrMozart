@@ -1,5 +1,6 @@
 package com.example.mzrt.service;
 
+import com.example.mzrt.CryptoConstants;
 import com.example.mzrt.model.Alert;
 import com.example.mzrt.model.Deal;
 import com.example.mzrt.repository.AlertRepository;
@@ -10,13 +11,12 @@ import org.springframework.web.server.ResponseStatusException;
 
 import java.util.List;
 
-import static com.example.mzrt.CryptoConstants.BF_STRATEGY_ID;
 import static com.example.mzrt.enums.AlertMessage.isStopTrendText;
 import static com.example.mzrt.enums.Side.getStopTrendAlert;
 import static org.springframework.http.HttpStatus.NOT_FOUND;
 
 @Service
-public class AlertService {
+public class AlertService implements CryptoConstants {
 
     private final AlertRepository alertRepository;
 
