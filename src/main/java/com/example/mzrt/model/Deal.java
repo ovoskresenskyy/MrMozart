@@ -16,7 +16,7 @@ import java.time.LocalDateTime;
 @AllArgsConstructor
 @Table(name = "deal")
 public class Deal {
-
+    //TODO: need to remake with JPA
     @Id
     private int id;
     @Column("user_id")
@@ -26,6 +26,7 @@ public class Deal {
     private String strategy;
     private String ticker;
     private String side;
+
     @Column("first_price")
     private double firstPrice;
     @Column("second_price")
@@ -36,6 +37,18 @@ public class Deal {
     private double fourthPrice;
     @Column("fifth_price")
     private double fifthPrice;
+
+    @Column("take_price_1")
+    private double takePrice1;
+    @Column("take_price_2")
+    private double takePrice2;
+    @Column("take_price_3")
+    private double takePrice3;
+    @Column("take_price_4")
+    private double takePrice4;
+    @Column("take_price_5")
+    private double takePrice5;
+
     @Column("average_price")
     private double averagePrice;
     @Column("profit_price")
