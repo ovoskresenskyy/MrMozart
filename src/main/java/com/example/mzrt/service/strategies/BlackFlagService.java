@@ -63,7 +63,7 @@ public class BlackFlagService implements CryptoConstants {
 
         boolean orderIsSent = orderService.send(deal, alert);
 
-        if (alert.isOpening() && orderIsSent) {
+        if (isEntry(alert.getName()) && orderIsSent) {
             BinanceDataHolder dataHolder = BinanceDataHolder.getInstance();
             double currentPrice = dataHolder.getFuturesByTicker(deal.getTicker()).getPrice();
 

@@ -25,6 +25,5 @@ public class Alert {
     private int userId;
     @Column("strategy_id")
     private int strategyId;
-    private boolean opening;
     private int pause;
 }

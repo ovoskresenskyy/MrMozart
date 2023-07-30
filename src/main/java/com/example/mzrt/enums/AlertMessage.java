@@ -6,41 +6,41 @@ import java.util.Map;
 public enum AlertMessage {
 
     /* Short open */
-    S1("1S", 1,  false),
-    S2("2S", 2,  false),
-    S3("3S", 3,  false),
-    S4("4S", 4,  false),
-    S5("5S", 5,  false),
+    S1("1S", 1, true,  false),
+    S2("2S", 2, true,  false),
+    S3("3S", 3, true,  false),
+    S4("4S", 4, true,  false),
+    S5("5S", 5, true,  false),
 
     /* Short take profit */
-    STP1("STP1", 1,  true),
-    STP2("STP2", 2,  true),
-    STP3("STP3", 3,  true),
-    STP4("STP4", 4,  true),
-    STP5("STP5", 5,  true),
+    STP1("STP1", 1, false,  true),
+    STP2("STP2", 2, false,  true),
+    STP3("STP3", 3, false,  true),
+    STP4("STP4", 4, false,  true),
+    STP5("STP5", 5, false,  true),
 
     /* Long open */
-    L1("1L", 1,  false),
-    L2("2L", 2,  false),
-    L3("3L", 3,  false),
-    L4("4L", 4,  false),
-    L5("5L", 5,  false),
+    L1("1L", 1, true,  false),
+    L2("2L", 2, true,  false),
+    L3("3L", 3, true,  false),
+    L4("4L", 4, true,  false),
+    L5("5L", 5, true,  false),
 
     /* Short take profit */
-    LTP1("LTP1", 1,  true),
-    LTP2("LTP2", 2,  true),
-    LTP3("LTP3", 3,  true),
-    LTP4("LTP4", 4,  true),
-    LTP5("LTP5", 5,  true),
+    LTP1("LTP1", 1, false,  true),
+    LTP2("LTP2", 2, false,  true),
+    LTP3("LTP3", 3, false,  true),
+    LTP4("LTP4", 4, false,  true),
+    LTP5("LTP5", 5, false,  true),
 
     /* Stop lose */
-    SSL("SSL", 0,  false),
-    LSL("LSL", 0,  false),
+    SSL("SSL", 0, false,  false),
+    LSL("LSL", 0, false,  false),
 
     /* Stop trend */
-    STOP_TREND("Stop Trend", 0,  false),
-    STL("STL", 0,  false),
-    STS("STS", 0,  false);
+    STOP_TREND("Stop Trend", 0, false,  false),
+    STL("STL", 0, false,  false),
+    STS("STS", 0, false,  false);
 
     private static final Map<String, AlertMessage> BY_NAME = new HashMap<>();
 
@@ -52,12 +52,14 @@ public enum AlertMessage {
 
     private final String name;
     private final int number;
-    private final boolean takeProfit;
+    private final boolean isEntry;
+    private final boolean isTakeProfit;
 
-    AlertMessage(String name, int number, boolean takeProfit) {
+    AlertMessage(String name, int number, boolean isEntry, boolean isTakeProfit) {
         this.name = name;
         this.number = number;
-        this.takeProfit = takeProfit;
+        this.isEntry = isEntry;
+        this.isTakeProfit = isTakeProfit;
     }
 
     /**
@@ -95,13 +97,23 @@ public enum AlertMessage {
     }
 
     /**
+     * This method determines is the received order it's the entry alert
+     *
+     * @param message - Message of the alert
+     * @return True if S / l 1-5, false if not
+     */
+    public static boolean isEntry(String message) {
+        return valueByName(message).isEntry;
+    }
+
+    /**
      * This method determines is the received order it's the take profit
      *
      * @param message - Message of the alert
      * @return True if TP1-5, false if not
      */
     public static boolean isTakeProfit(String message) {
-        return valueByName(message).takeProfit;
+        return valueByName(message).isTakeProfit;
     }
 
     /**
