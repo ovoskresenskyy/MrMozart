@@ -68,12 +68,14 @@ public class ProfitTrackerService implements Runnable, CryptoConstants {
         }
     }
 
-    private void sendTakeProfit(String alertName) {
-        Alert alert = alertService.findByUserIdAndStrategyIdAndName(deal.getUserId(), deal.getStrategyId(), alertName);
-        orderService.send(deal, alert);
+    private void sendTakeProfit() {
+        AlertMessage message = OrderPriceService.getNextTP(deal);
 
-        //TODO: have to close only if TP5
-        dealService.closeDeal(deal, alertName);
+        orderService.send(deal, alertService.findByDealAndName(deal, message.getName()));
+
+        if (message == STP5 || message == LTP5) {
+            dealService.closeDeal(deal, message.getName());
+        }
     }
 
     public void setKeepTracking(boolean keepTracking) {
