@@ -2,11 +2,11 @@ package com.example.mzrt.service;
 
 import com.example.mzrt.CryptoConstants;
 import com.example.mzrt.enums.AlertMessage;
-import com.example.mzrt.model.Alert;
 import com.example.mzrt.model.Deal;
 import com.example.mzrt.service.binance.BinanceFuturesPriceTracker;
 
 import static com.example.mzrt.enums.AlertMessage.LTP5;
+import static com.example.mzrt.enums.AlertMessage.STP5;
 import static com.example.mzrt.enums.Side.isShort;
 
 public class ProfitTrackerService implements Runnable, CryptoConstants {
@@ -38,45 +38,34 @@ public class ProfitTrackerService implements Runnable, CryptoConstants {
      */
     @Override
     public void run() {
+        takeProfitDetermining();
+    }
+
+    private void takeProfitDetermining() {
         boolean aShort = isShort(deal.getSide());
-
-        if (aShort) {
-            shortTakeProfit();
-        } else {
-            longTakeProfit();
-        }
-    }
-
-    private void shortTakeProfit() {
         boolean takeProfit = false;
-        double currentPrice;
-        while (!takeProfit && keepTracking) {
-            pause(DEFAULT_PAUSE_TIME);
 
-            currentPrice = binancePriceTracker.getPrice();
+        while (!takeProfit && keepTracking) {
+            pause();
+
+            double currentPrice = binancePriceTracker.getPrice();
+
+            /* Sometimes happens that there are no deals on the binance,
+             * so we can't get current price.
+             *
+             * Have to wait until it's appears. */
             if (currentPrice == 0) {
                 continue;
             }
 
-            takeProfit = currentPrice <= deal.getProfitPrice();
+            takeProfit = aShort
+                    ? currentPrice <= deal.getProfitPrice()
+                    : currentPrice >= deal.getProfitPrice();
         }
-        if (takeProfit) sendTakeProfit(AlertMessage.STP5.getName());
-    }
 
-    private void longTakeProfit() {
-        boolean takeProfit = false;
-        double currentPrice;
-        while (!takeProfit && keepTracking) {
-            pause(DEFAULT_PAUSE_TIME);
-
-            currentPrice = binancePriceTracker.getPrice();
-            if (currentPrice == 0) {
-                continue;
-            }
-
-            takeProfit = currentPrice >= deal.getProfitPrice();
+        if (takeProfit) {
+            sendTakeProfit();
         }
-        if (takeProfit) sendTakeProfit(LTP5.getName());
     }
 
     private void sendTakeProfit(String alertName) {
