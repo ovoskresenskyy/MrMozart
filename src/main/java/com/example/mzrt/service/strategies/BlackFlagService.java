@@ -1,6 +1,7 @@
 package com.example.mzrt.service.strategies;
 
 import com.example.mzrt.CryptoConstants;
+import com.example.mzrt.enums.AlertMessage;
 import com.example.mzrt.model.Alert;
 import com.example.mzrt.model.Deal;
 import com.example.mzrt.model.Strategy;
