@@ -63,8 +63,7 @@ public class BlackFlagService implements CryptoConstants {
         boolean orderIsSent = orderService.send(deal, alert);
 
         if (isEntry(alert.getName()) && orderIsSent) {
-            BinanceDataHolder dataHolder = BinanceDataHolder.getInstance();
-            double currentPrice = dataHolder.getFuturesByTicker(deal.getTicker()).getPrice();
+            AlertMessage alertMessage = AlertMessage.valueByName(message);
 
             dealService.updatePricesByAlert(deal, alertMessage);
             deal.setLastChangeTime(LocalDateTime.now());
