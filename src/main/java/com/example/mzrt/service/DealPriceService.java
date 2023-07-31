@@ -35,12 +35,11 @@ public class DealPriceService implements CryptoConstants {
     public void updatePrices(Deal deal, AlertMessage alert) {
         if (alert.isEntry()) {
             setEntryPrice(deal, alert);
+            deal.setAveragePrice(getAvgPrice(deal));
+            deal.setProfitPrice(getProfitPrice(deal, alert.getNumber()));
         } else {
             setTakeProfitPrice(deal, alert);
         }
-
-        deal.setAveragePrice(getAvgPrice(deal));
-        deal.setProfitPrice(getProfitPrice(deal));
     }
 
     /**
