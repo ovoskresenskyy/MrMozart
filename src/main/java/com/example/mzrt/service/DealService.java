@@ -1,5 +1,6 @@
 package com.example.mzrt.service;
 
+import com.example.mzrt.enums.AlertMessage;
 import com.example.mzrt.model.Deal;
 import com.example.mzrt.model.Strategy;
 import com.example.mzrt.repository.DealRepository;
@@ -19,10 +20,12 @@ import static org.springframework.http.HttpStatus.NOT_FOUND;
 public class DealService {
 
     private final DealRepository dealRepository;
+    private final DealPriceService dealPriceService;
 
     @Autowired
-    public DealService(DealRepository dealRepository) {
+    public DealService(DealRepository dealRepository, DealPriceService dealPriceService) {
         this.dealRepository = dealRepository;
+        this.dealPriceService = dealPriceService;
     }
 
     public Deal findById(int id) {
@@ -141,5 +144,19 @@ public class DealService {
                 .build();
 
         return dealRepository.save(newDeal);
+    }
+
+    /**
+     * This method is responsible for updating prices inside the deal
+     * according to received alert
+     *
+     * It can update Entry or TP price
+     * After that it's update average price and price profit
+     *
+     * @param deal - Deal within which will update prices
+     * @param alert - Received alert
+     */
+    public void updatePricesByAlert(Deal deal, AlertMessage alert) {
+        dealPriceService.updatePrices(deal, alert);
     }
 }

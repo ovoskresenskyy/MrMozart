@@ -66,7 +66,7 @@ public class BlackFlagService implements CryptoConstants {
             BinanceDataHolder dataHolder = BinanceDataHolder.getInstance();
             double currentPrice = dataHolder.getFuturesByTicker(deal.getTicker()).getPrice();
 
-            dealPriceService.setPrices(deal, alert.getName(), currentPrice);
+            dealService.updatePricesByAlert(deal, alertMessage);
             deal.setLastChangeTime(LocalDateTime.now());
             dealService.save(deal);
             startProfitTracker(deal);
