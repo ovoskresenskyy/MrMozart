@@ -44,15 +44,20 @@
         </tr>
     </table>
 
-    <table style="width:80%" border="1" class="table table-striped table-responsive-md">
+    <table style="width:100%" border="1" class="table table-striped table-responsive-md">
         <thead>
         <tr>
             <th>ID</th>
             <th>Ticker</th>
             <th>Side</th>
-            <th>1 price</th>
-            <th>2 price</th>
-            <th>3 price</th>
+            <th>Entry 1</th>
+            <th>Entry 2</th>
+            <th>Entry 3</th>
+            <th>TP 1</th>
+            <th>TP 2</th>
+            <th>TP 3</th>
+            <th>TP 4</th>
+            <th>TP 5</th>
             <th>Avg price</th>
             <th>Profit price</th>
             <th>Closing price</th>
@@ -71,9 +76,17 @@
             ? (${deal.open} ? 'color: #FF6600' : 'color: #000000')
             : (${deal.open} ? 'color: #30D5C8' : 'color: #000000')"
                 th:text="${deal.side}"></td>
+
             <td th:text="${deal.firstPrice}"></td>
             <td th:text="${deal.secondPrice}"></td>
             <td th:text="${deal.thirdPrice}"></td>
+
+            <td th:text="${deal.takePrice1}"></td>
+            <td th:text="${deal.takePrice2}"></td>
+            <td th:text="${deal.takePrice3}"></td>
+            <td th:text="${deal.takePrice4}"></td>
+            <td th:text="${deal.takePrice5}"></td>
+
             <td th:text="${deal.averagePrice}"></td>
             <td th:text="${deal.profitPrice}"></td>
             <td th:text="${deal.closingPrice}"></td>
@@ -109,9 +122,17 @@
             ? (${deal.open} ? 'color: #30D5C8' : 'color: #000000')
             : (${deal.open} ? 'color: #FF6600' : 'color: #000000')"
                 th:text="${deal.side}"></td>
+
             <td th:text="${deal.firstPrice}"></td>
             <td th:text="${deal.secondPrice}"></td>
             <td th:text="${deal.thirdPrice}"></td>
+
+            <td th:text="${deal.takePrice1}"></td>
+            <td th:text="${deal.takePrice2}"></td>
+            <td th:text="${deal.takePrice3}"></td>
+            <td th:text="${deal.takePrice4}"></td>
+            <td th:text="${deal.takePrice5}"></td>
+
             <td th:text="${deal.averagePrice}"></td>
             <td th:text="${deal.profitPrice}"></td>
             <td th:text="${deal.closingPrice}"></td>
