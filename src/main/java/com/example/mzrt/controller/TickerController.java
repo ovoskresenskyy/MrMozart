@@ -14,6 +14,7 @@ public class TickerController {
 
     private final UserService userService;
     private final StrategyService strategyService;
+    private final DealService dealService;
     private final TickerService tickerService;
     private final TickerWithProfitService tickerWithProfitService;
     private final TickerWithCurrentPriceService tickerWithCurrentPriceService;
@@ -22,12 +23,14 @@ public class TickerController {
     @Autowired
     public TickerController(UserService userService,
                             StrategyService strategyService,
+                            DealService dealService,
                             TickerService tickerService,
                             TickerWithProfitService tickerWithProfitService,
                             TickerWithCurrentPriceService tickerWithCurrentPriceService,
                             PercentProfitService percentProfitService) {
         this.userService = userService;
         this.strategyService = strategyService;
+        this.dealService = dealService;
         this.tickerService = tickerService;
         this.tickerWithProfitService = tickerWithProfitService;
         this.tickerWithCurrentPriceService = tickerWithCurrentPriceService;
@@ -80,8 +83,15 @@ public class TickerController {
     @PostMapping("/profit")
     public String saveTickersProfit(@ModelAttribute("profit") PercentProfit profit) {
         percentProfitService.save(profit);
+
+        Ticker ticker = tickerService.findById(profit.getTickerId());
+
+        dealService.updateProfitPriceAtOpenedDeal(ticker.getUserId(),
+                strategyService.findById(profit.getStrategyId()).getName(),
+                ticker.getName());
+
         return "redirect:/tickers/profits/"
-                + tickerService.findById(profit.getTickerId()).getUserId()
+                + ticker.getUserId()
                 + "/"
                 + profit.getStrategyId();
     }

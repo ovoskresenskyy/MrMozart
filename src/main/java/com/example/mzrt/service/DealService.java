@@ -170,4 +170,23 @@ public class DealService {
     public void updateLastChangingTime(Deal deal) {
         deal.setLastChangeTime(LocalDateTime.now());
     }
+
+    /**
+     * This method is responsible for updating profit prices
+     * into the opened deal according to the ticker
+     * <p>
+     * It will be used after changing percent of profit for the ticker
+     *
+     * @param userId   - ID of the user who change the percent
+     * @param strategy - Strategy within ticker is used
+     * @param ticker   - Ticker within which percent is changed
+     */
+    public void updateProfitPriceAtOpenedDeal(int userId, String strategy, String ticker) {
+        Optional<Deal> openedDeal = getOpenedDealByTicker(userId, strategy, ticker);
+        if (openedDeal.isPresent()) {
+            Deal deal = openedDeal.get();
+            dealPriceService.updateProfitPrice(deal);
+            save(deal);
+        }
+    }
 }
