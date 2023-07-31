@@ -20,9 +20,24 @@ public class OrderPriceService {
     public static boolean isRedundant(Deal deal, Alert alert) {
         if (isEntry(alert.getName())) {
             return currentEntryIsPresent(deal, alert.getName())
-                    || higherEntryIsPresent(deal, alert.getName());
+                    || higherEntryIsPresent(deal, alert.getName())
+                    || takeProfitIsPresent(deal);
         }
         return false;
+    }
+
+    /**
+     * This method is checkin is any take profit already taken
+     *
+     * @param deal - The deal to be processed
+     * @return True if any TP already taken, false if not
+     */
+    private static boolean takeProfitIsPresent(Deal deal) {
+        return deal.getTakePrice1()
+                + deal.getTakePrice2()
+                + deal.getTakePrice3()
+                + deal.getTakePrice4()
+                + deal.getTakePrice5() > 0;
     }
 
     /**
