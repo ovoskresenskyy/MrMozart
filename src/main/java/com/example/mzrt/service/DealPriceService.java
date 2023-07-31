@@ -89,7 +89,7 @@ public class DealPriceService implements CryptoConstants {
     }
 
     /**
-     * This method is calculates the average price bz getting all not emptz prices
+     * This method is calculates the average price bz getting all not empty entry prices
      *
      * @param deal - The deal within which will find the prices
      * @return - Average price
