@@ -32,7 +32,11 @@
         <thead>
         <tr>
             <th>Name</th>
-            <th>Take profit (%)</th>
+            <th>Take profit 1 (%)</th>
+            <th>Take profit 2 (%)</th>
+            <th>Take profit 3 (%)</th>
+            <th>Take profit 4 (%)</th>
+            <th>Take profit 5 (%)</th>
             <th>Action</th>
         </tr>
         </thead>
@@ -40,7 +44,11 @@
         <tbody>
         <tr th:each="row: ${tickersWithProfits}">
             <td th:text="${row.ticker.name}"></td>
-            <td th:text="${row.percent != null} ? ${row.percent.value} : ''"></td>
+            <td th:text="${row.percent1 != null} ? ${row.percent1.value} : ''"></td>
+            <td th:text="${row.percent2 != null} ? ${row.percent2.value} : ''"></td>
+            <td th:text="${row.percent3 != null} ? ${row.percent3.value} : ''"></td>
+            <td th:text="${row.percent4 != null} ? ${row.percent4.value} : ''"></td>
+            <td th:text="${row.percent5 != null} ? ${row.percent5.value} : ''"></td>
             <td>
                 <table>
                     <tr>

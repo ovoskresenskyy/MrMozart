@@ -17,29 +17,106 @@
     <h3>
         Ticker: <span th:text="${ticker.name}"></span>
     </h3>
-    <form
-            method="POST"
-            role="form"
-            th:action="@{/tickers/profit}"
-            th:object="${profit}">
-
+    <form method="POST" role="form" th:action="@{/tickers/profit}" th:object="${profit1}">
         <input type="hidden" th:field="*{Id}"/>
         <input type="hidden" th:field="*{tickerId}"/>
         <input type="hidden" th:field="*{strategyId}"/>
+        <input type="hidden" th:field="*{number}"/>
 
         <div class="form-group mb-3">
-            <label class="form-label">Take profit percent</label>
+            <label class="form-label">Take Profit 1 %</label>
             <input
                     class="form-control mb-4 col-4"
-                    th:field="${profit.value}"
-                    placeholder="Value"
+                    th:field="${profit1.value}"
+                    placeholder="Take profit 1"
                     name="value"
                     type="number"
                     step="0.01"
             />
         </div>
 
-        <button type="submit" class="btn btn-info col-2">Update</button>
+        <button type="submit" class="btn btn-info col-2">Update TP 1</button>
+    </form>
+
+    <form method="POST" role="form" th:action="@{/tickers/profit}" th:object="${profit2}">
+        <input type="hidden" th:field="*{Id}"/>
+        <input type="hidden" th:field="*{tickerId}"/>
+        <input type="hidden" th:field="*{strategyId}"/>
+        <input type="hidden" th:field="*{number}"/>
+
+        <div class="form-group mb-3">
+            <label class="form-label">Take Profit 2 %</label>
+            <input
+                    class="form-control mb-4 col-4"
+                    th:field="${profit2.value}"
+                    placeholder="Take profit 2"
+                    name="value"
+                    type="number"
+                    step="0.01"
+            />
+        </div>
+
+        <button type="submit" class="btn btn-info col-2">Update TP 2</button>
+    </form>
+
+    <form method="POST" role="form" th:action="@{/tickers/profit}" th:object="${profit3}">
+        <input type="hidden" th:field="*{Id}"/>
+        <input type="hidden" th:field="*{tickerId}"/>
+        <input type="hidden" th:field="*{strategyId}"/>
+        <input type="hidden" th:field="*{number}"/>
+
+        <div class="form-group mb-3">
+            <label class="form-label">Take Profit 3 %</label>
+            <input
+                    class="form-control mb-4 col-4"
+                    th:field="${profit3.value}"
+                    placeholder="Take profit 3"
+                    name="value"
+                    type="number"
+                    step="0.01"
+            />
+        </div>
+        <button type="submit" class="btn btn-info col-2">Update TP 3</button>
+    </form>
+
+    <form method="POST" role="form" th:action="@{/tickers/profit}" th:object="${profit4}">
+        <input type="hidden" th:field="*{Id}"/>
+        <input type="hidden" th:field="*{tickerId}"/>
+        <input type="hidden" th:field="*{strategyId}"/>
+        <input type="hidden" th:field="*{number}"/>
+
+        <div class="form-group mb-3">
+            <label class="form-label">Take Profit 4 %</label>
+            <input
+                    class="form-control mb-4 col-4"
+                    th:field="${profit4.value}"
+                    placeholder="Take profit 4"
+                    name="value"
+                    type="number"
+                    step="0.01"
+            />
+        </div>
+        <button type="submit" class="btn btn-info col-2">Update TP 4</button>
+    </form>
+
+    <form method="POST" role="form" th:action="@{/tickers/profit}" th:object="${profit5}">
+        <input type="hidden" th:field="*{Id}"/>
+        <input type="hidden" th:field="*{tickerId}"/>
+        <input type="hidden" th:field="*{strategyId}"/>
+        <input type="hidden" th:field="*{number}"/>
+
+        <div class="form-group mb-3">
+            <label class="form-label">Take Profit 5 %</label>
+            <input
+                    class="form-control mb-4 col-4"
+                    th:field="${profit5.value}"
+                    placeholder="Take profit 5"
+                    name="value"
+                    type="number"
+                    step="0.01"
+            />
+        </div>
+        <button type="submit" class="btn btn-info col-2">Update TP 5</button>
     </form>
 
     <hr>
