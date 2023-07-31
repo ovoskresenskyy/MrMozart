@@ -133,4 +133,13 @@ public enum AlertMessage {
     public int getNumber() {
         return number;
     }
+
+    /**
+     * Simple getter
+     *
+     * @return isEntry
+     */
+    public boolean isEntry(){
+        return isEntry;
+    }
 }
