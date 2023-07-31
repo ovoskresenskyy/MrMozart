@@ -12,5 +12,9 @@ import lombok.NoArgsConstructor;
 public class TickerWithProfit {
 
     private Ticker ticker;
-    private PercentProfit percent;
+    private PercentProfit percent1;
+    private PercentProfit percent2;
+    private PercentProfit percent3;
+    private PercentProfit percent4;
+    private PercentProfit percent5;
 }

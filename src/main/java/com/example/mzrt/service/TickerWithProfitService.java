@@ -25,7 +25,21 @@ public class TickerWithProfitService {
             tickersAndProfits.add(
                     TickerWithProfit.builder()
                             .ticker(ticker)
-                            .percent(percentProfitService.getPercentProfit(strategyId, ticker.getId()))
+                            .percent1(percentProfitService.getPercentProfit(strategyId,
+                                    ticker.getId(),
+                                    1))
+                            .percent2(percentProfitService.getPercentProfit(strategyId,
+                                    ticker.getId(),
+                                    2))
+                            .percent3(percentProfitService.getPercentProfit(strategyId,
+                                    ticker.getId(),
+                                    3))
+                            .percent4(percentProfitService.getPercentProfit(strategyId,
+                                    ticker.getId(),
+                                    4))
+                            .percent5(percentProfitService.getPercentProfit(strategyId,
+                                    ticker.getId(),
+                                    5))
                             .build());
         }
         return tickersAndProfits;

@@ -119,9 +119,9 @@ public class DealPriceService implements CryptoConstants {
      * @param deal - The deal to be processed
      * @return - Calculated profit price
      */
-    private double getProfitPrice(Deal deal) {
+    private double getProfitPrice(Deal deal, int number) {
         double averagePrice = deal.getAveragePrice();
-        double profit = averagePrice * percentProfitService.getPercent(deal) / 100;
+        double profit = averagePrice * percentProfitService.getPercent(deal, number) / 100;
 
         return roundPrice(isShort(deal.getSide())
                 ? averagePrice - profit

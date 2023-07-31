@@ -9,5 +9,5 @@ import java.util.Optional;
 @Repository
 public interface PercentProfitsRepository extends CrudRepository<PercentProfit, Integer> {
 
-    Optional<PercentProfit> findByStrategyIdAndTickerId(int strategyId, int tickerId);
+    Optional<PercentProfit> findByStrategyIdAndTickerIdAndNumber(int strategyId, int tickerId, int number);
 }

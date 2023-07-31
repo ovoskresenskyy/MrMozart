@@ -102,7 +102,16 @@ public class TickerController {
         model.addAttribute("user", userService.findById(ticker.getUserId()));
         model.addAttribute("strategy", strategyService.findById(strategyId));
         model.addAttribute("ticker", ticker);
-        model.addAttribute("profit", percentProfitService.getPercentProfit(strategyId, tickerId));
+        model.addAttribute("profit1",
+                percentProfitService.getPercentProfit(strategyId, tickerId, 1));
+        model.addAttribute("profit2",
+                percentProfitService.getPercentProfit(strategyId, tickerId, 2));
+        model.addAttribute("profit3",
+                percentProfitService.getPercentProfit(strategyId, tickerId, 3));
+        model.addAttribute("profit4",
+                percentProfitService.getPercentProfit(strategyId, tickerId, 4));
+        model.addAttribute("profit5",
+                percentProfitService.getPercentProfit(strategyId, tickerId, 5));
         return "tickers/profits_update";
     }
 

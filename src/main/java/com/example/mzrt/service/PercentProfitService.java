@@ -26,13 +26,15 @@ public class PercentProfitService {
      *
      * @param strategyId - The ID of the strategy
      * @param tickerId   - The ID of the ticker
+     * @param number     - The number from 1-5 according to TP1-5
      * @return - Instance of the PercentProfit
      */
-    public PercentProfit getPercentProfit(int strategyId, int tickerId) {
-        return percentProfitsRepository.findByStrategyIdAndTickerId(strategyId, tickerId)
+    public PercentProfit getPercentProfit(int strategyId, int tickerId, int number) {
+        return percentProfitsRepository.findByStrategyIdAndTickerIdAndNumber(strategyId, tickerId, number)
                 .orElse(PercentProfit.builder()
                         .strategyId(strategyId)
                         .tickerId(tickerId)
+                        .number(number)
                         .build());
     }
 
@@ -43,11 +45,11 @@ public class PercentProfitService {
      * @param deal - The deal as a holder of the strategy and ticker of the percent profit.
      * @return The percent profit of the received ticker for the given strategy
      */
-    public double getPercent(Deal deal) {
+    public double getPercent(Deal deal, int number) {
         int strategyId = deal.getStrategyId();
         int tickerId = tickerService.findByNameAndUserId(deal.getTicker(), deal.getUserId()).getId();
 
-        return getPercentProfit(strategyId, tickerId).getValue();
+        return getPercentProfit(strategyId, tickerId, number).getValue();
     }
 
     public void save(PercentProfit profit) {
