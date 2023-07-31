@@ -18,7 +18,6 @@ public class ProfitTrackerService implements Runnable, CryptoConstants {
     private final AlertService alertService;
     private boolean keepTracking;
 
-    //TODO: too many parameters
     public ProfitTrackerService(BinanceFuturesPriceTracker binancePriceTracker,
                                 Deal deal,
                                 OrderService orderService,
@@ -71,10 +70,15 @@ public class ProfitTrackerService implements Runnable, CryptoConstants {
     private void sendTakeProfit() {
         AlertMessage message = OrderPriceService.getNextTP(deal);
 
-        orderService.send(deal, alertService.findByDealAndName(deal, message.getName()));
+        boolean isOrderSent = orderService.send(deal, alertService.findByDealAndName(deal, message.getName()));
+        if (isOrderSent) {
+            dealService.updatePricesByAlert(deal, message);
+        }
 
         if (message == STP5 || message == LTP5) {
             dealService.closeDeal(deal, message.getName());
+        } else {
+            this.run();
         }
     }
 

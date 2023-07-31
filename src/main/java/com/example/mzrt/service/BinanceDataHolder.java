@@ -59,7 +59,10 @@ public class BinanceDataHolder {
                                    AlertService alertService,
                                    DealService dealService) {
 
-        if (deal.getTicker() == null) return;
+        if (deal.getTicker() == null) {
+            return;
+        }
+
         if (!profitTrackerHolder.containsKey(deal.getId())) {
 
             ProfitTrackerService profitTrackerService = new ProfitTrackerService(

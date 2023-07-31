@@ -47,8 +47,8 @@ public class DealService {
     /**
      * This method is responsible for closing the deal and updating all needed fields
      *
-     * @param deal         - The deal to be closed
-     * @param alert        - The closing alert
+     * @param deal  - The deal to be closed
+     * @param alert - The closing alert
      */
     public void closeDeal(Deal deal, String alert) {
         BinanceDataHolder dataHolder = BinanceDataHolder.getInstance();
@@ -57,7 +57,7 @@ public class DealService {
         deal.setOpen(false);
         deal.setClosingPrice(currentPrice);
         deal.setClosingAlert(alert);
-        deal.setLastChangeTime(LocalDateTime.now());
+        updateLastChangingTime(deal);
         save(deal);
 
         dataHolder.stopProfitTracker(deal.getId());
@@ -149,14 +149,25 @@ public class DealService {
     /**
      * This method is responsible for updating prices inside the deal
      * according to received alert
-     *
+     * <p>
      * It can update Entry or TP price
      * After that it's update average price and price profit
      *
-     * @param deal - Deal within which will update prices
+     * @param deal  - Deal within which will update prices
      * @param alert - Received alert
      */
     public void updatePricesByAlert(Deal deal, AlertMessage alert) {
         dealPriceService.updatePrices(deal, alert);
+        updateLastChangingTime(deal);
+        save(deal);
+    }
+
+    /**
+     * This method is simply updating last changing time, by getting the current one
+     *
+     * @param deal - The deal to be updated
+     */
+    public void updateLastChangingTime(Deal deal) {
+        deal.setLastChangeTime(LocalDateTime.now());
     }
 }

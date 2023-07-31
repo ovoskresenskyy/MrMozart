@@ -9,7 +9,6 @@ import com.example.mzrt.service.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import java.time.LocalDateTime;
 import java.util.Optional;
 
 import static com.example.mzrt.enums.AlertMessage.*;
@@ -45,7 +44,7 @@ public class BlackFlagService implements CryptoConstants {
      * @param message - Text message inside the alert
      * @param ticker  - Coin pair like BTCUSDT
      */
-    public void handleAlert(String token, String message, String ticker) { //TODO decompose
+    public void handleAlert(String token, String message, String ticker) {
         int userId = userService.findByToken(token).getId();
 
         /* Check if we need to close the deal immediately. */
@@ -58,19 +57,12 @@ public class BlackFlagService implements CryptoConstants {
         Alert alert = alertService.findByUserIdAndStrategyIdAndName(userId, BF_STRATEGY_ID, message);
         Deal deal = dealService.getDealByTicker(userId, strategy, ticker, alert.getSide());
 
-        boolean orderIsSent = orderService.send(deal, alert);
-
-        if (isEntry(alert.getName()) && orderIsSent) {
-            AlertMessage alertMessage = AlertMessage.valueByName(message);
-
-            dealService.updatePricesByAlert(deal, alertMessage);
-            deal.setLastChangeTime(LocalDateTime.now());
-            dealService.save(deal);
+        if (isEntry(alert.getName()) && orderService.send(deal, alert)) {
+            dealService.updatePricesByAlert(deal, AlertMessage.valueByName(message));
             startProfitTracker(deal);
         }
     }
 
-    //TODO decompose better
     private void sendDealClosingOrder(String message, String ticker, int userId) {
         Deal deal = getDeal(userId, ticker);
         if (deal == null) {
