@@ -21,7 +21,6 @@ public class BlackFlagService implements CryptoConstants {
     private final OrderService orderService;
     private final AlertService alertService;
     private final DealService dealService;
-    private final DealPriceService dealPriceService;
     private final UserService userService;
 
     @Autowired
@@ -29,13 +28,11 @@ public class BlackFlagService implements CryptoConstants {
                             OrderService orderService,
                             AlertService alertService,
                             DealService dealService,
-                            DealPriceService dealPriceService,
                             UserService userService) {
         this.strategyService = strategyService;
         this.orderService = orderService;
         this.alertService = alertService;
         this.dealService = dealService;
-        this.dealPriceService = dealPriceService;
         this.userService = userService;
     }
 
