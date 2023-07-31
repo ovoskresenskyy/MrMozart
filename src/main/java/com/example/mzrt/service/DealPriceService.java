@@ -100,12 +100,7 @@ public class DealPriceService implements CryptoConstants {
                         deal.getSecondPrice(),
                         deal.getThirdPrice(),
                         deal.getFourthPrice(),
-                        deal.getFifthPrice(),
-                        deal.getTakePrice1(),
-                        deal.getTakePrice2(),
-                        deal.getTakePrice3(),
-                        deal.getTakePrice4(),
-                        deal.getTakePrice5())
+                        deal.getFifthPrice())
                 .filter(price -> price != 0)
                 .filter(Objects::nonNull)
                 .average();
