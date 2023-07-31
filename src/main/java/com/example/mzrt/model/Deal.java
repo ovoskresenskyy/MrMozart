@@ -51,17 +51,8 @@ public class Deal {
 
     @Column("average_price")
     private double averagePrice;
-
     @Column("profit_price")
     private double profitPrice;
-    @Column("profit_price_2")
-    private double profitPrice2;
-    @Column("profit_price_3")
-    private double profitPrice3;
-    @Column("profit_price_4")
-    private double profitPrice4;
-    @Column("profit_price_5")
-    private double profitPrice5;
 
     @Column("closing_price")
     private double closingPrice;
