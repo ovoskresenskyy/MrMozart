@@ -90,10 +90,11 @@ public class TickerController {
                 strategyService.findById(profit.getStrategyId()).getName(),
                 ticker.getName());
 
-        return "redirect:/tickers/profits/"
-                + ticker.getUserId()
+        return "redirect:/tickers/profit/"
+                + ticker.getId()
                 + "/"
-                + profit.getStrategyId();
+                + profit.getStrategyId()
+                + "/updating";
     }
 
     @GetMapping("/{id}/updating")

@@ -9,24 +9,25 @@
 <div class="container">
     <h2>Ticker updating</h2>
     <h3>
-        User: <span th:text="${user.name}"></span>
+        <span th:text="${user.name}"></span>
     </h3>
     <h3>
-        Strategy: <span th:text="${strategy.name}"></span>
+        <span th:text="${strategy.name}"></span>
     </h3>
     <h3>
-        Ticker: <span th:text="${ticker.name}"></span>
+        <span th:text="${ticker.name}"></span>
     </h3>
-    <form method="POST" role="form" th:action="@{/tickers/profit}" th:object="${profit1}">
-        <input type="hidden" th:field="*{Id}"/>
-        <input type="hidden" th:field="*{tickerId}"/>
-        <input type="hidden" th:field="*{strategyId}"/>
-        <input type="hidden" th:field="*{number}"/>
 
-        <div class="form-group mb-3">
-            <label class="form-label">Take Profit 1 %</label>
+    <form method="POST" th:action="@{/tickers/profit}" th:object="${profit1}" class="form-inline">
+        <div class="form-group"> <input type="hidden" th:field="*{Id}"/> </div>
+        <div class="form-group"> <input type="hidden" th:field="*{tickerId}"/> </div>
+        <div class="form-group"> <input type="hidden" th:field="*{strategyId}"/> </div>
+        <div class="form-group"> <input type="hidden" th:field="*{number}"/> </div>
+
+        <div class="form-group">
+            <label>Take Profit 1 (%): </label>
             <input
-                    class="form-control mb-4 col-4"
+                    class="form-control"
                     th:field="${profit1.value}"
                     placeholder="Take profit 1"
                     name="value"
@@ -34,20 +35,21 @@
                     step="0.01"
             />
         </div>
-
-        <button type="submit" class="btn btn-info col-2">Update TP 1</button>
+        <button type="submit" class="btn btn-info col-2">Save</button>
     </form>
 
-    <form method="POST" role="form" th:action="@{/tickers/profit}" th:object="${profit2}">
-        <input type="hidden" th:field="*{Id}"/>
-        <input type="hidden" th:field="*{tickerId}"/>
-        <input type="hidden" th:field="*{strategyId}"/>
-        <input type="hidden" th:field="*{number}"/>
+    <br>
 
-        <div class="form-group mb-3">
-            <label class="form-label">Take Profit 2 %</label>
+    <form method="POST" th:action="@{/tickers/profit}" th:object="${profit2}" class="form-inline">
+        <div class="form-group"> <input type="hidden" th:field="*{Id}"/> </div>
+        <div class="form-group"> <input type="hidden" th:field="*{tickerId}"/> </div>
+        <div class="form-group"> <input type="hidden" th:field="*{strategyId}"/> </div>
+        <div class="form-group"> <input type="hidden" th:field="*{number}"/> </div>
+
+        <div class="form-group">
+            <label>Take Profit 2 (%): </label>
             <input
-                    class="form-control mb-4 col-4"
+                    class="form-control"
                     th:field="${profit2.value}"
                     placeholder="Take profit 2"
                     name="value"
@@ -55,20 +57,21 @@
                     step="0.01"
             />
         </div>
-
-        <button type="submit" class="btn btn-info col-2">Update TP 2</button>
+        <button type="submit" class="btn btn-info col-2">Save</button>
     </form>
 
-    <form method="POST" role="form" th:action="@{/tickers/profit}" th:object="${profit3}">
-        <input type="hidden" th:field="*{Id}"/>
-        <input type="hidden" th:field="*{tickerId}"/>
-        <input type="hidden" th:field="*{strategyId}"/>
-        <input type="hidden" th:field="*{number}"/>
+    <br>
 
-        <div class="form-group mb-3">
-            <label class="form-label">Take Profit 3 %</label>
+    <form method="POST" th:action="@{/tickers/profit}" th:object="${profit3}" class="form-inline">
+        <div class="form-group"> <input type="hidden" th:field="*{Id}"/> </div>
+        <div class="form-group"> <input type="hidden" th:field="*{tickerId}"/> </div>
+        <div class="form-group"> <input type="hidden" th:field="*{strategyId}"/> </div>
+        <div class="form-group"> <input type="hidden" th:field="*{number}"/> </div>
+
+        <div class="form-group">
+            <label>Take Profit 3 (%): </label>
             <input
-                    class="form-control mb-4 col-4"
+                    class="form-control"
                     th:field="${profit3.value}"
                     placeholder="Take profit 3"
                     name="value"
@@ -76,19 +79,21 @@
                     step="0.01"
             />
         </div>
-        <button type="submit" class="btn btn-info col-2">Update TP 3</button>
+        <button type="submit" class="btn btn-info col-2">Save</button>
     </form>
 
-    <form method="POST" role="form" th:action="@{/tickers/profit}" th:object="${profit4}">
-        <input type="hidden" th:field="*{Id}"/>
-        <input type="hidden" th:field="*{tickerId}"/>
-        <input type="hidden" th:field="*{strategyId}"/>
-        <input type="hidden" th:field="*{number}"/>
+    <br>
 
-        <div class="form-group mb-3">
-            <label class="form-label">Take Profit 4 %</label>
+    <form method="POST" th:action="@{/tickers/profit}" th:object="${profit4}" class="form-inline">
+        <div class="form-group"> <input type="hidden" th:field="*{Id}"/> </div>
+        <div class="form-group"> <input type="hidden" th:field="*{tickerId}"/> </div>
+        <div class="form-group"> <input type="hidden" th:field="*{strategyId}"/> </div>
+        <div class="form-group"> <input type="hidden" th:field="*{number}"/> </div>
+
+        <div class="form-group">
+            <label>Take Profit 4 (%): </label>
             <input
-                    class="form-control mb-4 col-4"
+                    class="form-control"
                     th:field="${profit4.value}"
                     placeholder="Take profit 4"
                     name="value"
@@ -96,19 +101,21 @@
                     step="0.01"
             />
         </div>
-        <button type="submit" class="btn btn-info col-2">Update TP 4</button>
+        <button type="submit" class="btn btn-info col-2">Save</button>
     </form>
 
-    <form method="POST" role="form" th:action="@{/tickers/profit}" th:object="${profit5}">
-        <input type="hidden" th:field="*{Id}"/>
-        <input type="hidden" th:field="*{tickerId}"/>
-        <input type="hidden" th:field="*{strategyId}"/>
-        <input type="hidden" th:field="*{number}"/>
+    <br>
 
-        <div class="form-group mb-3">
-            <label class="form-label">Take Profit 5 %</label>
+    <form method="POST" th:action="@{/tickers/profit}" th:object="${profit5}" class="form-inline">
+        <div class="form-group"> <input type="hidden" th:field="*{Id}"/> </div>
+        <div class="form-group"> <input type="hidden" th:field="*{tickerId}"/> </div>
+        <div class="form-group"> <input type="hidden" th:field="*{strategyId}"/> </div>
+        <div class="form-group"> <input type="hidden" th:field="*{number}"/> </div>
+
+        <div class="form-group">
+            <label>Take Profit 5 (%): </label>
             <input
-                    class="form-control mb-4 col-4"
+                    class="form-control"
                     th:field="${profit5.value}"
                     placeholder="Take profit 5"
                     name="value"
@@ -116,8 +123,10 @@
                     step="0.01"
             />
         </div>
-        <button type="submit" class="btn btn-info col-2">Update TP 5</button>
+        <button type="submit" class="btn btn-info col-2">Save</button>
     </form>
+
+    <div class="alert alert-primary" role="alert" th:text="${success}" th:if="${success}"></div>
 
     <hr>
     <a th:href="@{/tickers/profits/{user_id}/{strategy_id}
