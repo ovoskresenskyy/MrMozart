@@ -57,9 +57,8 @@ public class ProfitTrackerService implements Runnable, CryptoConstants {
                 continue;
             }
 
-            takeProfit = aShort
-                    ? currentPrice <= deal.getProfitPrice()
-                    : currentPrice >= deal.getProfitPrice();
+            double profitPrice = dealService.findById(deal.getId()).getProfitPrice();
+            takeProfit = aShort ? currentPrice <= profitPrice : currentPrice >= profitPrice;
         }
 
         if (takeProfit) {
