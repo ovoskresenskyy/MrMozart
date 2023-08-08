@@ -37,10 +37,6 @@ public class ProfitTrackerService implements Runnable, CryptoConstants {
      */
     @Override
     public void run() {
-        takeProfitDetermining();
-    }
-
-    private void takeProfitDetermining() {
         boolean aShort = isShort(deal.getSide());
         boolean takeProfit = false;
 
