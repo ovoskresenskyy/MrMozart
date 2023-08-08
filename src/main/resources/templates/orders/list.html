@@ -36,12 +36,10 @@
         <tr>
             <th>ID</th>
             <th>Alert time</th>
-            <th>Sent time</th>
             <th>Symbol</th>
             <th>Name</th>
             <th>Secret</th>
             <th>Side</th>
-<!--            <th>Price</th>-->
         </tr>
         </thead>
 
@@ -49,12 +47,10 @@
         <tr th:each="order: ${orders}">
             <td th:text="${order.id}"></td>
             <td th:text="${order.timestamp}"></td>
-            <td th:text="${order.timestampSent}"></td>
             <td th:text="${order.symbol}"></td>
             <td th:text="${order.name}"></td>
             <td th:text="${order.secret}"></td>
             <td th:text="${order.side}"></td>
-<!--            <td th:text="${order.price}"></td>-->
         </tr>
         </tbody>
     </table>
