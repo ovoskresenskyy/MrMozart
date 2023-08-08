@@ -23,7 +23,7 @@ public class BinanceDataHolder {
 
     public void startPriceTracking(String ticker) {
         startFuturesTracking(ticker);
-//        startSpotTracking(ticker);
+        startSpotTracking(ticker);
     }
 
     private void startFuturesTracking(String ticker){
@@ -44,10 +44,10 @@ public class BinanceDataHolder {
 
     public void stopPriceTracking(String ticker) {
         getFuturesByTicker(ticker).closeConnection();
-        futuresPriceHolder.remove(ticker); //TODO: what if few users use one ticker, and one of them decide to delete it? HAHA
+        futuresPriceHolder.remove(ticker);
 
-//        getSpotByTicker(ticker).closeConnection();
-//        spotPriceHolder.remove(ticker); //TODO: what if few users use one ticker, and one of them decide to delete it? HAHA
+        getSpotByTicker(ticker).closeConnection();
+        spotPriceHolder.remove(ticker);
     }
 
     public BinanceFuturesPriceTracker getFuturesByTicker(String ticker) {
