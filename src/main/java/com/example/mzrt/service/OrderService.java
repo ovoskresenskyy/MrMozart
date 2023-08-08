@@ -48,12 +48,7 @@ public class OrderService {
                 alert,
                 ticker);
         /* Create pause between receiving the alert and sending order */
-        new Thread(new OrderThreadService(restTemplate, alert, order)).start();
-        /* Setting SENT timestamp */
-        order.setTimestampSent(LocalDateTime.now().format(DateTimeFormatter.ofPattern("dd-MM-yyyy HH:mm:ss")));
-
-        save(order);
-
+        new Thread(new OrderSender(restTemplate, alert, order)).start();
         return true;
     }
 
@@ -65,7 +60,7 @@ public class OrderService {
                                  Strategy strategy,
                                  Alert alert,
                                  String ticker) {
-        return Order.builder()
+        return save(Order.builder()
                 .name(alert.getName())
                 .strategy(strategy.getName())
                 .secret(alert.getSecret())
@@ -74,7 +69,7 @@ public class OrderService {
                 .userId(deal.getUserId())
                 .timestamp(LocalDateTime.now().format(DateTimeFormatter.ofPattern("dd-MM-yyyy HH:mm:ss")))
                 .dealId(deal.getId())
-                .build();
+                .build());
     }
 
 }
