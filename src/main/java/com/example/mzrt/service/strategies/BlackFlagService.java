@@ -55,12 +55,23 @@ public class BlackFlagService implements CryptoConstants {
 
         Strategy strategy = strategyService.findById(BF_STRATEGY_ID);
         Alert alert = alertService.findByUserIdAndStrategyIdAndName(userId, BF_STRATEGY_ID, message);
-        Deal deal = dealService.getDealByTicker(userId, strategy, ticker, alert.getSide());
+        AlertMessage alertMessage = valueByName(alert.getName());
 
-        if (isEntry(alert.getName()) && orderService.send(deal, alert)) {
+        if (!isAllowToOpenNewDeal(userId, strategy.getName(), ticker, alertMessage)) {
+            return;
+        }
+
+        Deal deal = dealService.getDealByTicker(userId, strategy, ticker, alert.getSide());
+        if (alertMessage.isEntry() && orderService.send(deal, alert)) {
             dealService.updatePricesByAlert(deal, AlertMessage.valueByName(message));
             startProfitTracker(deal);
         }
+    }
+
+    private boolean isAllowToOpenNewDeal(int userId, String strategy, String ticker, AlertMessage alertMessage) {
+        Optional<Deal> openedDeal = dealService.getOpenedDealByTicker(userId, strategy, ticker);
+        return (alertMessage.isEntry() && !alertMessage.isForbiddenToOpenNewDeals())
+                || openedDeal.isPresent();
     }
 
     private void sendDealClosingOrder(String message, String ticker, int userId) {
