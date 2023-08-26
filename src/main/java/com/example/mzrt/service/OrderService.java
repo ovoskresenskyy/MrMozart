@@ -39,7 +39,7 @@ public class OrderService {
     }
 
     public boolean send(Deal deal, Alert alert, String ticker) {
-        if (OrderPriceService.isRedundant(deal, alert)) {
+        if (OrderPriceService.isRedundant(deal, alert.getName())) {
             return false;
         }
 

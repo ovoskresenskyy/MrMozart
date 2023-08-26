@@ -1,7 +1,6 @@
 package com.example.mzrt.service;
 
 import com.example.mzrt.enums.AlertMessage;
-import com.example.mzrt.model.Alert;
 import com.example.mzrt.model.Deal;
 
 import static com.example.mzrt.enums.AlertMessage.*;
@@ -13,14 +12,16 @@ public class OrderPriceService {
      * This method is responsible for determining is the received alert
      * have to be sent
      *
-     * @param deal  - The deal within which will search sent orders
-     * @param alert - Current entry alert
+     * @param deal      - The deal within which will search sent orders
+     * @param alertName - Current entry alert name
      * @return True if the received alert is redundant, false if not
      */
-    public static boolean isRedundant(Deal deal, Alert alert) {
-        if (isEntry(alert.getName())) {
-            return currentEntryIsPresent(deal, alert.getName())
-                    || higherEntryIsPresent(deal, alert.getName())
+    public static boolean isRedundant(Deal deal, String alertName) {
+        AlertMessage alert = valueByName(alertName);
+
+        if (alert.isEntry()) {
+            return currentEntryIsPresent(deal, alert)
+                    || higherEntryIsPresent(deal, alert)
                     || takeProfitIsPresent(deal);
         }
         return false;
@@ -48,8 +49,8 @@ public class OrderPriceService {
      * @param alert - Current entry alert
      * @return - True if it's already sent, false if not
      */
-    private static boolean currentEntryIsPresent(Deal deal, String alert) {
-        return switch (AlertMessage.valueByName(alert).getNumber()) {
+    private static boolean currentEntryIsPresent(Deal deal, AlertMessage alert) {
+        return switch (alert.getNumber()) {
             case 1 -> deal.getFirstPrice() > 0;
             case 2 -> deal.getSecondPrice() > 0;
             case 3 -> deal.getThirdPrice() > 0;
@@ -67,8 +68,8 @@ public class OrderPriceService {
      * @param alert - Current entry alert
      * @return - True if order with the higher alert number was sent before, false if not
      */
-    private static boolean higherEntryIsPresent(Deal deal, String alert) {
-        return switch (AlertMessage.valueByName(alert).getNumber()) {
+    private static boolean higherEntryIsPresent(Deal deal, AlertMessage alert) {
+        return switch (alert.getNumber()) {
             case 1 -> (deal.getSecondPrice() + deal.getThirdPrice() + deal.getFourthPrice() + deal.getFifthPrice()) > 0;
             case 2 -> (deal.getThirdPrice() + deal.getFourthPrice() + deal.getFifthPrice()) > 0;
             case 3 -> (deal.getFourthPrice() + deal.getFifthPrice()) > 0;
