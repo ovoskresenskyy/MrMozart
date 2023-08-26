@@ -1,12 +1,16 @@
 package com.example.mzrt.service.binance;
 
 import com.binance.connector.futures.client.impl.UMWebsocketClientImpl;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 public class BinanceFuturesPriceTracker {
 
     private double price;
     private int streamId;
     private UMWebsocketClientImpl client;
+
+    private static final Logger logger = LogManager.getLogger(BinanceFuturesPriceTracker.class);
 
     public BinanceFuturesPriceTracker() {
         this.price = 0;
@@ -16,6 +20,7 @@ public class BinanceFuturesPriceTracker {
         this.client = new UMWebsocketClientImpl();
         this.streamId = client.aggTradeStream(ticker, ((event) -> {
             this.price = getPriceFromEvent(event);
+            logger.info(event);
         }));
     }
 
