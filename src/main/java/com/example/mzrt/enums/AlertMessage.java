@@ -6,41 +6,41 @@ import java.util.Map;
 public enum AlertMessage {
 
     /* Short open */
-    S1("1S", 1, true,  false),
-    S2("2S", 2, true,  false),
-    S3("3S", 3, true,  false),
-    S4("4S", 4, true,  false),
-    S5("5S", 5, true,  false),
+    S1("1S", 1, true, false, false),
+    S2("2S", 2, true, false,  false),
+    S3("3S", 3, true, false, false),
+    S4("4S", 4,true, true, false),
+    S5("5S", 5, true, true, false),
 
     /* Short take profit */
-    STP1("STP1", 1, false,  true),
-    STP2("STP2", 2, false,  true),
-    STP3("STP3", 3, false,  true),
-    STP4("STP4", 4, false,  true),
-    STP5("STP5", 5, false,  true),
+    STP1("STP1", 1, false, true, true),
+    STP2("STP2", 2, false, true, true),
+    STP3("STP3", 3, false, true, true),
+    STP4("STP4", 4, false, true, true),
+    STP5("STP5", 5, false, true, true),
 
     /* Long open */
-    L1("1L", 1, true,  false),
-    L2("2L", 2, true,  false),
-    L3("3L", 3, true,  false),
-    L4("4L", 4, true,  false),
-    L5("5L", 5, true,  false),
+    L1("1L", 1, true, false, false),
+    L2("2L", 2, true, false, false),
+    L3("3L", 3, true, false, false),
+    L4("4L", 4, true, true, false),
+    L5("5L", 5, true, true, false),
 
     /* Short take profit */
-    LTP1("LTP1", 1, false,  true),
-    LTP2("LTP2", 2, false,  true),
-    LTP3("LTP3", 3, false,  true),
-    LTP4("LTP4", 4, false,  true),
-    LTP5("LTP5", 5, false,  true),
+    LTP1("LTP1", 1, false, true, true),
+    LTP2("LTP2", 2, false, true, true),
+    LTP3("LTP3", 3, false, true, true),
+    LTP4("LTP4", 4, false, true, true),
+    LTP5("LTP5", 5, false, true, true),
 
     /* Stop lose */
-    SSL("SSL", 0, false,  false),
-    LSL("LSL", 0, false,  false),
+    SSL("SSL", 0, false, true, false),
+    LSL("LSL", 0, false, true, false),
 
     /* Stop trend */
-    STOP_TREND("Stop Trend", 0, false,  false),
-    STL("STL", 0, false,  false),
-    STS("STS", 0, false,  false);
+    STOP_TREND("Stop Trend", 0, false, true, false),
+    STL("STL", 0, false, true, false),
+    STS("STS", 0, false, true, false);
 
     private static final Map<String, AlertMessage> BY_NAME = new HashMap<>();
 
@@ -53,12 +53,18 @@ public enum AlertMessage {
     private final String name;
     private final int number;
     private final boolean isEntry;
+    private final boolean isForbiddenToOpenNewDeals;
     private final boolean isTakeProfit;
 
-    AlertMessage(String name, int number, boolean isEntry, boolean isTakeProfit) {
+    AlertMessage(String name,
+                 int number,
+                 boolean isEntry,
+                 boolean isForbiddenToOpenNewDeals,
+                 boolean isTakeProfit) {
         this.name = name;
         this.number = number;
         this.isEntry = isEntry;
+        this.isForbiddenToOpenNewDeals = isForbiddenToOpenNewDeals;
         this.isTakeProfit = isTakeProfit;
     }
 
@@ -97,13 +103,13 @@ public enum AlertMessage {
     }
 
     /**
-     * This method determines is the received order it's the entry alert
+     * This method determines is the received order is
+     * used for opening the new deals is it's still closed
      *
-     * @param message - Message of the alert
-     * @return True if S / l 1-5, false if not
+     * @return True if S / l 1-3, false if not
      */
-    public static boolean isEntry(String message) {
-        return valueByName(message).isEntry;
+    public boolean isForbiddenToOpenNewDeals() {
+        return isForbiddenToOpenNewDeals;
     }
 
     /**
