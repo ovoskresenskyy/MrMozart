@@ -11,17 +11,11 @@ import java.util.List;
 public class BinancePriceTrackerService implements CryptoConstants {
 
     private final TickerService tickerService;
-    private final AlertService alertService;
-    private final OrderService orderService;
     private final DealService dealService;
 
     public BinancePriceTrackerService(TickerService tickerService,
-                                      AlertService alertService,
-                                      OrderService orderService,
                                       DealService dealService) {
         this.tickerService = tickerService;
-        this.alertService = alertService;
-        this.orderService = orderService;
         this.dealService = dealService;
 
         startCurrentPriceTracking();
@@ -45,10 +39,7 @@ public class BinancePriceTrackerService implements CryptoConstants {
                 continue;
             }
 
-            dataHolder.startProfitTracker(deal,
-                    orderService,
-                    alertService,
-                    dealService);
+            dataHolder.startProfitTracker(deal);
         }
     }
 }

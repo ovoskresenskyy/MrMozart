@@ -3,6 +3,7 @@ package com.example.mzrt.service;
 import com.example.mzrt.model.Deal;
 import com.example.mzrt.service.binance.BinanceFuturesPriceTracker;
 import com.example.mzrt.service.binance.BinanceSpotPriceTracker;
+import org.jetbrains.annotations.NotNull;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -57,28 +58,30 @@ public class BinanceDataHolder {
         return spotPriceHolder.get(ticker);
     }
 
-    public void startProfitTracker(Deal deal,
-                                   OrderService orderService,
-                                   AlertService alertService,
-                                   DealService dealService) {
+    public void startProfitTracker(Deal deal) {
 
         if (deal.getTicker() == null) {
             return;
         }
 
         if (!profitTrackerHolder.containsKey(deal.getId())) {
+            ProfitTrackerService profitTrackerService = initProfitTrackerService(deal);
 
-            ProfitTrackerService profitTrackerService = new ProfitTrackerService(
-                    getFuturesByTicker(deal.getTicker()),
-                    deal,
-                    orderService,
-                    alertService,
-                    dealService);
-            Thread profitTracker = new Thread(profitTrackerService);
-            profitTracker.start();
+            new Thread(profitTrackerService).start();
 
             profitTrackerHolder.put(deal.getId(), profitTrackerService);
         }
+    }
+
+    @NotNull
+    private ProfitTrackerService initProfitTrackerService(Deal deal) {
+        ProfitTrackerService profitTrackerService = new ProfitTrackerService();
+
+        BinanceFuturesPriceTracker futuresPriceTracker = getFuturesByTicker(deal.getTicker());
+        profitTrackerService.setBinancePriceTracker(futuresPriceTracker);
+        profitTrackerService.setDeal(deal);
+
+        return profitTrackerService;
     }
 
     public void stopProfitTracker(int dealId) {

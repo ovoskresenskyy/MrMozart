@@ -4,31 +4,44 @@ import com.example.mzrt.CryptoConstants;
 import com.example.mzrt.enums.AlertMessage;
 import com.example.mzrt.model.Deal;
 import com.example.mzrt.service.binance.BinanceFuturesPriceTracker;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Component;
 
 import static com.example.mzrt.enums.AlertMessage.LTP5;
 import static com.example.mzrt.enums.AlertMessage.STP5;
 import static com.example.mzrt.enums.Side.isShort;
 
+@Component
 public class ProfitTrackerService implements Runnable, CryptoConstants {
 
-    private final BinanceFuturesPriceTracker binancePriceTracker;
-    private final Deal deal;
-    private final DealService dealService;
-    private final OrderService orderService;
-    private final AlertService alertService;
+    private BinanceFuturesPriceTracker binancePriceTracker;
+    private Deal deal;
+    private DealService dealService;
+    private OrderService orderService;
+    private AlertService alertService;
     private boolean keepTracking;
 
-    public ProfitTrackerService(BinanceFuturesPriceTracker binancePriceTracker,
-                                Deal deal,
-                                OrderService orderService,
-                                AlertService alertService,
-                                DealService dealService) {
+    public void setBinancePriceTracker(BinanceFuturesPriceTracker binancePriceTracker) {
         this.binancePriceTracker = binancePriceTracker;
+    }
+
+    public void setDeal(Deal deal) {
         this.deal = deal;
-        this.orderService = orderService;
-        this.alertService = alertService;
+    }
+
+    @Autowired
+    public void setDealService(DealService dealService) {
         this.dealService = dealService;
-        this.keepTracking = true;
+    }
+
+    @Autowired
+    public void setOrderService(OrderService orderService) {
+        this.orderService = orderService;
+    }
+
+    @Autowired
+    public void setAlertService(AlertService alertService) {
+        this.alertService = alertService;
     }
 
     /**

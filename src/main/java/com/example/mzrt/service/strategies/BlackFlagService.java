@@ -90,10 +90,7 @@ public class BlackFlagService implements CryptoConstants {
 
     private void startProfitTracker(Deal deal) {
         BinanceDataHolder binanceDataHolder = BinanceDataHolder.getInstance();
-        binanceDataHolder.startProfitTracker(deal,
-                orderService,
-                alertService,
-                dealService);
+        binanceDataHolder.startProfitTracker(deal);
     }
 
     private Deal getDeal(int userId, String ticker) {
