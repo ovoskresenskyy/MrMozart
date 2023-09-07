@@ -26,15 +26,15 @@ public class StrategyTicker {
     private int strategyId;
 
     @Column("percent_tp_1")
-    private int percentTP1;
+    private double percentTP1;
     @Column("percent_tp_2")
-    private int percentTP2;
+    private double percentTP2;
     @Column("percent_tp_3")
-    private int percentTP3;
+    private double percentTP3;
     @Column("percent_tp_4")
-    private int percentTP4;
+    private double percentTP4;
     @Column("percent_tp_5")
-    private int percentTP5;
+    private double percentTP5;
 
     @Column("stop_when_used")
     private boolean stopWhenUsed;

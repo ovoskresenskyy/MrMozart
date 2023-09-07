@@ -14,9 +14,6 @@
 <div class="container">
     <h1>Add new alert</h1>
     <h3>
-        User: <span th:text="${user.name}"></span>
-    </h3>
-    <h3>
         Strategy: <span th:text="${strategy.name}"></span>
     </h3>
     <form action="#" th:action="@{/alerts}" th:object="${alert}" method="POST">

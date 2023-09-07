@@ -38,7 +38,7 @@ public class StrategyTickerService {
      * @param deal - The deal as a holder of the strategy and ticker of the percent profit.
      * @return Percent of profit
      */
-    public int getPercent(Deal deal, int number){
+    public double getPercent(Deal deal, int number){
         Ticker ticker = tickerService.findByName(deal.getTicker());
         StrategyTicker strategyTicker = findByTickerAndStrategyId(ticker, deal.getStrategyId());
 
