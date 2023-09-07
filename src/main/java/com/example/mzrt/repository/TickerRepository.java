@@ -10,8 +10,6 @@ import java.util.List;
 @Repository
 public interface TickerRepository extends CrudRepository<Ticker, Integer> {
 
-    List<Ticker> findAll();
-    List<Ticker> findByUserId(int userId, Sort sort);
-
-    Ticker findByNameAndUserId(String name, int userId);
+    List<Ticker> findAll(Sort sort);
+    Ticker findByName(String name);
 }

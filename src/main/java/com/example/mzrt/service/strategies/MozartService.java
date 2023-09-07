@@ -6,7 +6,6 @@ import com.example.mzrt.model.Deal;
 import com.example.mzrt.service.AlertService;
 import com.example.mzrt.service.DealService;
 import com.example.mzrt.service.OrderService;
-import com.example.mzrt.service.UserService;
 import org.springframework.stereotype.Service;
 
 import static com.example.mzrt.enums.AlertMessage.*;
@@ -16,37 +15,32 @@ public class MozartService implements CryptoConstants {
 
     private final OrderService orderService;
     private final AlertService alertService;
-    private final UserService userService;
     private final DealService dealService;
 
     public MozartService(OrderService orderService,
                          AlertService alertService,
-                         UserService userService,
                          DealService dealService) {
         this.orderService = orderService;
         this.alertService = alertService;
-        this.userService = userService;
         this.dealService = dealService;
     }
 
     public void handleAlert(String token, String message, String ticker) {
-        int userId = userService.findByToken(token).getId();
-
         if (isStopTrendText(message)) {
-            sendStopTrend(userId, ticker);
+            sendStopTrend(ticker);
             return;
         }
 
-        Alert alert = alertService.findByUserIdAndStrategyIdAndName(userId, MOZART_STRATEGY_ID, message);
+        Alert alert = alertService.findByStrategyIdAndName(MOZART_STRATEGY_ID, message);
         Deal deal = dealService.findById(MOZART_DEAL_ID);
         orderService.send(deal, alert, ticker);
     }
 
-    private void sendStopTrend(int userId, String ticker) {
+    private void sendStopTrend(String ticker) {
         Deal deal = dealService.findById(MOZART_DEAL_ID);
 
-        Alert sts = alertService.findByUserIdAndStrategyIdAndName(userId, MOZART_STRATEGY_ID, "STS");
-        Alert stl = alertService.findByUserIdAndStrategyIdAndName(userId, MOZART_STRATEGY_ID, "STL");
+        Alert sts = alertService.findByStrategyIdAndName(MOZART_STRATEGY_ID, "STS");
+        Alert stl = alertService.findByStrategyIdAndName(MOZART_STRATEGY_ID, "STL");
 
         orderService.send(deal, sts, ticker);
         orderService.send(deal, stl, ticker);

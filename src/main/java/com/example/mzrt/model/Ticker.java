@@ -20,6 +20,4 @@ public class Ticker {
     private String name;
     @Column("full_name")
     private String fullName;
-    @Column("user_id")
-    private int userId; //TODO: must be the part of Primary key
 }

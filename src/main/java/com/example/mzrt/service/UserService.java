@@ -35,7 +35,7 @@ public class UserService {
         incomingData.setPassword(getPassword(incomingData));
 
         User savedUser = userRepository.save(incomingData);
-        addRole(savedUser.getId(), role);
+        addRole(role);
 
         return savedUser;
     }
@@ -51,12 +51,10 @@ public class UserService {
         return userRepository.findByToken(token).orElseThrow(() -> new ResponseStatusException(NOT_FOUND));
     }
 
-    private void addRole(int userId, String role) {
-
-        Optional<Role> existedRole = roleService.findByUserIdAndRole(userId, role);
+    private void addRole(String role) {
+        Optional<Role> existedRole = roleService.findByRole(role);
         if (existedRole.isEmpty()) roleService.save(Role.builder()
                 .role(role)
-                .userId(userId)
                 .build());
     }
 

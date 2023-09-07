@@ -2,7 +2,10 @@ package com.example.mzrt.controller;
 
 import com.example.mzrt.model.Alert;
 import com.example.mzrt.model.Deal;
-import com.example.mzrt.service.*;
+import com.example.mzrt.service.AlertService;
+import com.example.mzrt.service.DealService;
+import com.example.mzrt.service.OrderService;
+import com.example.mzrt.service.StrategyService;
 import org.jetbrains.annotations.NotNull;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -11,25 +14,22 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 
-import static com.example.mzrt.enums.Side.*;
+import static com.example.mzrt.enums.Side.getManualClosingAlertBySide;
 
 @Controller
 @RequestMapping("/deals")
 public class DealController {
 
-    private final UserService userService;
     private final StrategyService strategyService;
     private final DealService dealService;
     private final OrderService orderService;
     private final AlertService alertService;
 
     @Autowired
-    public DealController(UserService userService,
-                          StrategyService strategyService,
+    public DealController(StrategyService strategyService,
                           DealService dealService,
                           OrderService orderService,
                           AlertService alertService) {
-        this.userService = userService;
         this.strategyService = strategyService;
         this.dealService = dealService;
         this.orderService = orderService;
@@ -41,11 +41,9 @@ public class DealController {
         return "redirect:/users";
     }
 
-    @GetMapping("/{userId}/{strategyId}")
-    public String getDeals(@PathVariable int userId,
-                           @PathVariable int strategyId,
-                           Model model) {
-        return fillDealsList(userId, strategyId, model);
+    @GetMapping("/{strategyId}")
+    public String getDeals(@PathVariable int strategyId, Model model) {
+        return fillDealsList(strategyId, model);
     }
 
     @GetMapping("/close/{dealId}")
@@ -59,19 +57,14 @@ public class DealController {
             dealService.closeDeal(deal, "Manual");
         }
 
-        return fillDealsList(deal.getUserId(), deal.getStrategyId(), model);
+        return fillDealsList(deal.getStrategyId(), model);
     }
 
     @NotNull
-    private String fillDealsList(@PathVariable int userId,
-                                 @PathVariable int strategyId,
-                                 Model model) {
-        model.addAttribute("user", userService.findById(userId));
+    private String fillDealsList(@PathVariable int strategyId, Model model) {
         model.addAttribute("strategy", strategyService.findById(strategyId));
-
-        model.addAttribute("openedDeals", dealService.getDeals(userId, strategyId, true));
-        model.addAttribute("closedDeals", dealService.getDeals(userId, strategyId, false));
-
+        model.addAttribute("openedDeals", dealService.getDeals(strategyId, true));
+        model.addAttribute("closedDeals", dealService.getDeals(strategyId, false));
         return "deals/list";
     }
 }

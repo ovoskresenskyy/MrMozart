@@ -16,15 +16,15 @@ public class RoleService {
         this.roleRepository = roleRepository;
     }
 
-    public Optional<Role> findByUserIdAndRole(int userId, String role) {
-        return roleRepository.findByUserIdAndRole(userId, role);
+    public Optional<Role> findByRole(String role) {
+        return roleRepository.findByRole(role);
     }
 
     public void save(Role role) {
         roleRepository.save(role);
     }
 
-    public List<Role> findAllByUserId(int userId) {
-        return roleRepository.findAllByUserId(userId);
+    public List<Role> findAll() {
+        return roleRepository.findAll();
     }
 }

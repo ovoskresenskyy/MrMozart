@@ -33,7 +33,7 @@ public class CustomUserDetailsService implements UserDetailsService {
 
             return new org.springframework.security.core.userdetails.User(user.getEmail(),
                     user.getPassword(),
-                    roleService.findAllByUserId(user.getId()));
+                    roleService.findAll());
         } else throw new UsernameNotFoundException("Invalid username or password.");
     }
 }

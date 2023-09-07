@@ -25,26 +25,20 @@ public class AlertService implements CryptoConstants {
         this.alertRepository = alertRepository;
     }
 
-    public List<Alert> findByUserAndStrategy(int userId, int strategyId) {
-        return alertRepository.findByUserIdAndStrategyId(userId,
-                strategyId,
-                Sort.by(Sort.Direction.ASC, "id"));
+    public List<Alert> findByStrategy(int strategyId) {
+        return alertRepository.findByStrategyId(strategyId, Sort.by(Sort.Direction.ASC, "id"));
     }
 
     public Alert findById(int id) {
         return alertRepository.findById(id).orElseThrow(() -> new ResponseStatusException(NOT_FOUND));
     }
 
-    public Alert findByUserIdAndStrategyIdAndName(int userId, int strategyId, String name) {
-        return alertRepository.findByUserIdAndStrategyIdAndName(userId,
-                strategyId,
-                name);
+    public Alert findByStrategyIdAndName(int strategyId, String name) {
+        return alertRepository.findByStrategyIdAndName(strategyId, name);
     }
 
     public Alert findByDealAndName(Deal deal, String name) {
-        return alertRepository.findByUserIdAndStrategyIdAndName(deal.getUserId(),
-                deal.getStrategyId(),
-                name);
+        return alertRepository.findByStrategyIdAndName(deal.getStrategyId(), name);
     }
 
     public Alert save(Alert alert) {
@@ -59,7 +53,7 @@ public class AlertService implements CryptoConstants {
         if (isStopTrendText(message)) {
             message = getStopTrendAlert(deal.getSide());
         }
-        return findByUserIdAndStrategyIdAndName(deal.getUserId(), BF_STRATEGY_ID, message);
+        return findByStrategyIdAndName(BF_STRATEGY_ID, message);
     }
 
 }

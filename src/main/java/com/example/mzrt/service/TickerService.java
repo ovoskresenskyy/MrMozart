@@ -22,19 +22,15 @@ public class TickerService {
     }
 
     public List<Ticker> findAll() {
-        return tickerRepository.findAll();
-    }
-
-    public List<Ticker> findByUserId(int userId) {
-        return tickerRepository.findByUserId(userId, Sort.by(Sort.Direction.ASC, "id"));
+        return tickerRepository.findAll(Sort.by(Sort.Direction.ASC, "id"));
     }
 
     public Ticker findById(int id) {
         return tickerRepository.findById(id).orElseThrow(() -> new ResponseStatusException(NOT_FOUND));
     }
 
-    public Ticker findByNameAndUserId(String name, int userId) {
-        return tickerRepository.findByNameAndUserId(name, userId);
+    public Ticker findByName(String name) {
+        return tickerRepository.findByName(name);
     }
 
     public Ticker save(Ticker ticker) {

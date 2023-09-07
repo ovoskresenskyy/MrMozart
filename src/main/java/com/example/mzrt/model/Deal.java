@@ -19,8 +19,6 @@ public class Deal {
     //TODO: need to remake with JPA
     @Id
     private int id;
-    @Column("user_id")
-    private int userId;
     @Column("strategy_id")
     private int strategyId;
     private String strategy;

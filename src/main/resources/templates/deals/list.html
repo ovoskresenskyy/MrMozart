@@ -36,7 +36,7 @@
     <table>
         <tr>
             <td>
-                <form th:action="@{/strategies/{user_id}(user_id=${user.id})}" method="GET">
+                <form th:action="@{/strategies}" method="GET">
                     <input type="hidden" name="_method" value="GET">
                     <button class="btn btn-primary" type="submit"> < Back to strategies</button>
                 </form>
@@ -97,9 +97,8 @@
             <td th:text="${deal.closingAlert}"></td>
             <td th:text="${#temporals.format(deal.lastChangeTime, 'dd-MM-yyyy HH:mm:ss ')}"></td>
             <td>
-                <form th:action="@{/orders/{user_id}/deal/{deal_id}/strategy/{strategy_id}
-                (user_id=${user.id},
-                deal_id=${deal.id},
+                <form th:action="@{/orders/deal/{deal_id}/strategy/{strategy_id}
+                (deal_id=${deal.id},
                 strategy_id=${strategy.id})}" method="GET">
                     <input type="hidden" name="_method" value="GET">
                     <button class="btn btn-primary" type="submit">Show orders</button>
@@ -145,9 +144,8 @@
             <td th:text="${deal.closingAlert}"></td>
             <td th:text="${#temporals.format(deal.lastChangeTime, 'dd-MM-yyyy HH:mm:ss ')}"></td>
             <td>
-                <form th:action="@{/orders/{user_id}/deal/{deal_id}/strategy/{strategy_id}
-                (user_id=${user.id},
-                deal_id=${deal.id},
+                <form th:action="@{/orders/deal/{deal_id}/strategy/{strategy_id}
+                (deal_id=${deal.id},
                 strategy_id=${strategy.id})}" method="GET">
                     <input type="hidden" name="_method" value="GET">
                     <button class="btn btn-primary" type="submit">Show orders</button>

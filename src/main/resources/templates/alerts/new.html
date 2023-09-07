@@ -21,7 +21,6 @@
     </h3>
     <form action="#" th:action="@{/alerts}" th:object="${alert}" method="POST">
         <input type="hidden" th:field="*{id}"/>
-        <input type="hidden" th:field="*{userId}"/>
         <input type="hidden" th:field="*{strategyId}"/>
 
         <div class="form-group mb-3">
@@ -87,7 +86,7 @@
 
     <hr>
 
-    <a th:href="@{/alerts/{user_id}/{strategy_id}(user_id=${user.id},strategy_id=${strategy.id})}">
+    <a th:href="@{/alerts/{strategy_id}(strategy_id=${strategy.id})}">
         Back to Alert List</a>
 
 </div>

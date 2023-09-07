@@ -21,8 +21,6 @@ public class Alert {
     private String webhook;
     private String secret;
     private String side;
-    @Column("user_id")
-    private int userId;
     @Column("strategy_id")
     private int strategyId;
     private int pause;

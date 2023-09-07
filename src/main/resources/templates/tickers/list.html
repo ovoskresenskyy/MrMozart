@@ -12,14 +12,11 @@
 <body>
 <div>
     <h1>Tickers</h1>
-    <h3>
-        User: <span th:text="${user.name}"></span>
-    </h3>
 
     <table>
         <tr>
             <td>
-                <a th:href="@{/tickers/{user_id}/new(user_id=${user.id})}"
+                <a th:href="@{/tickers/new}"
                    class="btn btn-success btn-sm mb-3">Add new ticker</a>
             </td>
             <td>

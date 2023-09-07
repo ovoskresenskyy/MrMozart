@@ -11,10 +11,7 @@
 </head>
 <body>
 <div>
-    <h1>Percents of profit by tickers</h1>
-    <h3>
-        User: <span th:text="${user.name}"></span>
-    </h3>
+    <h1>Tickers of current strategy</h1>
     <h3>
         Strategy: <span th:text="${strategy.name}"></span>
     </h3>
@@ -22,7 +19,7 @@
     <table>
         <tr>
             <td>
-                <a th:href="@{/strategies/{user_id}(user_id=${user.id})}"
+                <a th:href="@{/strategies}"
                    class="btn btn-primary btn-sm mb-3"> < Back to strategies menu</a>
             </td>
         </tr>

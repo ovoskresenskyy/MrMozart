@@ -10,7 +10,7 @@ import java.util.List;
 @Repository
 public interface AlertRepository extends CrudRepository<Alert, Integer> {
 
-    List<Alert> findByUserIdAndStrategyId(int userId, int strategyId, Sort sort);
+    List<Alert> findByStrategyId(int strategyId, Sort sort);
 
-    Alert findByUserIdAndStrategyIdAndName(int userId, int strategyId, String name);
+    Alert findByStrategyIdAndName(int strategyId, String name);
 }

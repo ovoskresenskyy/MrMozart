@@ -66,7 +66,6 @@ public class OrderService {
                 .secret(alert.getSecret())
                 .side(alert.getSide())
                 .symbol(ticker)
-                .userId(deal.getUserId())
                 .timestamp(LocalDateTime.now().format(DateTimeFormatter.ofPattern("dd-MM-yyyy HH:mm:ss")))
                 .dealId(deal.getId())
                 .build());

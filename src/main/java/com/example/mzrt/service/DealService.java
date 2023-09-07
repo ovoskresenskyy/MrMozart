@@ -40,8 +40,8 @@ public class DealService {
         return dealRepository.save(deal);
     }
 
-    public Optional<Deal> getOpenedDealByTicker(int userId, String strategy, String ticker) {
-        return dealRepository.getByUserIdAndStrategyAndTickerAndOpenTrue(userId, strategy.toLowerCase(), ticker);
+    public Optional<Deal> getOpenedDealByTicker(String strategy, String ticker) {
+        return dealRepository.getByStrategyAndTickerAndOpenTrue(strategy.toLowerCase(), ticker);
     }
 
     /**
@@ -67,55 +67,49 @@ public class DealService {
      * This method is responsible for getting the list of the deals from the repository
      * according to the received parameters
      *
-     * @param userId     - ID of the user which deals are
      * @param strategyId - ID of the chosen strategy
      * @param isOpen     - Mark if we need list of opened or closed deals
      * @return List of the deals
      */
-    public List<Deal> getDeals(int userId, int strategyId, boolean isOpen) {
+    public List<Deal> getDeals(int strategyId, boolean isOpen) {
         return isOpen
-                ? getOpenedDeals(userId, strategyId)
-                : getClosedDeals(userId, strategyId);
+                ? getOpenedDeals(strategyId)
+                : getClosedDeals(strategyId);
     }
 
     /**
      * This method is responsible for getting the list of the all opened deals at the current time
      *
-     * @param userId     - ID of the user which deals are
      * @param strategyId - ID of the chosen strategy
      * @return List of the opened deals
      */
-    private List<Deal> getOpenedDeals(int userId, int strategyId) {
-        return dealRepository.getByUserIdAndStrategyIdAndOpenIsTrue(userId,
-                strategyId,
+    private List<Deal> getOpenedDeals(int strategyId) {
+        return dealRepository.getByStrategyIdAndOpenIsTrue(strategyId,
                 Sort.by(Sort.Direction.DESC, "lastChangeTime"));
     }
 
     /**
      * This method is responsible for getting the list of the all closed deals
      *
-     * @param userId     - ID of the user which deals are
      * @param strategyId - ID of the chosen strategy
      * @return List of the closed deals
      */
-    private List<Deal> getClosedDeals(int userId, int strategyId) {
-        return dealRepository.getByUserIdAndStrategyIdAndOpenIsFalse(userId,
-                strategyId,
+    private List<Deal> getClosedDeals(int strategyId) {
+        return dealRepository.getByStrategyIdAndOpenIsFalse(strategyId,
                 Sort.by(Sort.Direction.DESC, "lastChangeTime"));
     }
 
     /**
      * This method is responsible for getting exist opened deal or creating the new one if it isn't.
      *
-     * @param userId   - ID of the user
      * @param strategy - Strategy
      * @param ticker   - Coin pair like BTCUSDT
      * @param side     - Side name (Short / Long)
      * @return Exist deal or a new one
      */
-    public Deal getDealByTicker(int userId, Strategy strategy, String ticker, String side) {
-        Optional<Deal> openedDeal = getOpenedDealByTicker(userId, strategy.getName(), ticker);
-        return openedDeal.orElseGet(() -> getNewDeal(userId, strategy, ticker, side));
+    public Deal getDealByTicker(Strategy strategy, String ticker, String side) {
+        Optional<Deal> openedDeal = getOpenedDealByTicker(strategy.getName(), ticker);
+        return openedDeal.orElseGet(() -> getNewDeal(strategy, ticker, side));
     }
 
     /**
@@ -123,19 +117,16 @@ public class DealService {
      * - Strategy name saving in lower case format
      * - Side name wil get from the enum to hold 'short' instead of 'sell' etc
      *
-     * @param userId   - ID of user which is that deal
      * @param strategy - Name of the strategy
      * @param ticker   - Name of the pair like 'BTCUSDT'
      * @param side     - Sell / buy (because it's receives from the alert)
      * @return - The created deal, saved into the repository
      */
-    public Deal getNewDeal(int userId,
-                           Strategy strategy,
+    public Deal getNewDeal(Strategy strategy,
                            String ticker,
                            String side) {
 
         Deal newDeal = Deal.builder()
-                .userId(userId)
                 .strategy(strategy.getName().toLowerCase())
                 .strategyId(strategy.getId())
                 .ticker(ticker)
@@ -177,12 +168,11 @@ public class DealService {
      * <p>
      * It will be used after changing percent of profit for the ticker
      *
-     * @param userId   - ID of the user who change the percent
      * @param strategy - Strategy within ticker is used
      * @param ticker   - Ticker within which percent is changed
      */
-    public void updateProfitPriceAtOpenedDeal(int userId, String strategy, String ticker) {
-        Optional<Deal> openedDeal = getOpenedDealByTicker(userId, strategy, ticker);
+    public void updateProfitPriceAtOpenedDeal(String strategy, String ticker) {
+        Optional<Deal> openedDeal = getOpenedDealByTicker(strategy, ticker);
         if (openedDeal.isPresent()) {
             Deal deal = openedDeal.get();
             dealPriceService.updateProfitPrice(deal);

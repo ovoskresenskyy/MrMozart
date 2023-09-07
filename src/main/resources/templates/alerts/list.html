@@ -12,19 +12,16 @@
 <div>
     <h1>List of alerts</h1>
     <h3>
-        User: <span th:text="${user.name}"></span>
-    </h3>
-    <h3>
         Strategy: <span th:text="${strategy.name}"></span>
     </h3>
     <table>
         <tr>
             <td>
-                <a th:href="@{/alerts/{user_id}/{strategy_id}/new(user_id=${user.id},strategy_id=${strategy.id})}"
+                <a th:href="@{/alerts/{strategy_id}/new(strategy_id=${strategy.id})}"
                    class="btn btn-success btn-sm mb-3">Add new Alert</a>
             </td>
             <td>
-                <a th:href="@{/strategies/{user_id}(user_id=${user.id})}"
+                <a th:href="@{/strategies}"
                    class="btn btn-primary btn-sm mb-3"> < Back to Strategies</a>
             </td>
         </tr>

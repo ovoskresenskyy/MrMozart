@@ -13,7 +13,6 @@
             role="form"
             th:action="@{/tickers}"
             th:object="${ticker}">
-        <input type="hidden" th:field="*{userId}"/>
 
         <div class="form-group mb-3">
             <input type="hidden" th:field="*{id}"/>
@@ -34,7 +33,7 @@
     </form>
 
     <hr>
-    <a th:href="@{/tickers/{user_id}(user_id=${user.id})}">Back to list of Tickers</a>
+    <a th:href="@{/tickers}">Back to list of Tickers</a>
 </div>
 </body>
 </html>

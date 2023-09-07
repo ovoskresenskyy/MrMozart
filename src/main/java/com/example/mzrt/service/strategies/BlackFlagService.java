@@ -21,19 +21,16 @@ public class BlackFlagService implements CryptoConstants {
     private final OrderService orderService;
     private final AlertService alertService;
     private final DealService dealService;
-    private final UserService userService;
 
     @Autowired
     public BlackFlagService(StrategyService strategyService,
                             OrderService orderService,
                             AlertService alertService,
-                            DealService dealService,
-                            UserService userService) {
+                            DealService dealService) {
         this.strategyService = strategyService;
         this.orderService = orderService;
         this.alertService = alertService;
         this.dealService = dealService;
-        this.userService = userService;
     }
 
     /**
@@ -45,37 +42,35 @@ public class BlackFlagService implements CryptoConstants {
      * @param ticker  - Coin pair like BTCUSDT
      */
     public void handleAlert(String token, String message, String ticker) {
-        int userId = userService.findByToken(token).getId();
-
         /* Check if we need to close the deal immediately. */
         if (isDealClosing(message)) {
-            sendDealClosingOrder(message, ticker, userId);
+            sendDealClosingOrder(message, ticker);
             return;
         }
 
         Strategy strategy = strategyService.findById(BF_STRATEGY_ID);
-        Alert alert = alertService.findByUserIdAndStrategyIdAndName(userId, BF_STRATEGY_ID, message);
+        Alert alert = alertService.findByStrategyIdAndName(BF_STRATEGY_ID, message);
         AlertMessage alertMessage = valueByName(alert.getName());
 
-        if (!isAllowToOpenNewDeal(userId, strategy.getName(), ticker, alertMessage)) {
+        if (!isAllowToOpenNewDeal(strategy.getName(), ticker, alertMessage)) {
             return;
         }
 
-        Deal deal = dealService.getDealByTicker(userId, strategy, ticker, alert.getSide());
+        Deal deal = dealService.getDealByTicker(strategy, ticker, alert.getSide());
         if (alertMessage.isEntry() && orderService.send(deal, alert)) {
             dealService.updatePricesByAlert(deal, AlertMessage.valueByName(message));
             startProfitTracker(deal);
         }
     }
 
-    private boolean isAllowToOpenNewDeal(int userId, String strategy, String ticker, AlertMessage alertMessage) {
-        Optional<Deal> openedDeal = dealService.getOpenedDealByTicker(userId, strategy, ticker);
+    private boolean isAllowToOpenNewDeal(String strategy, String ticker, AlertMessage alertMessage) {
+        Optional<Deal> openedDeal = dealService.getOpenedDealByTicker(strategy, ticker);
         return (alertMessage.isEntry() && !alertMessage.isForbiddenToOpenNewDeals())
                 || openedDeal.isPresent();
     }
 
-    private void sendDealClosingOrder(String message, String ticker, int userId) {
-        Deal deal = getDeal(userId, ticker);
+    private void sendDealClosingOrder(String message, String ticker) {
+        Deal deal = getDeal(ticker);
         if (deal == null) {
             return;
         }
@@ -93,9 +88,9 @@ public class BlackFlagService implements CryptoConstants {
         binanceDataHolder.startProfitTracker(deal);
     }
 
-    private Deal getDeal(int userId, String ticker) {
+    private Deal getDeal(String ticker) {
         Strategy strategy = strategyService.findById(BF_STRATEGY_ID);
-        Optional<Deal> openedDeal = dealService.getOpenedDealByTicker(userId, strategy.getName(), ticker);
+        Optional<Deal> openedDeal = dealService.getOpenedDealByTicker(strategy.getName(), ticker);
 
         if (openedDeal.isEmpty()) {
             return null;

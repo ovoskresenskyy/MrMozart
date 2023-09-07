@@ -22,7 +22,7 @@
     <table>
         <tr>
             <td>
-                <form th:action="@{/deals/{user_id}/{strategy_id}(user_id=${user.id},strategy_id=${strategy.id})}"
+                <form th:action="@{/deals/{strategy_id}(strategy_id=${strategy.id})}"
                       method="GET">
                     <input type="hidden" name="_method" value="GET">
                     <button class="btn btn-primary" type="submit"> < Back to Deals</button>

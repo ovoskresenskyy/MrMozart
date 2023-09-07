@@ -24,8 +24,6 @@ public class Order {
     private String side;
     private String symbol;
     private String strategy;
-    @Column("user_id")
-    private int userId;
     private String timestamp;
     @Column("timestamp_sent")
     private String timestampSent;

@@ -46,7 +46,7 @@ public class PercentProfitService {
      * @return The percent profit of the received ticker for the given strategy
      */
     public double getPercent(Deal deal, int number) {
-        int tickerId = tickerService.findByNameAndUserId(deal.getTicker(), deal.getUserId()).getId();
+        int tickerId = tickerService.findByName(deal.getTicker()).getId();
         return getPercentProfit(deal.getStrategyId(), tickerId, number).getValue();
     }
 
