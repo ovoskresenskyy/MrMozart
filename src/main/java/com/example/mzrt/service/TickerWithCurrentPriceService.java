@@ -19,21 +19,24 @@ public class TickerWithCurrentPriceService {
     public List<TickerWithCurrentPrice> findAll() {
         LinkedList<TickerWithCurrentPrice> tickersAndPrices = new LinkedList<>();
 
-        BinanceDataHolder binanceDataHolder = BinanceDataHolder.getInstance();
-
         for (Ticker ticker : tickerService.findAll()) {
-            String name = ticker.getName();
-            double futuresPrice = binanceDataHolder.getFuturesByTicker(name).getPrice();
-            double spotPrice = binanceDataHolder.getSpotByTicker(name).getPrice();
-
-            TickerWithCurrentPrice tickerWithPrice = TickerWithCurrentPrice.builder()
-                    .ticker(ticker)
-                    .futuresPrice(futuresPrice)
-                    .spotPrice(spotPrice)
-                    .build();
-
-            tickersAndPrices.add(tickerWithPrice);
+            tickersAndPrices.add(initNewPriceHolder(ticker));
         }
         return tickersAndPrices;
+    }
+
+    private TickerWithCurrentPrice initNewPriceHolder(Ticker ticker) {
+        BinanceDataHolder binanceDataHolder = BinanceDataHolder.getInstance();
+
+        String name = ticker.getName();
+        double futuresPrice = binanceDataHolder.getFuturesByTicker(name).getPrice();
+        double spotPrice = binanceDataHolder.getSpotByTicker(name).getPrice();
+
+        return TickerWithCurrentPrice.builder()
+                .ticker(ticker)
+                .futuresPrice(futuresPrice)
+                .spotPrice(spotPrice)
+                .build();
+
     }
 }
