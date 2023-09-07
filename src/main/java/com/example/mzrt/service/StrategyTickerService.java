@@ -1,5 +1,6 @@
 package com.example.mzrt.service;
 
+import com.example.mzrt.model.Deal;
 import com.example.mzrt.model.StrategyTicker;
 import com.example.mzrt.model.Ticker;
 import com.example.mzrt.repository.StrategyTickerRepository;
@@ -31,6 +32,27 @@ public class StrategyTickerService {
     }
 
     /**
+     * This method is responsible for getting the value of percent profit
+     * of exist StrategyTicker instance
+     *
+     * @param deal - The deal as a holder of the strategy and ticker of the percent profit.
+     * @return Percent of profit
+     */
+    public int getPercent(Deal deal, int number){
+        Ticker ticker = tickerService.findByName(deal.getTicker());
+        StrategyTicker strategyTicker = findByTickerAndStrategyId(ticker, deal.getStrategyId());
+
+        return switch (number) {
+            case 1 -> strategyTicker.getPercentTP1();
+            case 2 -> strategyTicker.getPercentTP2();
+            case 3 -> strategyTicker.getPercentTP3();
+            case 4 -> strategyTicker.getPercentTP4();
+            case 5 -> strategyTicker.getPercentTP5();
+            default -> 0;
+        };
+    }
+
+    /**
      * Find all tickers by strategy.
      * If it's not present - create new
      *
@@ -41,7 +63,7 @@ public class StrategyTickerService {
         LinkedList<StrategyTicker> strategyTickers = new LinkedList<>();
 
         for (Ticker ticker : tickerService.findAll()) {
-            strategyTickers.add(getOrCreateNew(strategyId, ticker));
+            strategyTickers.add(findByTickerAndStrategyId(ticker, strategyId));
         }
         return strategyTickers;
     }
@@ -50,11 +72,11 @@ public class StrategyTickerService {
      * This method is trying to get previously added entity from the
      * repository, or create the new one if it's not present.
      *
-     * @param strategyId - The ID of the strategy
      * @param ticker     - The ticker on which are strategy ticker based on
+     * @param strategyId - The ID of the strategy
      * @return Strategy ticker
      */
-    private StrategyTicker getOrCreateNew(int strategyId, Ticker ticker) {
+    private StrategyTicker findByTickerAndStrategyId(Ticker ticker, int strategyId) {
         Optional<StrategyTicker> maybeStrategyTicker = strategyTickerRepository.findByTickerId(ticker.getId());
         return maybeStrategyTicker.orElseGet(() -> strategyTickerRepository.save(add(strategyId, ticker)));
     }

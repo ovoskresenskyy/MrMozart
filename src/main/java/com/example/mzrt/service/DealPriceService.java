@@ -19,10 +19,10 @@ import static com.example.mzrt.enums.Side.isShort;
 @Service
 public class DealPriceService implements CryptoConstants {
 
-    private final PercentProfitService percentProfitService;
+    private final StrategyTickerService strategyTickerService;
 
-    public DealPriceService(PercentProfitService percentProfitService) {
-        this.percentProfitService = percentProfitService;
+    public DealPriceService(StrategyTickerService strategyTickerService) {
+        this.strategyTickerService = strategyTickerService;
     }
 
     /**
@@ -123,7 +123,7 @@ public class DealPriceService implements CryptoConstants {
     private double getProfitPrice(Deal deal) {
         double averagePrice = deal.getAveragePrice();
         double profit = averagePrice
-                * percentProfitService.getPercent(deal, getTPNumber(deal)) / 100;
+                * strategyTickerService.getPercent(deal, getTPNumber(deal)) / 100;
 
         return roundPrice(isShort(deal.getSide())
                 ? averagePrice - profit
