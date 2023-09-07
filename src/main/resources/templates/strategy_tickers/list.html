@@ -34,23 +34,25 @@
             <th>Take profit 3 (%)</th>
             <th>Take profit 4 (%)</th>
             <th>Take profit 5 (%)</th>
+            <th>SL when used</th>
             <th>Action</th>
         </tr>
         </thead>
 
         <tbody>
-        <tr th:each="row: ${tickersWithProfits}">
-            <td th:text="${row.ticker.name}"></td>
-            <td th:text="${row.percent1 != null} ? ${row.percent1.value} : ''"></td>
-            <td th:text="${row.percent2 != null} ? ${row.percent2.value} : ''"></td>
-            <td th:text="${row.percent3 != null} ? ${row.percent3.value} : ''"></td>
-            <td th:text="${row.percent4 != null} ? ${row.percent4.value} : ''"></td>
-            <td th:text="${row.percent5 != null} ? ${row.percent5.value} : ''"></td>
+        <tr th:each="ticker : ${tickers}">
+            <td th:text="${ticker.name}"></td>
+            <td th:text="${ticker.percentTP1}"></td>
+            <td th:text="${ticker.percentTP2}"></td>
+            <td th:text="${ticker.percentTP3}"></td>
+            <td th:text="${ticker.percentTP4}"></td>
+            <td th:text="${ticker.percentTP5}"></td>
+            <td th:text="${ticker.stopWhenUsed}"></td>
             <td>
                 <table>
                     <tr>
-                        <form th:action="@{/tickers/profit/{ticker_id}/{strategy_id}/updating
-                        (ticker_id=${row.ticker.id},strategy_id=${strategy.id})}" method="GET">
+                        <form th:action="@{/strategy_tickers/{ticker_id}/updating(ticker_id=${ticker.id})}"
+                              method="GET">
                             <input type="hidden" name="_method" value="GET">
                             <button class="btn btn-primary" type="submit">Update</button>
                         </form>
