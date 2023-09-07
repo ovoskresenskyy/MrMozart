@@ -42,6 +42,8 @@ public class SecurityConfiguration {
                                         "/users/**",
                                         "/alerts/**",
                                         "/strategies/**",
+                                        "/tickers/**",
+                                        "/strategy_tickers/**",
                                         "/deals/**",
                                         "/").hasAnyAuthority("ADMIN", "USER")
                                 .anyRequest().authenticated()
