@@ -76,7 +76,7 @@ public class StrategyTickerService {
      * @param strategyId - The ID of the strategy
      * @return Strategy ticker
      */
-    private StrategyTicker findByTickerAndStrategyId(Ticker ticker, int strategyId) {
+    public StrategyTicker findByTickerAndStrategyId(Ticker ticker, int strategyId) {
         Optional<StrategyTicker> maybeStrategyTicker = strategyTickerRepository.findByTickerId(ticker.getId());
         return maybeStrategyTicker.orElseGet(() -> strategyTickerRepository.save(add(strategyId, ticker)));
     }
