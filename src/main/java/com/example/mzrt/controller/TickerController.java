@@ -1,8 +1,9 @@
 package com.example.mzrt.controller;
 
-import com.example.mzrt.model.PercentProfit;
 import com.example.mzrt.model.Ticker;
-import com.example.mzrt.service.*;
+import com.example.mzrt.service.BinanceDataHolder;
+import com.example.mzrt.service.TickerService;
+import com.example.mzrt.service.TickerWithCurrentPriceService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -12,63 +13,25 @@ import org.springframework.web.bind.annotation.*;
 @RequestMapping("/tickers")
 public class TickerController {
 
-    private final UserService userService;
-    private final StrategyService strategyService;
-    private final DealService dealService;
     private final TickerService tickerService;
-    private final TickerWithProfitService tickerWithProfitService;
     private final TickerWithCurrentPriceService tickerWithCurrentPriceService;
-    private final PercentProfitService percentProfitService;
 
     @Autowired
-    public TickerController(UserService userService,
-                            StrategyService strategyService,
-                            DealService dealService,
-                            TickerService tickerService,
-                            TickerWithProfitService tickerWithProfitService,
-                            TickerWithCurrentPriceService tickerWithCurrentPriceService,
-                            PercentProfitService percentProfitService) {
-        this.userService = userService;
-        this.strategyService = strategyService;
-        this.dealService = dealService;
+    public TickerController(TickerService tickerService,
+                            TickerWithCurrentPriceService tickerWithCurrentPriceService) {
         this.tickerService = tickerService;
-        this.tickerWithProfitService = tickerWithProfitService;
         this.tickerWithCurrentPriceService = tickerWithCurrentPriceService;
-        this.percentProfitService = percentProfitService;
     }
 
     @GetMapping
-    public String redirectToUsers() {
-        return "redirect:/users";
-    }
-
-    @GetMapping("/{userId}")
-    public String getTickers(@PathVariable int userId,
-                             Model model) {
-        model.addAttribute("user", userService.findById(userId));
-        model.addAttribute("tickersAndPrices", tickerWithCurrentPriceService.findByUserId(userId));
+    public String getTickers(Model model) {
+        model.addAttribute("tickersAndPrices", tickerWithCurrentPriceService.findAll());
         return "tickers/list";
     }
 
-    @GetMapping("/profits/{userId}/{strategyId}")
-    public String getTickersWithProfits(@PathVariable int userId,
-                                        @PathVariable int strategyId,
-                                        Model model) {
-        model.addAttribute("user",
-                userService.findById(userId));
-        model.addAttribute("strategy",
-                strategyService.findById(strategyId));
-        model.addAttribute("tickersWithProfits",
-                tickerWithProfitService.findAllByUserAndStrategy(userId, strategyId));
-        return "tickers/profits";
-    }
-
-    @GetMapping("/{userId}/new")
-    public String tickerNewForm(@PathVariable int userId, Model model) {
-        model.addAttribute("user", userService.findById(userId));
-        model.addAttribute("ticker", Ticker.builder()
-                .userId(userId)
-                .build());
+    @GetMapping("/new")
+    public String tickerNewForm(Model model) {
+        model.addAttribute("ticker", Ticker.builder().build());
         return "tickers/new";
     }
 
@@ -77,53 +40,14 @@ public class TickerController {
         ticker.setName(ticker.getName().toUpperCase());
         tickerService.save(ticker);
         BinanceDataHolder.getInstance().startPriceTracking(ticker.getName());
-        return "redirect:/tickers/" + ticker.getUserId();
-    }
-
-    @PostMapping("/profit")
-    public String saveTickersProfit(@ModelAttribute("profit") PercentProfit profit) {
-        percentProfitService.save(profit);
-
-        Ticker ticker = tickerService.findById(profit.getTickerId());
-
-        dealService.updateProfitPriceAtOpenedDeal(ticker.getUserId(),
-                strategyService.findById(profit.getStrategyId()).getName(),
-                ticker.getName());
-
-        return "redirect:/tickers/profit/"
-                + ticker.getId()
-                + "/"
-                + profit.getStrategyId()
-                + "/updating";
+        return "redirect:/tickers";
     }
 
     @GetMapping("/{id}/updating")
     public String tickerUpdateForm(@PathVariable int id, Model model) {
         Ticker ticker = tickerService.findById(id);
-        model.addAttribute("user", userService.findById(ticker.getUserId()));
         model.addAttribute("ticker", ticker);
         return "tickers/update";
-    }
-
-    @GetMapping("/profit/{tickerId}/{strategyId}/updating")
-    public String tickerProfitUpdateForm(@PathVariable int tickerId,
-                                         @PathVariable int strategyId,
-                                         Model model) {
-        Ticker ticker = tickerService.findById(tickerId);
-        model.addAttribute("user", userService.findById(ticker.getUserId()));
-        model.addAttribute("strategy", strategyService.findById(strategyId));
-        model.addAttribute("ticker", ticker);
-        model.addAttribute("profit1",
-                percentProfitService.getPercentProfit(strategyId, tickerId, 1));
-        model.addAttribute("profit2",
-                percentProfitService.getPercentProfit(strategyId, tickerId, 2));
-        model.addAttribute("profit3",
-                percentProfitService.getPercentProfit(strategyId, tickerId, 3));
-        model.addAttribute("profit4",
-                percentProfitService.getPercentProfit(strategyId, tickerId, 4));
-        model.addAttribute("profit5",
-                percentProfitService.getPercentProfit(strategyId, tickerId, 5));
-        return "tickers/profits_update";
     }
 
     @DeleteMapping("/{id}")
@@ -132,6 +56,6 @@ public class TickerController {
         tickerService.deleteById(id);
 
         BinanceDataHolder.getInstance().stopPriceTracking(ticker.getName());
-        return "redirect:/tickers/" + ticker.getUserId();
+        return "redirect:/tickers";
     }
 }
