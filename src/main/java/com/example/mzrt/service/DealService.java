@@ -175,7 +175,8 @@ public class DealService {
         Optional<Deal> openedDeal = getOpenedDealByTicker(strategy, ticker);
         if (openedDeal.isPresent()) {
             Deal deal = openedDeal.get();
-            dealPriceService.updateProfitPrice(deal);
+            double profitPrice = dealPriceService.getProfitPrice(deal);
+            deal.setProfitPrice(profitPrice);
             save(deal);
         }
     }

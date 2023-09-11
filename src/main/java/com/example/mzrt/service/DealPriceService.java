@@ -39,7 +39,8 @@ public class DealPriceService implements CryptoConstants {
             deal.setProfitPrice(getProfitPrice(deal));
         } else {
             setTakeProfitPrice(deal, alert);
-            updateProfitPrice(deal);
+            double profitPrice = getProfitPrice(deal);
+            deal.setProfitPrice(profitPrice);
         }
     }
 
@@ -120,7 +121,7 @@ public class DealPriceService implements CryptoConstants {
      * @param deal - The deal to be processed
      * @return - Calculated profit price
      */
-    private double getProfitPrice(Deal deal) {
+    public double getProfitPrice(Deal deal) {
         double averagePrice = deal.getAveragePrice();
         double profit = averagePrice
                 * strategyTickerService.getPercent(deal, getTPNumber(deal)) / 100;
@@ -128,10 +129,6 @@ public class DealPriceService implements CryptoConstants {
         return roundPrice(isShort(deal.getSide())
                 ? averagePrice - profit
                 : averagePrice + profit);
-    }
-
-    public void updateProfitPrice(Deal deal) {
-        deal.setProfitPrice(getProfitPrice(deal));
     }
 
     private int getTPNumber(Deal deal) {
