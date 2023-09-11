@@ -1,10 +1,11 @@
-package com.example.mzrt.service;
+package com.example.mzrt.tracker;
 
 import com.example.mzrt.CryptoConstants;
 import com.example.mzrt.enums.AlertMessage;
 import com.example.mzrt.model.Deal;
 import com.example.mzrt.model.StrategyTicker;
 import com.example.mzrt.model.Ticker;
+import com.example.mzrt.service.*;
 import com.example.mzrt.service.binance.BinanceFuturesPriceTracker;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;

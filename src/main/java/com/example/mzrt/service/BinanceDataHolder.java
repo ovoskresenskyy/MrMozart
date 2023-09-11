@@ -3,6 +3,7 @@ package com.example.mzrt.service;
 import com.example.mzrt.model.Deal;
 import com.example.mzrt.service.binance.BinanceFuturesPriceTracker;
 import com.example.mzrt.service.binance.BinanceSpotPriceTracker;
+import com.example.mzrt.tracker.ProfitTrackerService;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.HashMap;

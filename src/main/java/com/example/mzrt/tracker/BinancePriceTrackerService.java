@@ -1,8 +1,11 @@
-package com.example.mzrt.service;
+package com.example.mzrt.tracker;
 
 import com.example.mzrt.CryptoConstants;
 import com.example.mzrt.model.Deal;
 import com.example.mzrt.model.Ticker;
+import com.example.mzrt.service.BinanceDataHolder;
+import com.example.mzrt.service.DealService;
+import com.example.mzrt.service.TickerService;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
