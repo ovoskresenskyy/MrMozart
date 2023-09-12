@@ -1,5 +1,6 @@
 package com.example.mzrt.service;
 
+import com.example.mzrt.holder.PriceTrackers;
 import com.example.mzrt.model.Ticker;
 import com.example.mzrt.model.TickerWithCurrentPrice;
 import org.springframework.stereotype.Service;
@@ -11,9 +12,12 @@ import java.util.List;
 public class TickerWithCurrentPriceService {
 
     private final TickerService tickerService;
+    private final PriceTrackers priceTrackers;
 
-    public TickerWithCurrentPriceService(TickerService tickerService) {
+    public TickerWithCurrentPriceService(TickerService tickerService,
+                                         PriceTrackers priceTrackers) {
         this.tickerService = tickerService;
+        this.priceTrackers = priceTrackers;
     }
 
     public List<TickerWithCurrentPrice> findAll() {
@@ -26,11 +30,9 @@ public class TickerWithCurrentPriceService {
     }
 
     private TickerWithCurrentPrice initNewPriceHolder(Ticker ticker) {
-        BinanceDataHolder binanceDataHolder = BinanceDataHolder.getInstance();
-
         String name = ticker.getName();
-        double futuresPrice = binanceDataHolder.getFuturesByTicker(name).getPrice();
-        double spotPrice = binanceDataHolder.getSpotByTicker(name).getPrice();
+        double futuresPrice = priceTrackers.getFuturesTracker(name).getPrice();
+        double spotPrice = priceTrackers.getSpotByTicker(name).getPrice();
 
         return TickerWithCurrentPrice.builder()
                 .ticker(ticker)

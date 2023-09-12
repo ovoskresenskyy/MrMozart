@@ -1,6 +1,7 @@
 package com.example.mzrt.service;
 
 import com.example.mzrt.enums.AlertMessage;
+import com.example.mzrt.holder.PriceTrackers;
 import com.example.mzrt.model.Deal;
 import com.example.mzrt.model.Strategy;
 import com.example.mzrt.repository.DealRepository;
@@ -21,11 +22,15 @@ public class DealService {
 
     private final DealRepository dealRepository;
     private final DealPriceService dealPriceService;
+    private final PriceTrackers priceTrackers;
 
     @Autowired
-    public DealService(DealRepository dealRepository, DealPriceService dealPriceService) {
+    public DealService(DealRepository dealRepository,
+                       DealPriceService dealPriceService,
+                       PriceTrackers priceTrackers) {
         this.dealRepository = dealRepository;
         this.dealPriceService = dealPriceService;
+        this.priceTrackers = priceTrackers;
     }
 
     public Deal findById(int id) {
@@ -51,8 +56,7 @@ public class DealService {
      * @param alert - The closing alert
      */
     public void closeDeal(Deal deal, String alert) {
-        BinanceDataHolder dataHolder = BinanceDataHolder.getInstance();
-        double currentPrice = dataHolder.getFuturesByTicker(deal.getTicker()).getPrice();
+        double currentPrice = priceTrackers.getFuturesTracker(deal.getTicker()).getPrice();
 
         deal.setOpen(false);
         deal.setClosingPrice(currentPrice);

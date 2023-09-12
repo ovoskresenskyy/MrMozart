@@ -1,7 +1,7 @@
 package com.example.mzrt.controller;
 
+import com.example.mzrt.holder.PriceTrackers;
 import com.example.mzrt.model.Ticker;
-import com.example.mzrt.service.BinanceDataHolder;
 import com.example.mzrt.service.TickerService;
 import com.example.mzrt.service.TickerWithCurrentPriceService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -15,12 +15,15 @@ public class TickerController {
 
     private final TickerService tickerService;
     private final TickerWithCurrentPriceService tickerWithCurrentPriceService;
+    private final PriceTrackers priceTrackers;
 
     @Autowired
     public TickerController(TickerService tickerService,
-                            TickerWithCurrentPriceService tickerWithCurrentPriceService) {
+                            TickerWithCurrentPriceService tickerWithCurrentPriceService,
+                            PriceTrackers priceTrackers) {
         this.tickerService = tickerService;
         this.tickerWithCurrentPriceService = tickerWithCurrentPriceService;
+        this.priceTrackers = priceTrackers;
     }
 
     @GetMapping
@@ -39,7 +42,7 @@ public class TickerController {
     public String saveTicker(@ModelAttribute("ticker") Ticker ticker) {
         ticker.setName(ticker.getName().toUpperCase());
         tickerService.save(ticker);
-        BinanceDataHolder.getInstance().startPriceTracking(ticker.getName());
+        priceTrackers.startPriceTracking(ticker.getName());
         return "redirect:/tickers";
     }
 
@@ -54,8 +57,7 @@ public class TickerController {
     public String deleteTicker(@PathVariable int id) {
         Ticker ticker = tickerService.findById(id);
         tickerService.deleteById(id);
-
-        BinanceDataHolder.getInstance().stopPriceTracking(ticker.getName());
+        priceTrackers.stopPriceTracking(ticker.getName());
         return "redirect:/tickers";
     }
 }

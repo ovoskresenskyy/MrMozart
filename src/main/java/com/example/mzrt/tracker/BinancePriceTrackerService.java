@@ -1,6 +1,7 @@
 package com.example.mzrt.tracker;
 
 import com.example.mzrt.CryptoConstants;
+import com.example.mzrt.holder.PriceTrackers;
 import com.example.mzrt.model.Deal;
 import com.example.mzrt.model.Ticker;
 import com.example.mzrt.service.BinanceDataHolder;
@@ -15,22 +16,25 @@ public class BinancePriceTrackerService implements CryptoConstants {
 
     private final TickerService tickerService;
     private final DealService dealService;
+    private final PriceTrackers priceTrackers;
+    private final DealProfitTrackers dealProfitTrackers;
 
     public BinancePriceTrackerService(TickerService tickerService,
-                                      DealService dealService) {
+                                      DealService dealService,
+                                      DealProfitTrackers dealProfitTrackers,
+                                      PriceTrackers priceTrackers) {
         this.tickerService = tickerService;
         this.dealService = dealService;
+        this.priceTrackers = priceTrackers;
+        this.dealProfitTrackers = dealProfitTrackers;
 
         startCurrentPriceTracking();
         startProfitTrackers();
     }
 
     private void startCurrentPriceTracking() {
-        BinanceDataHolder dataHolder = BinanceDataHolder.getInstance();
-
-        List<Ticker> tickers = tickerService.findAll();
-        for (Ticker ticker : tickers) {
-            dataHolder.startPriceTracking(ticker.getName());
+        for (Ticker ticker : tickerService.findAll()) {
+            priceTrackers.startPriceTracking(ticker.getName());
         }
     }
 

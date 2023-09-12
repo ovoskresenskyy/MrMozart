@@ -2,6 +2,7 @@ package com.example.mzrt.service;
 
 import com.example.mzrt.CryptoConstants;
 import com.example.mzrt.enums.AlertMessage;
+import com.example.mzrt.holder.PriceTrackers;
 import com.example.mzrt.model.Deal;
 import org.springframework.stereotype.Service;
 
@@ -20,9 +21,12 @@ import static com.example.mzrt.enums.Side.isShort;
 public class DealPriceService implements CryptoConstants {
 
     private final StrategyTickerService strategyTickerService;
+    private final PriceTrackers priceTrackers;
 
-    public DealPriceService(StrategyTickerService strategyTickerService) {
+    public DealPriceService(StrategyTickerService strategyTickerService,
+                            PriceTrackers priceTrackers) {
         this.strategyTickerService = strategyTickerService;
+        this.priceTrackers = priceTrackers;
     }
 
     /**
@@ -54,9 +58,7 @@ public class DealPriceService implements CryptoConstants {
      * @param alert - Received alert
      */
     private void setEntryPrice(Deal deal, AlertMessage alert) {
-        double currentPrice = BinanceDataHolder.getInstance()
-                .getFuturesByTicker(deal.getTicker())
-                .getPrice();
+        double currentPrice = priceTrackers.getFuturesTracker(deal.getTicker()).getPrice();
 
         switch (alert) {
             case S1, L1 -> deal.setFirstPrice(currentPrice);
@@ -77,9 +79,7 @@ public class DealPriceService implements CryptoConstants {
      * @param alert - Received alert
      */
     private void setTakeProfitPrice(Deal deal, AlertMessage alert) {
-        double currentPrice = BinanceDataHolder.getInstance()
-                .getFuturesByTicker(deal.getTicker())
-                .getPrice();
+        double currentPrice = priceTrackers.getFuturesTracker(deal.getTicker()).getPrice();
 
         switch (alert) {
             case STP1, LTP1 -> deal.setTakePrice1(currentPrice);
