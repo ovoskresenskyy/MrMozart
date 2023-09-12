@@ -81,6 +81,10 @@ public class StrategyTickerService {
         return maybeStrategyTicker.orElseGet(() -> strategyTickerRepository.save(add(strategyId, ticker)));
     }
 
+    public StrategyTicker findByTickerNameAndStrategyId(String name, int strategyId) {
+        return findByTickerAndStrategyId(tickerService.findByName(name), strategyId);
+    }
+
     private StrategyTicker add(int strategyId, Ticker ticker) {
         return StrategyTicker.builder()
                 .tickerId(ticker.getId())

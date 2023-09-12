@@ -1,4 +1,4 @@
-package com.example.mzrt.service.binance;
+package com.example.mzrt.tracker;
 
 import com.binance.connector.futures.client.impl.UMWebsocketClientImpl;
 import org.apache.logging.log4j.LogManager;

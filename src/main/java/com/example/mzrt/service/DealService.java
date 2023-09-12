@@ -63,8 +63,6 @@ public class DealService {
         deal.setClosingAlert(alert);
         updateLastChangingTime(deal);
         save(deal);
-
-        dataHolder.stopProfitTracker(deal.getId());
     }
 
     /**
