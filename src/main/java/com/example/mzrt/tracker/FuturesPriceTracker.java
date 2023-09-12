@@ -4,7 +4,7 @@ import com.binance.connector.futures.client.impl.UMWebsocketClientImpl;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
-public class BinanceFuturesPriceTracker {
+public class FuturesPriceTracker {
 
     private double price;
     private int streamId;
@@ -12,7 +12,7 @@ public class BinanceFuturesPriceTracker {
 
     private static final Logger logger = LogManager.getLogger(BinanceFuturesPriceTracker.class);
 
-    public BinanceFuturesPriceTracker() {
+    public FuturesPriceTracker() {
         this.price = 0;
     }
 
