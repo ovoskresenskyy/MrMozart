@@ -5,47 +5,28 @@ import com.example.mzrt.enums.AlertMessage;
 import com.example.mzrt.holder.DealProfitTrackers;
 import com.example.mzrt.model.Deal;
 import com.example.mzrt.model.StrategyTicker;
-import com.example.mzrt.model.Ticker;
 import com.example.mzrt.service.*;
-import com.example.mzrt.service.binance.BinanceFuturesPriceTracker;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Component;
 
 import static com.example.mzrt.enums.AlertMessage.*;
 import static com.example.mzrt.enums.Side.isShort;
 
-@Component
-public class ProfitTrackerService implements Runnable, CryptoConstants {
+public class DealProfitTracker implements Runnable, CryptoConstants {
 
-    private BinanceFuturesPriceTracker binancePriceTracker;
+    private final DealService dealService;
+    private final OrderService orderService;
+    private final AlertService alertService;
+    private final DealProfitTrackers dealProfitTrackers;
+    private FuturesPriceTracker binancePriceTracker;
     private Deal deal;
-    private DealService dealService;
-    private OrderService orderService;
-    private AlertService alertService;
-    private TickerService tickerService;
-    private StrategyTickerService strategyTickerService;
+    private StrategyTicker strategyTicker;
     private boolean keepTracking;
 
-    public void setBinancePriceTracker(BinanceFuturesPriceTracker binancePriceTracker) {
-        this.binancePriceTracker = binancePriceTracker;
-    }
-
-    public void setDeal(Deal deal) {
-        this.deal = deal;
-    }
-
-    @Autowired
-    public void setDealService(DealService dealService) {
+    public DealProfitTracker(DealService dealService,
+                             OrderService orderService,
+                             AlertService alertService,
+                             DealProfitTrackers dealProfitTrackers) {
         this.dealService = dealService;
-    }
-
-    @Autowired
-    public void setOrderService(OrderService orderService) {
         this.orderService = orderService;
-    }
-
-    @Autowired
-    public void setAlertService(AlertService alertService) {
         this.alertService = alertService;
         this.dealProfitTrackers = dealProfitTrackers;
     }
@@ -59,8 +40,6 @@ public class ProfitTrackerService implements Runnable, CryptoConstants {
         boolean aShort = isShort(deal.getSide());
         boolean takeProfit = false;
         boolean stopLoss = false;
-        Ticker ticker = tickerService.findByName(deal.getTicker());
-        StrategyTicker strategyTicker = strategyTickerService.findByTickerAndStrategyId(ticker, deal.getStrategyId());
 
         while (!takeProfit && !stopLoss && keepTracking) {
             pause();
@@ -76,12 +55,12 @@ public class ProfitTrackerService implements Runnable, CryptoConstants {
             }
 
             Deal updatedDeal = dealService.findById(deal.getId());
+
             double profitPrice = updatedDeal.getProfitPrice();
             double averagePrice = updatedDeal.getAveragePrice();
-            boolean isTakeProfitTaken = updatedDeal.getTakePrice1() > 0;
-
             takeProfit = aShort ? currentPrice <= profitPrice : currentPrice >= profitPrice;
 
+            boolean isTakeProfitTaken = updatedDeal.getTakePrice1() > 0;
             if (strategyTicker.isStopWhenUsed() && isTakeProfitTaken) {
                 stopLoss = aShort ? currentPrice > averagePrice : currentPrice < averagePrice;
             }
@@ -134,5 +113,17 @@ public class ProfitTrackerService implements Runnable, CryptoConstants {
         } catch (InterruptedException e) {
             throw new RuntimeException(e);
         }
+    }
+
+    public void setStrategyTicker(StrategyTicker strategyTicker) {
+        this.strategyTicker = strategyTicker;
+    }
+
+    public void setDeal(Deal deal) {
+        this.deal = deal;
+    }
+
+    public void setBinancePriceTracker(FuturesPriceTracker binancePriceTracker) {
+        this.binancePriceTracker = binancePriceTracker;
     }
 }
