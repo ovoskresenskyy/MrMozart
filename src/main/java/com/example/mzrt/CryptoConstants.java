@@ -23,5 +23,5 @@ public interface CryptoConstants {
      * This constant is holding the time of pause between each iteration of determining
      * of profit price to send the Take profit order
      */
-    long PROFIT_PRICE_SEARCHING_PAUSE_TIME = 1000 / 100;
+    long PROFIT_PRICE_SEARCHING_PAUSE_TIME = 1000 / 10;
 }
