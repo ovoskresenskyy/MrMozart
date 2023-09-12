@@ -29,6 +29,8 @@ public class DealProfitTracker implements Runnable, CryptoConstants {
         this.orderService = orderService;
         this.alertService = alertService;
         this.dealProfitTrackers = dealProfitTrackers;
+
+        this.keepTracking = true;
     }
 
     /**
