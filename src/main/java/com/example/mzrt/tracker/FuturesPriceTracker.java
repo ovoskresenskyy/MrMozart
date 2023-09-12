@@ -10,7 +10,7 @@ public class FuturesPriceTracker {
     private int streamId;
     private UMWebsocketClientImpl client;
 
-    private static final Logger logger = LogManager.getLogger(BinanceFuturesPriceTracker.class);
+    private static final Logger logger = LogManager.getLogger(FuturesPriceTracker.class);
 
     public FuturesPriceTracker() {
         this.price = 0;

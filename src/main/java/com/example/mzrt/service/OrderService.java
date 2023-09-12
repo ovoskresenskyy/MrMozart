@@ -20,14 +20,17 @@ public class OrderService {
     private final OrderRepository orderRepository;
     private final RestTemplate restTemplate;
     private final StrategyService strategyService;
+    private final AlertService alertService;
 
     @Autowired
     public OrderService(OrderRepository orderRepository,
                         RestTemplate restTemplate,
-                        StrategyService strategyService) {
+                        StrategyService strategyService,
+                        AlertService alertService) {
         this.orderRepository = orderRepository;
         this.restTemplate = restTemplate;
         this.strategyService = strategyService;
+        this.alertService = alertService;
     }
 
     public Order save(Order order) {
@@ -50,6 +53,16 @@ public class OrderService {
         /* Create pause between receiving the alert and sending order */
         new Thread(new OrderSender(restTemplate, alert, order)).start();
         return true;
+    }
+
+    public boolean sendTakeProfit(Deal deal, String message) {
+        Alert alert = alertService.findByDealAndName(deal, message);
+        return send(deal, alert);
+    }
+
+    public void sentStopLoss(Deal deal, String message){
+        Alert alert = alertService.getAlert(deal, message);
+        send(deal, alert);
     }
 
     public List<Order> findByDealId(int dealId) {

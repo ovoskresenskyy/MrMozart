@@ -85,16 +85,18 @@ public class OrderPriceService {
      * @return - Alert message
      */
     public static AlertMessage getNextTP(Deal deal) {
+        String side = deal.getSide();
+
         if (deal.getTakePrice4() > 0) {
-            return isShort(deal.getSide()) ? STP5 : LTP5;
+            return isShort(side) ? STP5 : LTP5;
         } else if (deal.getTakePrice3() > 0) {
-            return isShort(deal.getSide()) ? STP4 : LTP4;
+            return isShort(side) ? STP4 : LTP4;
         } else if (deal.getTakePrice2() > 0) {
-            return isShort(deal.getSide()) ? STP3 : LTP3;
+            return isShort(side) ? STP3 : LTP3;
         } else if (deal.getTakePrice1() > 0) {
-            return isShort(deal.getSide()) ? STP2 : LTP2;
+            return isShort(side) ? STP2 : LTP2;
         } else {
-            return isShort(deal.getSide()) ? STP1 : LTP1;
+            return isShort(side) ? STP1 : LTP1;
         }
     }
 

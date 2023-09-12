@@ -123,8 +123,8 @@ public class DealPriceService implements CryptoConstants {
      */
     public double getProfitPrice(Deal deal) {
         double averagePrice = deal.getAveragePrice();
-        double profit = averagePrice
-                * strategyTickerService.getPercent(deal, getTPNumber(deal)) / 100;
+        double percent = strategyTickerService.getPercent(deal, getTPNumber(deal));
+        double profit = averagePrice * percent / 100;
 
         return roundPrice(isShort(deal.getSide())
                 ? averagePrice - profit

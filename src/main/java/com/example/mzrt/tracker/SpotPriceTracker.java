@@ -2,13 +2,13 @@ package com.example.mzrt.tracker;
 
 import com.binance.connector.futures.client.impl.UMWebsocketClientImpl;
 
-public class BinanceSpotPriceTracker {
+public class SpotPriceTracker {
 
     private double price;
     private int streamId;
     private UMWebsocketClientImpl client;
 
-    public BinanceSpotPriceTracker() {
+    public SpotPriceTracker() {
         this.price = 0;
     }
 

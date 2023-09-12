@@ -2,7 +2,6 @@ package com.example.mzrt.holder;
 
 import com.example.mzrt.model.Deal;
 import com.example.mzrt.model.StrategyTicker;
-import com.example.mzrt.service.AlertService;
 import com.example.mzrt.service.DealService;
 import com.example.mzrt.service.OrderService;
 import com.example.mzrt.service.StrategyTickerService;
@@ -22,18 +21,15 @@ public class DealProfitTrackers {
     private final StrategyTickerService strategyTickerService;
     private final DealService dealService;
     private final OrderService orderService;
-    private final AlertService alertService;
 
     public DealProfitTrackers(PriceTrackers priceTrackers,
                               StrategyTickerService strategyTickerService,
                               DealService dealService,
-                              OrderService orderService,
-                              AlertService alertService) {
+                              OrderService orderService) {
         this.priceTrackers = priceTrackers;
         this.strategyTickerService = strategyTickerService;
         this.dealService = dealService;
         this.orderService = orderService;
-        this.alertService = alertService;
     }
 
     public void startTracker(Deal deal) {
@@ -53,7 +49,6 @@ public class DealProfitTrackers {
 
         DealProfitTracker dealProfitTracker = new DealProfitTracker(dealService,
                 orderService,
-                alertService,
                 this);
         dealProfitTracker.setDeal(deal);
         dealProfitTracker.setStrategyTicker(strategyTicker);

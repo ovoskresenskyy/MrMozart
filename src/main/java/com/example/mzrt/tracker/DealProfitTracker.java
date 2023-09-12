@@ -5,7 +5,9 @@ import com.example.mzrt.enums.AlertMessage;
 import com.example.mzrt.holder.DealProfitTrackers;
 import com.example.mzrt.model.Deal;
 import com.example.mzrt.model.StrategyTicker;
-import com.example.mzrt.service.*;
+import com.example.mzrt.service.DealService;
+import com.example.mzrt.service.OrderPriceService;
+import com.example.mzrt.service.OrderService;
 
 import static com.example.mzrt.enums.AlertMessage.*;
 import static com.example.mzrt.enums.Side.isShort;
@@ -14,7 +16,6 @@ public class DealProfitTracker implements Runnable, CryptoConstants {
 
     private final DealService dealService;
     private final OrderService orderService;
-    private final AlertService alertService;
     private final DealProfitTrackers dealProfitTrackers;
     private FuturesPriceTracker binancePriceTracker;
     private Deal deal;
@@ -23,11 +24,9 @@ public class DealProfitTracker implements Runnable, CryptoConstants {
 
     public DealProfitTracker(DealService dealService,
                              OrderService orderService,
-                             AlertService alertService,
                              DealProfitTrackers dealProfitTrackers) {
         this.dealService = dealService;
         this.orderService = orderService;
-        this.alertService = alertService;
         this.dealProfitTrackers = dealProfitTrackers;
 
         this.keepTracking = true;
@@ -81,9 +80,7 @@ public class DealProfitTracker implements Runnable, CryptoConstants {
 
     private void sendTakeProfit() {
         AlertMessage message = OrderPriceService.getNextTP(deal);
-
-        boolean isOrderSent = orderService.send(deal, alertService.findByDealAndName(deal, message.getName()));
-        if (isOrderSent) {
+        if (orderService.sendTakeProfit(deal, message.getName())) {
             dealService.updatePricesByAlert(deal, message);
         }
 
@@ -97,7 +94,7 @@ public class DealProfitTracker implements Runnable, CryptoConstants {
 
     private void sendStopLoss(boolean aShort) {
         String message = aShort ? SSL.getName() : LSL.getName();
-        orderService.send(deal, alertService.getAlert(deal, message));
+        orderService.sentStopLoss(deal, message);
         dealService.closeDeal(deal, message);
         dealProfitTrackers.stopTracker(deal.getId());
     }
