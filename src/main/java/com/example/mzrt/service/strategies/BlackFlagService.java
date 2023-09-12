@@ -2,9 +2,8 @@ package com.example.mzrt.service.strategies;
 
 import com.example.mzrt.CryptoConstants;
 import com.example.mzrt.enums.AlertMessage;
-import com.example.mzrt.model.Alert;
-import com.example.mzrt.model.Deal;
-import com.example.mzrt.model.Strategy;
+import com.example.mzrt.holder.DealProfitTrackers;
+import com.example.mzrt.model.*;
 import com.example.mzrt.service.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -21,16 +20,18 @@ public class BlackFlagService implements CryptoConstants {
     private final OrderService orderService;
     private final AlertService alertService;
     private final DealService dealService;
+    private final DealProfitTrackers dealProfitTrackers;
 
     @Autowired
     public BlackFlagService(StrategyService strategyService,
                             OrderService orderService,
                             AlertService alertService,
-                            DealService dealService) {
+                            DealService dealService, DealProfitTrackers dealProfitTrackers) {
         this.strategyService = strategyService;
         this.orderService = orderService;
         this.alertService = alertService;
         this.dealService = dealService;
+        this.dealProfitTrackers = dealProfitTrackers;
     }
 
     /**
@@ -59,7 +60,7 @@ public class BlackFlagService implements CryptoConstants {
         Deal deal = dealService.getDealByTicker(strategy, ticker, alert.getSide());
         if (alertMessage.isEntry() && orderService.send(deal, alert)) {
             dealService.updatePricesByAlert(deal, AlertMessage.valueByName(message));
-            startProfitTracker(deal);
+            dealProfitTrackers.startTracker(deal);
         }
     }
 
@@ -81,11 +82,7 @@ public class BlackFlagService implements CryptoConstants {
 
         orderService.send(deal, alertService.getAlert(deal, message));
         dealService.closeDeal(deal, message);
-    }
-
-    private void startProfitTracker(Deal deal) {
-        BinanceDataHolder binanceDataHolder = BinanceDataHolder.getInstance();
-        binanceDataHolder.startProfitTracker(deal);
+        dealProfitTrackers.stopTracker(deal.getId());
     }
 
     private Deal getDeal(String ticker) {

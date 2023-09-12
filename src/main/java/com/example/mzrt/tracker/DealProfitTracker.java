@@ -2,6 +2,7 @@ package com.example.mzrt.tracker;
 
 import com.example.mzrt.CryptoConstants;
 import com.example.mzrt.enums.AlertMessage;
+import com.example.mzrt.holder.DealProfitTrackers;
 import com.example.mzrt.model.Deal;
 import com.example.mzrt.model.StrategyTicker;
 import com.example.mzrt.model.Ticker;
@@ -46,16 +47,7 @@ public class ProfitTrackerService implements Runnable, CryptoConstants {
     @Autowired
     public void setAlertService(AlertService alertService) {
         this.alertService = alertService;
-    }
-
-    @Autowired
-    public void setTickerService(TickerService tickerService) {
-        this.tickerService = tickerService;
-    }
-
-    @Autowired
-    public void setStrategyTickerService(StrategyTickerService strategyTickerService) {
-        this.strategyTickerService = strategyTickerService;
+        this.dealProfitTrackers = dealProfitTrackers;
     }
 
     /**
@@ -116,6 +108,7 @@ public class ProfitTrackerService implements Runnable, CryptoConstants {
 
         if (message == STP5 || message == LTP5) {
             dealService.closeDeal(deal, message.getName());
+            dealProfitTrackers.stopTracker(deal.getId());
         } else {
             this.run();
         }
@@ -125,6 +118,7 @@ public class ProfitTrackerService implements Runnable, CryptoConstants {
         String message = aShort ? SSL.getName() : LSL.getName();
         orderService.send(deal, alertService.getAlert(deal, message));
         dealService.closeDeal(deal, message);
+        dealProfitTrackers.stopTracker(deal.getId());
     }
 
     public void setKeepTracking(boolean keepTracking) {

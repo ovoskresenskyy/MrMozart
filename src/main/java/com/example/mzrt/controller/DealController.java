@@ -1,5 +1,6 @@
 package com.example.mzrt.controller;
 
+import com.example.mzrt.holder.DealProfitTrackers;
 import com.example.mzrt.model.Alert;
 import com.example.mzrt.model.Deal;
 import com.example.mzrt.service.AlertService;
@@ -24,16 +25,19 @@ public class DealController {
     private final DealService dealService;
     private final OrderService orderService;
     private final AlertService alertService;
+    private final DealProfitTrackers dealProfitTrackers;
 
     @Autowired
     public DealController(StrategyService strategyService,
                           DealService dealService,
                           OrderService orderService,
-                          AlertService alertService) {
+                          AlertService alertService,
+                          DealProfitTrackers dealProfitTrackers) {
         this.strategyService = strategyService;
         this.dealService = dealService;
         this.orderService = orderService;
         this.alertService = alertService;
+        this.dealProfitTrackers = dealProfitTrackers;
     }
 
     @GetMapping
@@ -55,6 +59,7 @@ public class DealController {
 
             orderService.send(deal, alert);
             dealService.closeDeal(deal, "Manual");
+            dealProfitTrackers.stopTracker(deal.getId());
         }
 
         return fillDealsList(deal.getStrategyId(), model);
